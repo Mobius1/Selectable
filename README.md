@@ -27,14 +27,6 @@ Initialise the plugin
 
 ```javascript
 const selectable = new Selectable({
-    filter: '.some-class'
-});
-```
-
-## Options
-
-```javascript
-var options = {
 	/**
 	 * The elements that can be selected (CSS3 selector)
 	 * @type {string}
@@ -67,7 +59,7 @@ var options = {
 		border: '1px solid #3498db',
 		backgroundColor: 'rgba(52, 152, 219, 0.2)',
 	}	
-};
+});
 ```
 
 ## Events
