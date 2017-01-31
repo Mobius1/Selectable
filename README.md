@@ -41,8 +41,7 @@ const selectable = new Selectable({
 
 	/**
 	 * How far the lasso overlaps an element before it is highlighted
-	 * "fit" (lasso overlaps the item entirely)
-	 * "touch" (lasso overlaps the item by any amount).
+	 * "fit" (lasso overlaps the item entirely) or "touch" (lasso overlaps the item by any amount).
 	 * @type {string}
 	 */
 	tolerance: "touch",
