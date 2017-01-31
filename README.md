@@ -7,12 +7,12 @@ UI Selectable plugin without the bloat of jQuery and jQuery UI. Functionality an
 
 ### Bower
 ```
-Coming soon...
+bower install mobius1-selectable
 ```
 
 ### npm
 ```
-Coming soon...
+npm install mobius1-selectable
 ```
 
 ## Quick Start
