@@ -40,8 +40,10 @@ const selectable = new Selectable({
 	appendTo: ".my-container", // or document.querySelector(".my-container")
 
 	/**
-	 * The elements that can be selected (CSS3 selector)
-	 * @type {string} "fit" (lasso overlaps the item entirely) or "touch" (lasso overlaps the item by any amount).
+	 * How far the lasso overlaps an element before it is highlighted
+	 * "fit" (lasso overlaps the item entirely)
+	 * "touch" (lasso overlaps the item by any amount).
+	 * @type {string}
 	 */
 	tolerance: "touch",
 	
