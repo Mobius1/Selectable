@@ -17,13 +17,13 @@ Coming soon...
 
 ## Quick Start
 
-1. Add the js file at the bottom of your document's body
+Add the js file at the bottom of your document's body
 
 ```html
 <script type="text/javascript" src="path/to/selectable.min.js"></script>
 ```
 
-2. Initialise the plugin
+Initialise the plugin
 
 ```javascript
 const selectable = new Selectable({
