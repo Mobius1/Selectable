@@ -47,7 +47,7 @@ const selectable = new Selectable({
 	tolerance: "touch",
 	
 	/**
-	 * Recalculate coords of selectees on selection. Disable if you have a shit-ton of items.
+	 * Recalculate coords of the items. Disable if you have a shit-ton of items.
 	 * @type {boolean}
 	 */
 	autoRefresh: true,
