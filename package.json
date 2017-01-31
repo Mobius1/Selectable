@@ -1,0 +1,20 @@
+{
+  "name": "mobius1-selectable",
+  "version": "0.0.1",
+  "description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
+  "main": "selectable.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mobius1/Selectable.git"
+  },
+  "keywords": [],
+  "author": "Karl Saunders",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mobius1/Selectable/issues"
+  },
+  "homepage": "https://github.com/Mobius1/Selectable#readme"
+}
