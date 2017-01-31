@@ -34,7 +34,7 @@ const selectable = new Selectable({
 	filter: ".some-class",
 	
 	/**
-	 * The container element to append the helper (lasso) to
+	 * The container element to append the lasso to
 	 * @type {string or HTMLElement}
 	 */
 	appendTo: ".my-container", // or document.querySelector(".my-container")
@@ -52,10 +52,10 @@ const selectable = new Selectable({
 	autoRefresh: true,
 	
 	/**
-	 * Style the border and background Color of the helper element (lasso).
-	 * @type {boolean}
+	 * Style the lasso.
+	 * @type {object}
 	 */	
-	helper: {
+	lasso: {
 		border: '1px solid #3498db',
 		backgroundColor: 'rgba(52, 152, 219, 0.2)',
 	}	
