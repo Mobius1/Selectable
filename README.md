@@ -70,9 +70,50 @@ const selectable = new Selectable({
 * `selectable.selected` fires on each element selected
 
 ```javascript
-selectable.on('selectable.XXXX', function(params) {
-	// Do something when selectable.XXXX fires
+/**
+ * @param item - the first item selected
+ * @type {object}
+ */	
+selectable.on('selectable.down', function(item) {
+	// Do something when selectable.down fires
 });
+
+/**
+ * @param coords - lasso coords (x1, x2, y1, y2) 
+ * @type {object}
+ */	
+selectable.on('selectable.drag', function(coords) {
+	// Do something when selectable.drag fires
+});
+
+/**
+ * @param selectedItems - array of selected items
+ * @type {array}
+ */	
+selectable.on('selectable.up', function(selectedItems) {
+	// Do something when selectable.up fires
+});
+
+/**
+ * @param item - the selected item
+ * @type {object}
+ */	
+selectable.on('selectable.selected', function(item) {
+	// Do something when selectable.selected fires
+});
+```
+
+Note that items returned by these events are objects of the following format: 
+
+```javascript
+{
+    element: HTMLElement, // the selected element
+    rect: DOMRect object, // the element's bounding rects
+    startselected: boolean,
+    selected: boolean, // is the item currently selected
+    selecting: boolean, // is the item currently being selected
+    unselecting: boolean // is the item currently being deselected
+}
 ```
 
 Copyright © 2017 Karl Saunders | BSD & MIT license
