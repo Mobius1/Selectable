@@ -17,15 +17,13 @@ Coming soon...
 
 ## Quick Start
 
-1. Add the css file in your document's head:
-
-2. Add the js file at the bottom of your document's body
+1. Add the js file at the bottom of your document's body
 
 ```html
 <script type="text/javascript" src="path/to/selectable.min.js"></script>
 ```
 
-3. Initialise the plugin
+2. Initialise the plugin
 
 ```javascript
 const selectable = new Selectable({
