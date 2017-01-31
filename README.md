@@ -1,5 +1,5 @@
 # Selectable
-UI Selectable plugin without the bloat of jQuery and jQuery UI
+UI Selectable plugin without the bloat of jQuery and jQuery UI. Functionality and options are identical to the jQuery UI version with some additions.
 
 [Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
 
