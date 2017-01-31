@@ -72,7 +72,7 @@ const selectable = new Selectable({
 ```javascript
 /**
  * @param item - the first item selected
- * @type {object}
+ * @return {object}
  */	
 selectable.on('selectable.down', function(item) {
 	// Do something when selectable.down fires
@@ -80,23 +80,23 @@ selectable.on('selectable.down', function(item) {
 
 /**
  * @param coords - lasso coords (x1, x2, y1, y2) 
- * @type {object}
+ * @return {object}
  */	
 selectable.on('selectable.drag', function(coords) {
 	// Do something when selectable.drag fires
 });
 
 /**
- * @param selectedItems - array of selected items
- * @type {array}
+ * @param selectedItems - returns an array of selected items (objects)
+ * @return {array}
  */	
 selectable.on('selectable.up', function(selectedItems) {
 	// Do something when selectable.up fires
 });
 
 /**
- * @param item - the selected item
- * @type {object}
+ * @param item - the selected item (fires for each item that is selected)
+ * @return {object}
  */	
 selectable.on('selectable.selected', function(item) {
 	// Do something when selectable.selected fires
@@ -107,7 +107,7 @@ Note that items returned by these events are objects of the following format:
 
 ```javascript
 {
-    element: HTMLElement, // the selected element
+    element: HTMLElement, // the element
     rect: DOMRect object, // the element's bounding rects
     startselected: boolean,
     selected: boolean, // is the item currently selected
