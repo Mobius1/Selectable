@@ -64,9 +64,9 @@ const selectable = new Selectable({
 
 ## Events
 
-* `selectable.down` fires on mousedown
+* `selectable.down` fires on mousedown (within container)
 * `selectable.drag` fires when dragging the lasso
-* `selectable.up` fires on mouse up
+* `selectable.up` fires on mouse up (within container)
 * `selectable.selected` fires on each element selected
 
 ```javascript
