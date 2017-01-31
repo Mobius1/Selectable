@@ -94,7 +94,7 @@
 			filter: "*",
 			tolerance: "touch",
 
-			helper: {
+			lasso: {
 				border: '1px solid #3498db',
 				backgroundColor: 'rgba(52, 152, 219, 0.2)',
 			}
@@ -102,18 +102,16 @@
 
 		this.options = _extend(defaults, options);
 
-		/* Helper */
-		this.helper = document.createElement('div');
-		this.helper.className = 'ui-helper';
+		/* lasso */
+		var lasso = document.createElement('div');
+		lasso.className = 'ui-lasso';
+		lasso.style.position = "fixed";
 
-		var css = [
-			"position: fixed",
-			"border: " + this.options.helper.border,
-			"background-color: " + this.options.helper.backgroundColor,
-		];
+		_each(this.options.lasso, function(prop, val) {
+			lasso.style[prop] = val;
+		});
 
-		this.helper.style.cssText = css.join(";");
-
+		this.lasso = lasso;
 
 		if (typeof this.options.appendTo === 'string' || this.options.appendTo instanceof String) {
 			this.container = document.querySelector(this.options.appendTo);
@@ -152,7 +150,7 @@
 				originalEl, tgt = e.target;
 			var validEl = tgt.classList.contains(o.selector.replace('.', ''));
 
-			this.container.appendChild(this.helper);
+			this.container.appendChild(this.lasso);
 
 			this.origin = {
 				x: e.pageX,
@@ -222,11 +220,11 @@
 				tmp = c.y2, c.y2 = c.y1, c.y1 = tmp;
 			}
 
-			_css(this.helper, 'left', c.x1);
-			_css(this.helper, 'width', c.x2 - c.x1);
+			_css(this.lasso, 'left', c.x1);
+			_css(this.lasso, 'width', c.x2 - c.x1);
 
-			_css(this.helper, 'top', c.y1);
-			_css(this.helper, 'height', c.y2 - c.y1);
+			_css(this.lasso, 'top', c.y1);
+			_css(this.lasso, 'height', c.y2 - c.y1);
 
 			/* highlight */
 			_each(this.items, function(i, item) {
@@ -301,10 +299,10 @@
 
 			this.selectedItems = [];
 
-			_css(this.helper, 'top', 0);
-			_css(this.helper, 'left', 0);
-			_css(this.helper, 'width', 0);
-			_css(this.helper, 'height', 0);
+			_css(this.lasso, 'top', 0);
+			_css(this.lasso, 'left', 0);
+			_css(this.lasso, 'width', 0);
+			_css(this.lasso, 'height', 0);
 
 
 			_each(this.items, function(i, item) {
@@ -330,7 +328,7 @@
 				}
 			});
 
-			this.container.removeChild(this.helper);
+			this.container.removeChild(this.lasso);
 
 			this.trigger('selectable.up', this.selectedItems);
 		};
