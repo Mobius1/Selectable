@@ -1,8 +1,15 @@
 {
-    "name": "mobius1-selectable",
-    "version": "0.0.1",
-    "ignore": [
-        ".gitattributes",
-        "README.md"
-    ]
+	"name": "mobius1-selectable",
+	"version": "0.0.1",
+	"ignore": [
+		".gitattributes",
+		"README.md"
+	],
+	"homepage": "https://github.com/Mobius1/Selectable",
+	"description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
+	"main": "selectable.min.js",
+	"authors": [
+		"Karl Saunders"
+	],
+	"license": "MIT"
 }

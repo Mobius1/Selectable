@@ -7,12 +7,12 @@ UI Selectable plugin without the bloat of jQuery and jQuery UI. Functionality an
 
 ### Bower
 ```
-Coming soon...
+bower install mobius1-selectable
 ```
 
 ### npm
 ```
-Coming soon...
+npm install mobius1-selectable
 ```
 
 ## Quick Start
@@ -40,13 +40,14 @@ const selectable = new Selectable({
 	appendTo: ".my-container", // or document.querySelector(".my-container")
 
 	/**
-	 * The elements that can be selected (CSS3 selector)
-	 * @type {string} "fit" (lasso overlaps the item entirely) or "touch" (lasso overlaps the item by any amount).
+	 * How far the lasso overlaps an element before it is highlighted
+	 * "fit" (lasso overlaps the item entirely) or "touch" (lasso overlaps the item by any amount).
+	 * @type {string}
 	 */
 	tolerance: "touch",
 	
 	/**
-	 * Recalculate coords of selectees on selection. Disable if you have a shit-ton of items.
+	 * Recalculate coords of the items. Disable if you have a shit-ton of items.
 	 * @type {boolean}
 	 */
 	autoRefresh: true,
@@ -70,9 +71,50 @@ const selectable = new Selectable({
 * `selectable.selected` fires on each element selected
 
 ```javascript
-selectable.on('selectable.XXXX', function(params) {
-	// Do something when selectable.XXXX fires
+/**
+ * @param item - the first item selected
+ * @return {object}
+ */	
+selectable.on('selectable.down', function(item) {
+	// Do something when selectable.down fires
 });
+
+/**
+ * @param coords - lasso coords (x1, x2, y1, y2) 
+ * @return {object}
+ */	
+selectable.on('selectable.drag', function(coords) {
+	// Do something when selectable.drag fires
+});
+
+/**
+ * @param selectedItems - returns an array of selected items (objects)
+ * @return {array}
+ */	
+selectable.on('selectable.up', function(selectedItems) {
+	// Do something when selectable.up fires
+});
+
+/**
+ * @param item - the selected item (fires for each item that is selected)
+ * @return {object}
+ */	
+selectable.on('selectable.selected', function(item) {
+	// Do something when selectable.selected fires
+});
+```
+
+Note that items returned by these events are objects of the following format: 
+
+```javascript
+{
+    element: HTMLElement, // the element
+    rect: DOMRect object, // the element's bounding rects
+    startselected: boolean,
+    selected: boolean, // is the item currently selected
+    selecting: boolean, // is the item currently being selected
+    unselecting: boolean // is the item currently being deselected
+}
 ```
 
 Copyright © 2017 Karl Saunders | BSD & MIT license
