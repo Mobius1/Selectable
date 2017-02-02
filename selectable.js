@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.1
+ * Version: 0.0.2
  *
  */
 (function(root, factory) {
@@ -55,13 +55,17 @@
 		}
 	};
 
-	var _preventDefault = function(a, b) {
-		return a = a || window.event, b && a.stopPropagation(), a.preventDefault ? a.preventDefault() : a.returnValue = !1
+	var _preventDefault = function(a) {
+		return a = a || window.event, a.preventDefault ? a.preventDefault() : a.returnValue = !1
 	};
 
 	var _listen = function(e, type, callback, capture) {
-		e.addEventListener(type, callback, capture || false);
-	}
+		e.addEventListener(type, callback, capture || false)
+	};
+
+	var isCmdKey = function(e) {
+		return !!e.ctrlKey || !!e.metaKey
+	};
 
 	/* EMITTER */
 	var Emitter = function() {};
@@ -72,14 +76,15 @@
 		off: function(a, b) {
 			this._events = this._events || {}, a in this._events != !1 && this._events[a].splice(this._events[a].indexOf(b), 1)
 		},
-		trigger: function(a) {
-			if (this._events = this._events || {}, a in this._events != !1)
-				for (var b = 0; b < this._events[a].length; b++) this._events[a][b].apply(this, Array.prototype.slice.call(arguments, 1))
+		emit: function(a) {
+			if (this._events = this._events || {}, a in this._events != !1) {
+				for (var b = 0; b < this._events[a].length; b++) { this._events[a][b].apply(this, Array.prototype.slice.call(arguments, 1)) }
+			}
 		}
 	};
 
 	Emitter.mixin = function(a) {
-		var b = ["on", "off", "trigger"],
+		var b = ["on", "off", "emit"],
 			c = b.length;
 		for (; c--;) "function" == typeof a ? a.prototype[b[c]] = Emitter.prototype[b[c]] : a[b[c]] = Emitter.prototype[b[c]];
 		return a
@@ -118,15 +123,15 @@
 		} else if (this.options.appendTo.nodeName) {
 			this.container = this.options.appendTo;
 		} else {
-			throw new Error('You must select container to append to.');
+			this.container = document.body;
 		}
 
 		this.refresh = function() {
 			var that = this;
-			this.elements = document.querySelectorAll(this.options.selector);
+			this.els = document.querySelectorAll(this.options.selector);
 			this.items = [];
 
-			_each(this.elements, function(i, elem) {
+			_each(this.els, function(i, elem) {
 				that.items[i] = {
 					element: elem,
 					rect: elem.getBoundingClientRect(),
@@ -173,15 +178,13 @@
 				var el = item.element;
 				if (item.selected) {
 					item.startselected = true;
-					if (!e.metaKey) {
-						if (!e.ctrlKey) {
-							el.classList.remove("ui-selected");
+					if (!isCmdKey(e)) {
+						el.classList.remove("ui-selected");
 
-							item.selected = false;
-							el.classList.add("ui-unselecting");
+						item.selected = false;
+						el.classList.add("ui-unselecting");
 
-							item.unselecting = true;
-						}
+						item.unselecting = true;
 					}
 				}
 				if (el === tgt) {
@@ -192,7 +195,7 @@
 			this.dragging = true;
 
 			if (validEl) {
-				this.trigger('selectable.down', originalEl);
+				this.emit('selectable.down', originalEl);
 			}
 		};
 
@@ -250,7 +253,7 @@
 					}
 				} else {
 					if (item.selecting) {
-						if ((e.metaKey || e.ctrlKey) && item.startselected) {
+						if (isCmdKey(e) && item.startselected) {
 							el.classList.remove("ui-selecting");
 							item.selecting = false;
 
@@ -267,15 +270,13 @@
 						}
 					}
 					if (el.selected) {
-						if (!e.metaKey) {
-							if (!e.ctrlKey) {
-								if (!item.startselected) {
-									el.classList.remove("ui-selected");
-									item.selected = false;
+						if (!isCmdKey(e)) {
+							if (!item.startselected) {
+								el.classList.remove("ui-selected");
+								item.selected = false;
 
-									el.classList.add("ui-unselecting");
-									item.unselecting = true;
-								}
+								el.classList.add("ui-unselecting");
+								item.unselecting = true;
 							}
 						}
 					}
@@ -283,7 +284,7 @@
 
 			});
 
-			this.trigger('selectable.drag', c);
+			this.emit('selectable.drag', c);
 		};
 
 		this.mouseup = function(e) {
@@ -304,7 +305,6 @@
 			_css(this.lasso, 'width', 0);
 			_css(this.lasso, 'height', 0);
 
-
 			_each(this.items, function(i, item) {
 				var el = item.element;
 
@@ -324,13 +324,13 @@
 
 				if (item.selected) {
 					that.selectedItems.push(item);
-					that.trigger('selectable.selected', item);
+					that.emit('selectable.selected', item);
 				}
 			});
 
 			this.container.removeChild(this.lasso);
 
-			this.trigger('selectable.up', this.selectedItems);
+			this.emit('selectable.up', this.selectedItems);
 		};
 
 		this.downHandler = this.mousedown.bind(this);
@@ -342,7 +342,7 @@
 		_listen(document, 'mouseup', this.upHandler);
 
 		this.update = _debounce(function() {
-			_each(that.elements, function(i, elem) {
+			_each(that.els, function(i, elem) {
 				that.items[i].rect = elem.getBoundingClientRect();
 			});
 		}, 50);
