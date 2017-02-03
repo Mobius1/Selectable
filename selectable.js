@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.3
+ * Version: 0.0.2
  *
  */
 (function(root, factory) {
@@ -128,7 +128,7 @@
 
 		this.refresh = function() {
 			var that = this;
-			this.els = this.container.querySelectorAll(this.options.selector);
+			this.els = document.querySelectorAll(this.options.selector);
 			this.items = [];
 
 			_each(this.els, function(i, elem) {
