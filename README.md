@@ -1,5 +1,5 @@
-# Selectable
-UI Selectable plugin without the bloat of jQuery and jQuery UI. Functionality and options are identical to the jQuery UI version with some additions.
+# Selectable [![npm version](https://badge.fury.io/js/mobius1-selectable.svg)](https://badge.fury.io/js/mobius1-selectable) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
+This is a conversion of the jQuery UI Selectable plugin with all dependencies removed. Functionality and options are identical to the jQuery UI version with some additions.
 
 [Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
 
@@ -7,17 +7,17 @@ UI Selectable plugin without the bloat of jQuery and jQuery UI. Functionality an
 
 ### Bower
 ```
-bower install mobius1-selectable
+bower install mobius1-selectable --save
 ```
 
 ### npm
 ```
-npm install mobius1-selectable
+npm install mobius1-selectable --save
 ```
 
 ## Quick Start
 
-Add the js file at the bottom of your document's body
+Include the JS file:
 
 ```html
 <script type="text/javascript" src="path/to/selectable.min.js"></script>
@@ -26,7 +26,7 @@ Add the js file at the bottom of your document's body
 Initialise the plugin
 
 ```javascript
-const selectable = new Selectable({
+new Selectable({
 	/**
 	 * The elements that can be selected (CSS3 selector)
 	 * @type {string}
@@ -64,6 +64,16 @@ const selectable = new Selectable({
 ```
 
 ## Events
+
+```javascript
+// Intitialise Selectable
+var selectable = new Selectable(options);
+
+// Listen for the 'selectable.XXXX' event
+selectable.on('selectable.XXXX', function() {
+    // Do something when 'selectable.XXXX' fires
+});
+```
 
 * `selectable.down` fires on mousedown (within container)
 * `selectable.drag` fires when dragging the lasso
