@@ -1,6 +1,8 @@
 # Selectable [![npm version](https://badge.fury.io/js/mobius1-selectable.svg)](https://badge.fury.io/js/mobius1-selectable) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
 This is a conversion of the jQuery UI Selectable plugin with all dependencies removed. Functionality and options are identical to the jQuery UI version with some additions.
 
+Selectable mimics the Windows file / directory behaviour, i.e. click and / or drag to select items, hold CTRL to select multiple or hold SHIFT to select consecutive groups of items.
+
 [Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
 
 ## Install
@@ -32,7 +34,7 @@ new Selectable({
 	 * @type {string}
 	 */
 	filter: ".some-class",
-	
+
 	/**
 	 * The container element to append the lasso to
 	 * @type {string or HTMLElement}
@@ -45,21 +47,21 @@ new Selectable({
 	 * @type {string}
 	 */
 	tolerance: "touch",
-	
+
 	/**
 	 * Recalculate coords of the items. Disable if you have a shit-ton of items.
 	 * @type {boolean}
 	 */
 	autoRefresh: true,
-	
+
 	/**
 	 * Style the lasso.
 	 * @type {object}
-	 */	
+	 */
 	lasso: {
 		border: '1px solid #3498db',
 		backgroundColor: 'rgba(52, 152, 219, 0.2)',
-	}	
+	}
 });
 ```
 
@@ -84,15 +86,15 @@ selectable.on('selectable.XXXX', function() {
 /**
  * @param item - the first item selected
  * @return {object}
- */	
+ */
 selectable.on('selectable.down', function(item) {
 	// Do something when selectable.down fires
 });
 
 /**
- * @param coords - lasso coords (x1, x2, y1, y2) 
+ * @param coords - lasso coords (x1, x2, y1, y2)
  * @return {object}
- */	
+ */
 selectable.on('selectable.drag', function(coords) {
 	// Do something when selectable.drag fires
 });
@@ -100,7 +102,7 @@ selectable.on('selectable.drag', function(coords) {
 /**
  * @param selectedItems - returns an array of selected items (objects)
  * @return {array}
- */	
+ */
 selectable.on('selectable.up', function(selectedItems) {
 	// Do something when selectable.up fires
 });
@@ -108,13 +110,13 @@ selectable.on('selectable.up', function(selectedItems) {
 /**
  * @param item - the selected item (fires for each item that is selected)
  * @return {object}
- */	
+ */
 selectable.on('selectable.selected', function(item) {
 	// Do something when selectable.selected fires
 });
 ```
 
-Note that items returned by these events are objects of the following format: 
+Note that items returned by these events are objects of the following format:
 
 ```javascript
 {

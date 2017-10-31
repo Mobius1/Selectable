@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.5
+ * Version: 0.0.6
  *
  */
 (function(root, factory) {
@@ -323,7 +323,7 @@
             var el = item.element;
             if (item.selected) {
                 item.startselected = true;
-                if (!isCmdKey(e)) {
+                if (!isCmdKey(e) && !isShiftKey(e)) {
                     el.classList.remove("ui-selected");
 
                     item.selected = false;
