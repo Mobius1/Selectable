@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.7
+ * Version: 0.0.8
  *
  */
 (function(root, factory) {
@@ -26,7 +26,7 @@
      * @type {Object}
      */
     var defaultConfig = {
-        appendTo: "body",
+        appendTo: document.body,
         autoRefresh: true,
         filter: "*",
         tolerance: "touch",
@@ -225,8 +225,6 @@
             this.container = document.querySelector(this.config.appendTo);
         } else if (this.config.appendTo.nodeName) {
             this.container = this.config.appendTo;
-        } else {
-            this.container = document.body;
         }
 
         this.refresh();

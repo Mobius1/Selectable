@@ -1,9 +1,11 @@
-# Selectable [![npm version](https://badge.fury.io/js/mobius1-selectable.svg)](https://badge.fury.io/js/mobius1-selectable) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
+# Selectable
+[![npm version](https://badge.fury.io/js/mobius1-selectable.svg)](https://badge.fury.io/js/mobius1-selectable) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Percentage of issues still open") ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js) ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped)
+
 This is a conversion of the jQuery UI Selectable plugin with all dependencies removed. Functionality and options are identical to the jQuery UI version with some additions.
 
 Selectable mimics the Windows file / directory behaviour, i.e. click and / or drag to select items, hold CTRL to select multiple or hold SHIFT to select consecutive groups of items.
 
-[Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
+## [Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
 
 ---
 
@@ -37,51 +39,28 @@ You can replace `latest` with the required release number if needed.
 
 ---
 
-Initialise the plugin
+Initialise the plugin:
 
 ```javascript
-new Selectable({
-	/**
-	 * The elements that can be selected (CSS3 selector)
-	 * @type {string}
-	 */
-	filter: ".some-class",
-
-	/**
-	 * The container element to append the lasso to
-	 * @type {string or HTMLElement}
-	 */
-	appendTo: ".my-container", // or document.querySelector(".my-container")
-
-	/**
-	 * How far the lasso overlaps an element before it is highlighted
-	 * "fit" (lasso overlaps the item entirely) or "touch" (lasso overlaps the item by any amount).
-	 * @type {string}
-	 */
-	tolerance: "touch",
-
-	/**
-	 * Recalculate coords of the items. Disable if you have a shit-ton of items.
-	 * @type {boolean}
-	 */
-	autoRefresh: true,
-
-	/**
-	 * Style the lasso.
-	 * @type {object}
-	 */
-	lasso: {
-		border: '1px solid #3498db',
-		backgroundColor: 'rgba(52, 152, 219, 0.2)',
-	}
-});
+const selectable = new Selectable(options);
 ```
+---
+
+## Options
+
+| Option        | Type            | Default         | Effect                                                                                                                                                          |
+|---------------|-----------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `filter`      | `string|array`  | `"*"`           | The elements that can be selected. You can pass either a CSS3 selector string or a collection of nodes.                                                         |
+| `appendTo`    | `string|object` | `document.body` | The container element to append the lasso to.                                                                                                                   |
+| `tolerance`   | `string`        | `touch`         | How far the lasso overlaps an element before it's highlighted. `"fit"` (lasso overlaps the item entirely) or `"touch"` (lasso overlaps the item by any amount). |
+| `autoRefresh` | `boolean`       | `true`          | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
+| `lasso`       | `object`        |                 | Style the lasso. Must be an object of valid CSS declarations.                                                                                                   |
 
 ## Events
 
 ```javascript
 // Intitialise Selectable
-var selectable = new Selectable(options);
+const selectable = new Selectable(options);
 
 // Listen for the 'selectable.XXXX' event
 selectable.on('selectable.XXXX', function() {
@@ -133,11 +112,12 @@ Note that items returned by these events are objects of the following format:
 ```javascript
 {
     element: HTMLElement, // the element
-    rect: DOMRect object, // the element's bounding rects
-    startselected: boolean,
-    selected: boolean, // is the item currently selected
-    selecting: boolean, // is the item currently being selected
-    unselecting: boolean // is the item currently being deselected
+    index: Numbe,r // the position of the item in the list
+    rect: DOMRect Object, // the element's bounding rects
+    startselected: Boolean,
+    selected: Boolean, // is the item currently selected
+    selecting: Boolean, // is the item currently being selected
+    unselecting: Boolean // is the item currently being deselected
 }
 ```
 
