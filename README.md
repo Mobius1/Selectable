@@ -5,6 +5,8 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 [Demo](http://codepen.io/Mobius1/full/qRxaqQ/)
 
+---
+
 ## Install
 
 ### Bower
@@ -17,13 +19,23 @@ bower install mobius1-selectable --save
 npm install mobius1-selectable --save
 ```
 
-## Quick Start
+---
 
-Include the JS file:
+### Browser
 
-```html
-<script type="text/javascript" src="path/to/selectable.min.js"></script>
+Grab the files from one of the CDNs and include them in your page:
+
 ```
+https://unpkg.com/mobius1-selectable@latest/selectable.min.js
+
+//or
+
+https://cdn.jsdelivr.net/npm/mobius1-selectable@latest/selectable.min.js
+```
+
+You can replace `latest` with the required release number if needed.
+
+---
 
 Initialise the plugin
 

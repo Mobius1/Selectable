@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.6b
+ * Version: 0.0.7
  *
  */
 (function(root, factory) {
@@ -197,7 +197,7 @@
     /* SELECTABLE */
     function Selectable(options) {
 
-        this.options = extend(defaultConfig, options);
+        this.config = extend(defaultConfig, options);
 
         /* Enable emitter */
         Emitter.mixin(this);
@@ -215,16 +215,16 @@
         lasso.className = 'ui-lasso';
         lasso.style.position = "fixed";
 
-        each(this.options.lasso, function(val, prop) {
+        each(this.config.lasso, function(val, prop) {
             lasso.style[prop] = val;
         });
 
         this.lasso = lasso;
 
-        if (typeof this.options.appendTo === 'string' || this.options.appendTo instanceof String) {
-            this.container = document.querySelector(this.options.appendTo);
-        } else if (this.options.appendTo.nodeName) {
-            this.container = this.options.appendTo;
+        if (typeof this.config.appendTo === 'string' || this.config.appendTo instanceof String) {
+            this.container = document.querySelector(this.config.appendTo);
+        } else if (this.config.appendTo.nodeName) {
+            this.container = this.config.appendTo;
         } else {
             this.container = document.body;
         }
@@ -250,7 +250,7 @@
 
     Selectable.prototype.refresh = function() {
         var that = this;
-        this.nodes = this.container.querySelectorAll(this.options.selector);
+        this.nodes = this.container.querySelectorAll(this.config.filter);
         this.items = [];
 
         each(this.nodes, function(elem, i) {
@@ -272,9 +272,9 @@
 
     Selectable.prototype.mousedown = function(e) {
         preventDefault(e);
-        var o = this.options,
+        var o = this.config,
             originalEl, tgt = e.target;
-        var validEl = tgt.classList.contains(o.selector.replace('.', ''));
+        var validEl = tgt.classList.contains(o.filter.replace('.', ''));
 
         this.container.appendChild(this.lasso);
 
@@ -347,7 +347,7 @@
     Selectable.prototype.mousemove = function(e) {
         if (!this.dragging) return;
 
-        var o = this.options;
+        var o = this.config;
         if (o.disabled) {
             return;
         }
