@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.9
+ * Version: 0.0.9.1
  *
  */
 (function(root, factory) {
@@ -227,7 +227,7 @@
             this.container = this.config.appendTo;
         }
 
-        this.refresh();
+        this.update();
 
         this.enable()
     };
@@ -285,7 +285,7 @@
         }
 
         if (o.autoRefresh) {
-            this.refresh();
+            this.update();
         }
 
         if (isShiftKey(e)) {
@@ -480,14 +480,14 @@
      * @return {Boolean}
      */
     Selectable.prototype.selectItem = function(item) {
-    	if ( this.items.indexOf(item) >= 0 ) {
-	        item.element.classList.remove("ui-selecting");
-	        item.element.classList.add("ui-selected")
-	        item.selecting = false;
-	        item.selected = item.startselected = true;
+        if (this.items.indexOf(item) >= 0) {
+            item.element.classList.remove("ui-selecting");
+            item.element.classList.add("ui-selected")
+            item.selecting = false;
+            item.selected = item.startselected = true;
 
-	        this.selectedItems.push(item);
-	        return this.emit('selectable.selected', item);
+            this.selectedItems.push(item);
+            return this.emit('selectable.selected', item);
         }
 
         return false;
@@ -499,16 +499,16 @@
      * @return {Boolean}
      */
     Selectable.prototype.deselectItem = function(item) {
-    	if ( this.items.indexOf(item) >= 0 ) {
-	        item.selecting = item.selected = item.unselecting = item.startselected = false;
+        if (this.items.indexOf(item) >= 0) {
+            item.selecting = item.selected = item.unselecting = item.startselected = false;
 
-	        item.element.classList.remove("ui-unselecting");
-	        item.element.classList.remove("ui-selecting");
-	        item.element.classList.remove("ui-selected");
+            item.element.classList.remove("ui-unselecting");
+            item.element.classList.remove("ui-selecting");
+            item.element.classList.remove("ui-selected");
 
-	        this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
+            this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 
-        	return  this.emit('selectable.deselected', item);
+            return this.emit('selectable.deselected', item);
         }
 
         return false;
@@ -553,7 +553,7 @@
                 mousedown: this.mousedown.bind(this),
                 mousemove: this.mousemove.bind(this),
                 mouseup: this.mouseup.bind(this),
-                update: debounce(this.update, 50).bind(this)
+                recalculate: debounce(this.recalculate, 50).bind(this)
             };
 
             // Attach event listeners
@@ -561,8 +561,8 @@
             on(document, 'mousemove', this.events.mousemove);
             on(document, 'mouseup', this.events.mouseup);
 
-            on(window, 'resize', this.events.update);
-            on(window, 'scroll', this.events.update);
+            on(window, 'resize', this.events.recalculate);
+            on(window, 'scroll', this.events.recalculate);
         }
 
         return this.enabled;
@@ -580,8 +580,8 @@
             off(document, 'mousemove', this.events.mousemove);
             off(document, 'mouseup', this.events.mouseup);
 
-            off(window, 'resize', this.events.update);
-            off(window, 'scroll', this.events.update);
+            off(window, 'resize', this.events.recalculate);
+            off(window, 'scroll', this.events.recalculate);
         }
 
         return this.enabled;
