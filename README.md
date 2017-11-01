@@ -50,8 +50,8 @@ const selectable = new Selectable(options);
 
 | Option        | Type            | Default         | Effect                                                                                                                                                          |
 |---------------|-----------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `filter`      | `string|array`  | `"*"`           | The elements that can be selected. You can pass either a CSS3 selector string or a collection of nodes.                                                         |
-| `appendTo`    | `string|object` | `document.body` | The container element to append the lasso to.                                                                                                                   |
+| `filter`      | `string`|`array`  | `"*"`           | The elements that can be selected. You can pass either a CSS3 selector string or a collection of nodes.                                                         |
+| `appendTo`    | `string`|`object` | `document.body` | The container element to append the lasso to.                                                                                                                   |
 | `tolerance`   | `string`        | `touch`         | How far the lasso overlaps an element before it's highlighted. `"fit"` (lasso overlaps the item entirely) or `"touch"` (lasso overlaps the item by any amount). |
 | `autoRefresh` | `boolean`       | `true`          | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
 | `lasso`       | `object`        |                 | Style the lasso. Must be an object of valid CSS declarations.                                                                                                   |
