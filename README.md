@@ -56,6 +56,46 @@ const selectable = new Selectable(options);
 | `autoRefresh` | `boolean`       | `true`          | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
 | `lasso`       | `object`        |                 | Style the lasso. Must be an object of valid CSS declarations.                                                                                                   |
 
+---
+
+## Public Methods
+
+### destroy()
+Destroy the instance. This will return the DOM to it's initial state before initialsing.
+
+### init()
+Initialise the instance after destroying.
+
+### disable()
+Disable the instance. Removes all event listeners to prevent further selection / deselection.
+
+### enable()
+Enable the instance.
+
+### update()
+Updates the instance.
+
+Can be used if new items are added or old ones removed. All item coords are updated as well.
+
+### recalculate()
+Recalculates the coords for all valid items.
+
+If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly.
+
+### selectItem(item)
+Select an item.
+
+### deselectItem(item)
+Deselect an item.
+
+### selectAll()
+Select all valid items.
+
+### clear()
+Deselects all valid items.
+
+---
+
 ## Events
 
 ```javascript

@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.8
+ * Version: 0.0.9
  *
  */
 (function(root, factory) {
@@ -229,24 +229,14 @@
 
         this.refresh();
 
-        // Bind events
-        this.events = {
-            mousedown: this.mousedown.bind(this),
-            mousemove: this.mousemove.bind(this),
-            mouseup: this.mouseup.bind(this),
-            update: debounce(this.update, 50).bind(this)
-        };
-
-        // Attach event listeners
-        on(this.container, 'mousedown', this.events.mousedown);
-        on(document, 'mousemove', this.events.mousemove);
-        on(document, 'mouseup', this.events.mouseup);
-
-        on(window, 'resize', this.events.update);
-        on(window, 'scroll', this.events.update);
+        this.enable()
     };
 
-    Selectable.prototype.refresh = function() {
+    /**
+     * Update instance
+     * @return {Void}
+     */
+    Selectable.prototype.update = function() {
         var that = this;
         this.nodes = this.container.querySelectorAll(this.config.filter);
         this.items = [];
@@ -268,6 +258,11 @@
         });
     };
 
+    /**
+     * mousedown event listener
+     * @param  {Object} e
+     * @return {Void}
+     */
     Selectable.prototype.mousedown = function(e) {
         preventDefault(e);
         var o = this.config,
@@ -342,6 +337,11 @@
         }
     };
 
+    /**
+     * mousemove event listener
+     * @param  {Object} e
+     * @return {Void}
+     */
     Selectable.prototype.mousemove = function(e) {
         if (!this.dragging) return;
 
@@ -430,6 +430,11 @@
         this.emit('selectable.drag', c);
     };
 
+    /**
+     * mouseup event listener
+     * @param  {Object} e
+     * @return {Void}
+     */
     Selectable.prototype.mouseup = function(e) {
         if (this.dragging) {
             this.dragging = false;
@@ -462,11 +467,6 @@
             if (item.selecting) {
                 that.selectItem(item);
             }
-
-            if (item.selected) {
-                that.selectedItems.push(item);
-                that.emit('selectable.selected', item);
-            }
         });
 
         this.container.removeChild(this.lasso);
@@ -474,17 +474,117 @@
         this.emit('selectable.up', this.selectedItems);
     };
 
+    /**
+     * Select an item
+     * @param  {Object} item
+     * @return {Boolean}
+     */
     Selectable.prototype.selectItem = function(item) {
-        item.element.classList.remove("ui-selecting");
-        item.element.classList.add("ui-selected")
-        item.selecting = false;
-        item.selected = item.startselected = true;
+    	if ( this.items.indexOf(item) >= 0 ) {
+	        item.element.classList.remove("ui-selecting");
+	        item.element.classList.add("ui-selected")
+	        item.selecting = false;
+	        item.selected = item.startselected = true;
+
+	        this.selectedItems.push(item);
+	        return this.emit('selectable.selected', item);
+        }
+
+        return false;
     };
 
-    Selectable.prototype.update = function() {
+    /**
+     * Deselect an item
+     * @param  {Object} item
+     * @return {Boolean}
+     */
+    Selectable.prototype.deselectItem = function(item) {
+    	if ( this.items.indexOf(item) >= 0 ) {
+	        item.selecting = item.selected = item.unselecting = item.startselected = false;
+
+	        item.element.classList.remove("ui-unselecting");
+	        item.element.classList.remove("ui-selecting");
+	        item.element.classList.remove("ui-selected");
+
+	        this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
+
+        	return  this.emit('selectable.deselected', item);
+        }
+
+        return false;
+    };
+
+    /**
+     * Update item coords
+     * @return {Void}
+     */
+    Selectable.prototype.recalculate = function() {
         each(this.nodes, function(el, i) {
             this.items[i].rect = el.getBoundingClientRect();
         }, this);
+    };
+
+    /**
+     * Select all items
+     * @return {Void}
+     */
+    Selectable.prototype.selectAll = function() {
+        each(this.items, this.selectItem);
+    };
+
+    /**
+     * Deselect all items
+     * @return {Void}
+     */
+    Selectable.prototype.clear = function() {
+        each(this.items, this.deselectItem);
+    };
+
+    /**
+     * Enable instance
+     * @return {Boolean}
+     */
+    Selectable.prototype.enable = function() {
+        if (!this.enabled) {
+            this.enabled = true;
+
+            // Bind events
+            this.events = {
+                mousedown: this.mousedown.bind(this),
+                mousemove: this.mousemove.bind(this),
+                mouseup: this.mouseup.bind(this),
+                update: debounce(this.update, 50).bind(this)
+            };
+
+            // Attach event listeners
+            on(this.container, 'mousedown', this.events.mousedown);
+            on(document, 'mousemove', this.events.mousemove);
+            on(document, 'mouseup', this.events.mouseup);
+
+            on(window, 'resize', this.events.update);
+            on(window, 'scroll', this.events.update);
+        }
+
+        return this.enabled;
+    };
+
+    /**
+     * Disable instance
+     * @return {Boolean}
+     */
+    Selectable.prototype.disable = function() {
+        if (this.enabled) {
+            this.enabled = false;
+
+            off(this.container, 'mousedown', this.events.mousedown);
+            off(document, 'mousemove', this.events.mousemove);
+            off(document, 'mouseup', this.events.mouseup);
+
+            off(window, 'resize', this.events.update);
+            off(window, 'scroll', this.events.update);
+        }
+
+        return this.enabled;
     };
 
     /**
@@ -495,19 +595,12 @@
 
         each(this.items, function(item) {
             var el = item.element;
-
             el.classList.remove("ui-unselecting");
             el.classList.remove("ui-selecting");
             el.classList.remove("ui-selected");
         });
 
-        off(this.container, 'mousedown', this.events.mousedown);
-        off(document, 'mousemove', this.events.mousemove);
-        off(document, 'mouseup', this.events.mouseup);
-
-        off(window, 'resize', this.events.update);
-        off(window, 'scroll', this.events.update);
-
+        this.disable();
     };
 
     return Selectable;
