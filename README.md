@@ -50,11 +50,11 @@ const selectable = new Selectable(options);
 
 | Option        | Type                 | Default         | Required | Effect                                                                                                                                                          |
 |---------------|----------------------|-----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `filter`      | `string` or `array`  | `"*"`           | &#9745;      | The elements that can be selected. You can pass either a CSS3 selector string or a collection of nodes.                                                         |
-| `appendTo`    | `string` or `object` | `document.body` | &#9744;      | The container element to append the lasso to.                                                                                                                   |
-| `tolerance`   | `string`             | `touch`         | &#9744;      | How far the lasso overlaps an element before it's highlighted. `"fit"` (lasso overlaps the item entirely) or `"touch"` (lasso overlaps the item by any amount). |
-| `autoRefresh` | `boolean`            | `true`          | &#9744;      | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
-| `lasso`       | `object`             |                 | &#9744;      | Style the lasso. Must be an object of valid CSS declarations.                                                                                                   |
+| `filter`      | `string` or `array`  | `"*"`           | &#x2714;      | The elements that can be selected. You can pass either a CSS3 selector string or a collection of nodes.                                                         |
+| `appendTo`    | `string` or `object` | `document.body` | &#x2716;      | The container element to append the lasso to.                                                                                                                   |
+| `tolerance`   | `string`             | `touch`         | &#x2716;      | How far the lasso overlaps an element before it's highlighted. `"fit"` (lasso overlaps the item entirely) or `"touch"` (lasso overlaps the item by any amount). |
+| `autoRefresh` | `boolean`            | `true`          | &#x2716;      | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
+| `lasso`       | `object`             |                 | &#x2716;      | Style the lasso. Must be an object of valid CSS declarations.                                                                                                   |
 
 ---
 
