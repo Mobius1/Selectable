@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.10
+ * Version: 0.0.11
  *
  */
 (function(root, factory) {
@@ -487,6 +487,7 @@
             item.selected = item.startselected = true;
 
             this.selectedItems.push(item);
+
             return this.emit('selectable.selected', item);
         }
 
@@ -529,6 +530,7 @@
      * @return {Void}
      */
     Selectable.prototype.selectAll = function() {
+        this.selectedItems = [];
         each(this.items, function(item) {
             this.selectItem(item);
         }, this);
