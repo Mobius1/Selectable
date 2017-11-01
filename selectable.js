@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.6
+ * Version: 0.0.6b
  *
  */
 (function(root, factory) {
@@ -14,11 +14,11 @@
     if (typeof exports === "object") {
         module.exports = factory(plugin);
     } else if (typeof define === "function" && define.amd) {
-        define([], factory(plugin));
+        define([], factory);
     } else {
         root[plugin] = factory(plugin);
     }
-})(typeof global !== 'undefined' ? global : this.window || this.global, function(plugin) {
+})(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
     /**
