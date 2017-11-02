@@ -27,13 +27,14 @@ npm install mobius1-selectable --save
 
 ### Browser
 
-Grab the files from one of the CDNs and include them in your page:
+Grab the file from one of the CDNs and include it in your page:
 
 ```
 https://unpkg.com/mobius1-selectable@latest/selectable.min.js
+```
+or
 
-//or
-
+```
 https://cdn.jsdelivr.net/npm/mobius1-selectable@latest/selectable.min.js
 ```
 
