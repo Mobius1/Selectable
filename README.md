@@ -5,6 +5,8 @@ Inspired by the jQuery UI Selectable plugin. Functionality and options are ident
 
 Selectable mimics the Windows file / directory behaviour, i.e. click and / or drag to select items, hold CTRL to select multiple or hold SHIFT to select consecutive groups of items.
 
+Works in most modern browsers including IE9+.
+
 ## [Demo](http://codepen.io/Mobius1/debug/qRxaqQ/) | [Changelog](https://github.com/Mobius1/Selectable/releases)
 
 ---
