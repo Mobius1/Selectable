@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.1.2
+ * Version: 0.2.0
  *
  */
 (function(root, factory) {
@@ -286,6 +286,8 @@
             this.container = this.config.appendTo;
         }
 
+        this.selectedItems = [];
+
         this.update();
 
         this.enable()
@@ -299,7 +301,7 @@
         var that = this,
             o = this.config;
         this.nodes = this.container.querySelectorAll(o.filter);
-        this.items = this.selectedItems = [];
+        this.items = [];
 
         each(this.nodes, function(el, i) {
             classList.add(el, that.config.classes.selectable);
@@ -503,8 +505,6 @@
 
         var that = this;
 
-        this.selectedItems = [];
-
         css(this.lasso, {
             opacity: 0,
             left: 0,
@@ -517,9 +517,7 @@
             var el = item.element;
 
             if (item.unselecting) {
-                classList.remove(el, that.config.classes.unselecting);
-                item.unselecting = false;
-                item.startselected = false;
+                that.deselectItem(item);
             }
 
             if (item.selecting) {
@@ -603,9 +601,28 @@
      * @return {Void}
      */
     Selectable.prototype.clear = function() {
-        each(this.items, function(item) {
+        each(this.selectedItems, function(item) {
             this.deselectItem(item);
         }, this);
+        this.selectedItems = [];
+    };
+
+    /**
+     * Get all selected items
+     * @return {Array}
+     */
+    Selectable.prototype.getSelectedItems = function() {
+        return this.selectedItems;
+    };
+
+    /**
+     * Get all selected nodes
+     * @return {Array}
+     */
+    Selectable.prototype.getSelectedNodes = function() {
+        return this.selectedItems.map(function(item) {
+            return item.element;
+        });
     };
 
     /**
