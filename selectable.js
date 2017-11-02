@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.1.0
+ * Version: 0.1.1
  *
  */
 (function(root, factory) {
@@ -178,12 +178,38 @@
     }
 
     /**
-     * preventDefault
-     * @param  {Object} e Event interface
-     * @return {Boolean}
+     * classList shim
+     * @type {Object}
      */
-    var preventDefault = function(e) {
-        return e = e || window.event, e.preventDefault ? e.preventDefault() : e.returnValue = !1
+    var classList = {
+        add: function(s, a) {
+            if (s.classList) {
+                s.classList.add(a);
+            } else {
+                if (!classList.contains(s, a)) {
+                    s.className = s.className.trim() + " " + a;
+                }
+            }
+        },
+        remove: function(s, a) {
+            if (s.classList) {
+                s.classList.remove(a);
+            } else {
+                if (classList.contains(s, a)) {
+                    s.className = s.className.replace(
+                        new RegExp("(^|\\s)" + a.split(" ").join("|") + "(\\s|$)", "gi"),
+                        " "
+                    );
+                }
+            }
+        },
+        contains: function(s, a) {
+            if (s)
+                return s.classList ?
+                    s.classList.contains(a) :
+                    !!s.className &&
+                    !!s.className.match(new RegExp("(\\s|^)" + a + "(\\s|$)"));
+        }
     };
 
     /**
@@ -260,7 +286,7 @@
             this.container = this.config.appendTo;
         }
 
-        this.container.classList.add(this.config.classes.container);
+        classList.add(this.container, this.config.classes.container);
 
         this.update();
 
@@ -272,24 +298,21 @@
      * @return {Void}
      */
     Selectable.prototype.update = function() {
-        var that = this;
-        this.nodes = this.container.querySelectorAll(this.config.filter);
+        var that = this,
+            o = this.config;
+        this.nodes = this.container.querySelectorAll(o.filter);
         this.items = this.selectedItems = [];
 
-        each(this.nodes, function(elem, i) {
-            elem.classList.add(that.config.classes.selectable);
+        each(this.nodes, function(el, i) {
+            classList.add(el, that.config.classes.selectable);
             that.items[i] = {
                 index: i,
-                element: elem,
-                rect: rect(elem),
+                element: el,
+                rect: rect(el),
                 startselected: false,
-                selected: elem.classList.contains("ui-selected"),
-                selecting: elem.classList.contains("ui-selecting"),
-                unselecting: elem.classList.contains("ui-unselecting")
-            }
-
-            elem.ondragstart = function(e) {
-                preventDefault(e);
+                selected: classList.contains(el, o.classes.selected),
+                selecting: classList.contains(el, o.classes.selecting),
+                unselecting: classList.contains(el, o.classes.unselecting)
             }
         });
     };
@@ -300,10 +323,10 @@
      * @return {Void}
      */
     Selectable.prototype.mousedown = function(e) {
-        preventDefault(e);
+        e.preventDefault();
         var o = this.config,
             originalEl, tgt = e.target;
-        var validEl = tgt.classList.contains(o.filter.replace('.', ''));
+        var validEl = classList.contains(tgt, o.filter.replace('.', ''));
 
         this.container.appendChild(this.lasso);
 
@@ -317,7 +340,7 @@
         }
 
         if (validEl) {
-            tgt.classList.add(o.classes.selecting);
+            classList.add(tgt, o.classes.selecting);
         }
 
         if (o.autoRefresh) {
@@ -352,10 +375,10 @@
             if (item.selected) {
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
-                    el.classList.remove(o.classes.selected);
+                    classList.remove(el, o.classes.selected);
 
                     item.selected = false;
-                    el.classList.add(o.classes.unselecting);
+                    classList.add(el, o.classes.unselecting);
 
                     item.unselecting = true;
                 }
@@ -419,31 +442,31 @@
             }
             if (over) {
                 if (item.selected) {
-                    el.classList.remove(o.classes.selected);
+                    classList.remove(el, o.classes.selected);
                     item.selected = false;
                 }
                 if (item.unselecting) {
-                    el.classList.remove(o.classes.unselecting);
+                    classList.remove(el, o.classes.unselecting);
                     item.unselecting = false;
                 }
                 if (!item.selecting) {
-                    el.classList.add(o.classes.selecting);
+                    classList.add(el, o.classes.selecting);
                     item.selecting = true;
                 }
             } else {
                 if (item.selecting) {
                     if (isCmdKey(e) && item.startselected) {
-                        el.classList.remove(o.classes.selecting);
+                        classList.remove(el, o.classes.selecting);
                         item.selecting = false;
 
-                        el.classList.add(o.classes.selected);
+                        classList.add(el, o.classes.selected);
                         item.selected = true;
                     } else {
-                        el.classList.remove(o.classes.selecting);
+                        classList.remove(el, o.classes.selecting);
                         item.selecting = false;
 
                         if (item.startselected) {
-                            el.classList.add(o.classes.unselecting);
+                            classList.add(el, o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -451,10 +474,10 @@
                 if (el.selected) {
                     if (!isCmdKey(e)) {
                         if (!item.startselected) {
-                            el.classList.remove(o.classes.selected);
+                            classList.remove(el, o.classes.selected);
                             item.selected = false;
 
-                            el.classList.add(o.classes.unselecting);
+                            classList.add(el, o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -496,7 +519,7 @@
             var el = item.element;
 
             if (item.unselecting) {
-                el.classList.remove(that.config.classes.unselecting);
+                classList.remove(el, that.config.classes.unselecting);
                 item.unselecting = false;
                 item.startselected = false;
             }
@@ -518,8 +541,10 @@
      */
     Selectable.prototype.selectItem = function(item) {
         if (this.items.indexOf(item) >= 0) {
-            item.element.classList.remove(this.config.classes.selecting);
-            item.element.classList.add(this.config.classes.selected);
+            var el = item.element,
+                o = this.config.classes;
+            classList.remove(el, o.selecting);
+            classList.add(el, o.selected);
             item.selecting = false;
             item.selected = item.startselected = true;
 
@@ -538,11 +563,13 @@
      */
     Selectable.prototype.deselectItem = function(item) {
         if (this.items.indexOf(item) >= 0) {
+            var el = item.element,
+                o = this.config.classes;
             item.selecting = item.selected = item.unselecting = item.startselected = false;
 
-            item.element.classList.remove(this.config.classes.unselecting);
-            item.element.classList.remove(this.config.classes.selecting);
-            item.element.classList.remove(this.config.classes.selected);
+            classList.remove(el, o.unselecting);
+            classList.remove(el, o.selecting);
+            classList.remove(el, o.selected);
 
             this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 
@@ -639,12 +666,12 @@
 
         each(this.items, function(item) {
             var el = item.element;
-            el.classList.remove(o.unselecting);
-            el.classList.remove(o.selecting);
-            el.classList.remove(o.selected);
+            classList.remove(el, o.unselecting);
+            classList.remove(el, o.selecting);
+            classList.remove(el, o.selected);
         });
 
-        this.container.classList.add(o.container);
+        classList.remove(this.container, o.container);
 
         this.disable();
     };
