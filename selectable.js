@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.12
+ * Version: 0.0.13
  *
  */
 (function(root, factory) {
@@ -324,7 +324,7 @@
                 }
 
                 // found a selected item so stop
-                if (this.items[i].selected) {
+                if (found && this.items[i].selected) {
                     break;
                 }
 
