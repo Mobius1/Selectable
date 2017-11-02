@@ -59,57 +59,29 @@ By default the instance will look for any nodes with the `".ui-selectable"` clas
 | `appendTo`    | `string` or `object` | `document.body`    | The container element to append the lasso to.                                                                                                                   |
 | `tolerance`   | `string`             | `touch`            | How far the lasso overlaps an element before it's highlighted. `"fit"` (lasso overlaps the item entirely) or `"touch"` (lasso overlaps the item by any amount). |
 | `autoRefresh` | `boolean`            | `true`             | Recalculate the coords of the items. Set to false if you know the selectable items won't move or change size.                                                   |
-| `lasso`       | `object`             |                    | Style the lasso. Must be an object of valid CSS declarations. [Demo](https://codepen.io/Mobius1/pen/yPYzwq)                                                                                               |
+| `lasso`       | `object`             |                    | Style the lasso. Must be an object of valid CSS declarations. [Demo](https://codepen.io/Mobius1/pen/yPYzwq)                                                     |
 
 ---
 
 ## Public Methods
 
-### destroy()
-Destroy the instance. This will return the DOM to it's initial state before initialsing.
+| Method               | Args     | Effect                                                                                                                                                               |
+|----------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `destroy()`          |          | Destroy the instance. This will return the DOM to it's initial state before initialsing.                                                                             |
+| `init()`             |          | Initialise the instance after destroying.                                                                                                                            |
+| `disable()`          |          | Disable the instance. Removes all event listeners to prevent further selection / deselection.                                                                        |
+| `enable()`           |          | Enable the instance.                                                                                                                                                 |
+| `update()`           |          | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
+| `recalculate()`      |          | Recalculates the coords for all valid items. If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly. |
+| `selectItem()`       | `Object` | Select an item.                                                                                                                                                      |
+| `deselectItem()`     | `Object` | Deselect an item.                                                                                                                                                    |
+| `selectAll()`        |          | Select all valid items.                                                                                                                                              |
+| `clear()`            |          | Deselects all valid items.                                                                                                                                           |
+| `getItems()`         |          | Returns an `Array` of all items.                                                                                                                                     |
+| `getNodes()`         |          | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
+| `getSelectedItems()` |          | Returns an `Array` of selected items.                                                                                                                                |
+| `getSelectedNodes()` |          | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
 
-### init()
-Initialise the instance after destroying.
-
-### disable()
-Disable the instance. Removes all event listeners to prevent further selection / deselection.
-
-### enable()
-Enable the instance.
-
-### update()
-Updates the instance.
-
-Can be used if new items are added or old ones removed. All item coords are updated as well.
-
-### recalculate()
-Recalculates the coords for all valid items.
-
-If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly.
-
-### selectItem(item)
-Select an item.
-
-### deselectItem(item)
-Deselect an item.
-
-### selectAll()
-Select all valid items.
-
-### clear()
-Deselects all valid items.
-
-### getItems()
-Returns an `Array` of all items.
-
-### getNodes()
-Returns an `Array` of all `HTMLElement` nodes.
-
-### getSelectedItems()
-Returns an `Array` of selected items.
-
-### getSelectedNodes()
-Returns an `Array` of selected `HTMLElement` nodes.
 
 ---
 
