@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.2
+ * Version: 0.2.3
  *
  */
 (function(root, factory) {
@@ -67,6 +67,10 @@
     function off(el, type, callback) {
         el.removeEventListener(type, callback);
     }
+
+    var closest = function(el, fn) {
+        return el && el !== document.body && (fn(el) ? el : closest(el.parentNode, fn));
+    };
 
     /**
      * Check is item is object
@@ -325,8 +329,11 @@
     Selectable.prototype.mousedown = function(e) {
         e.preventDefault();
         var o = this.config,
-            originalEl, tgt = e.target;
-        var validEl = classList.contains(tgt, o.filter.replace('.', ''));
+            originalEl;
+
+        var validEl = closest(e.target, function(el) {
+            return classList.contains(el, o.filter.replace('.', ''));
+        });
 
         this.container.appendChild(this.lasso);
 
@@ -340,7 +347,7 @@
         }
 
         if (validEl) {
-            classList.add(tgt, o.classes.selecting);
+            classList.add(validEl, o.classes.selecting);
         }
 
         if (o.autoRefresh) {
@@ -372,7 +379,7 @@
 
         each(this.items, function(item) {
             var el = item.element;
-            if (item.selected) {
+            if (item.selected && el !== validEl) {
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
                     classList.remove(el, o.classes.selected);
@@ -382,7 +389,7 @@
                     item.unselecting = true;
                 }
             }
-            if (el === tgt) {
+            if (el === validEl) {
                 originalEl = item;
             }
         });
