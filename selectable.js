@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.4
+ * Version: 0.2.5
  *
  */
 (function(root, factory) {
@@ -290,8 +290,6 @@
             this.container = this.config.appendTo;
         }
 
-        this.selectedItems = [];
-
         this.update();
 
         this.enable()
@@ -533,7 +531,7 @@
 
         this.container.removeChild(this.lasso);
 
-        this.emit('selectable.up', this.selectedItems);
+        this.emit('selectable.up', this.getSelectedItems());
     };
 
     /**
@@ -542,7 +540,7 @@
      * @return {Boolean}
      */
     Selectable.prototype.selectItem = function(item) {
-        if (this.items.indexOf(item) >= 0 && this.selectedItems.indexOf(item) < 0) {
+        if (this.items.indexOf(item) >= 0) {
             var el = item.element,
                 o = this.config.classes;
 
@@ -552,8 +550,6 @@
             item.selecting = false;
             item.selected = true;
             item.startselected = true;
-
-            this.selectedItems.push(item);
 
             return this.emit('selectable.selected', item);
         }
@@ -579,8 +575,6 @@
             classList.remove(el, o.unselecting);
             classList.remove(el, o.selecting);
             classList.remove(el, o.selected);
-
-            this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 
             return this.emit('selectable.deselected', item);
         }
@@ -623,7 +617,9 @@
      * @return {Array}
      */
     Selectable.prototype.getSelectedItems = function() {
-        return this.selectedItems;
+        return this.items.filter(function(item) {
+            return item.selected;
+        });
     };
 
     /**
@@ -631,7 +627,7 @@
      * @return {Array}
      */
     Selectable.prototype.getSelectedNodes = function() {
-        return this.selectedItems.map(function(item) {
+        return this.getSelectedItems().map(function(item) {
             return item.element;
         });
     };
