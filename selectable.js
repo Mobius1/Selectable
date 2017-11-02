@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.13
+ * Version: 0.1.0
  *
  */
 (function(root, factory) {
@@ -28,12 +28,20 @@
     var defaultConfig = {
         appendTo: document.body,
         autoRefresh: true,
-        filter: "*",
+        filter: ".ui-selectable",
         tolerance: "touch",
 
         lasso: {
             border: '1px solid #3498db',
             backgroundColor: 'rgba(52, 152, 219, 0.2)',
+        },
+
+        classes: {
+            container: "ui-container",
+            selectable: "ui-selectable",
+            selecting: "ui-selecting",
+            unselecting: "ui-unselecting",
+            selected: "ui-selected",
         }
     };
 
@@ -252,6 +260,8 @@
             this.container = this.config.appendTo;
         }
 
+        this.container.classList.add(this.config.classes.container);
+
         this.update();
 
         this.enable()
@@ -267,6 +277,7 @@
         this.items = this.selectedItems = [];
 
         each(this.nodes, function(elem, i) {
+            elem.classList.add(that.config.classes.selectable);
             that.items[i] = {
                 index: i,
                 element: elem,
@@ -306,7 +317,7 @@
         }
 
         if (validEl) {
-            tgt.classList.add('ui-selecting');
+            tgt.classList.add(o.classes.selecting);
         }
 
         if (o.autoRefresh) {
@@ -341,10 +352,10 @@
             if (item.selected) {
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
-                    el.classList.remove("ui-selected");
+                    el.classList.remove(o.classes.selected);
 
                     item.selected = false;
-                    el.classList.add("ui-unselecting");
+                    el.classList.add(o.classes.unselecting);
 
                     item.unselecting = true;
                 }
@@ -408,31 +419,31 @@
             }
             if (over) {
                 if (item.selected) {
-                    el.classList.remove("ui-selected");
+                    el.classList.remove(o.classes.selected);
                     item.selected = false;
                 }
                 if (item.unselecting) {
-                    el.classList.remove("ui-unselecting");
+                    el.classList.remove(o.classes.unselecting);
                     item.unselecting = false;
                 }
                 if (!item.selecting) {
-                    el.classList.add("ui-selecting");
+                    el.classList.add(o.classes.selecting);
                     item.selecting = true;
                 }
             } else {
                 if (item.selecting) {
                     if (isCmdKey(e) && item.startselected) {
-                        el.classList.remove("ui-selecting");
+                        el.classList.remove(o.classes.selecting);
                         item.selecting = false;
 
-                        el.classList.add("ui-selected");
+                        el.classList.add(o.classes.selected);
                         item.selected = true;
                     } else {
-                        el.classList.remove("ui-selecting");
+                        el.classList.remove(o.classes.selecting);
                         item.selecting = false;
 
                         if (item.startselected) {
-                            el.classList.add("ui-unselecting");
+                            el.classList.add(o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -440,10 +451,10 @@
                 if (el.selected) {
                     if (!isCmdKey(e)) {
                         if (!item.startselected) {
-                            el.classList.remove("ui-selected");
+                            el.classList.remove(o.classes.selected);
                             item.selected = false;
 
-                            el.classList.add("ui-unselecting");
+                            el.classList.add(o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -485,7 +496,7 @@
             var el = item.element;
 
             if (item.unselecting) {
-                el.classList.remove("ui-unselecting");
+                el.classList.remove(that.config.classes.unselecting);
                 item.unselecting = false;
                 item.startselected = false;
             }
@@ -507,8 +518,8 @@
      */
     Selectable.prototype.selectItem = function(item) {
         if (this.items.indexOf(item) >= 0) {
-            item.element.classList.remove("ui-selecting");
-            item.element.classList.add("ui-selected")
+            item.element.classList.remove(this.config.classes.selecting);
+            item.element.classList.add(this.config.classes.selected);
             item.selecting = false;
             item.selected = item.startselected = true;
 
@@ -529,9 +540,9 @@
         if (this.items.indexOf(item) >= 0) {
             item.selecting = item.selected = item.unselecting = item.startselected = false;
 
-            item.element.classList.remove("ui-unselecting");
-            item.element.classList.remove("ui-selecting");
-            item.element.classList.remove("ui-selected");
+            item.element.classList.remove(this.config.classes.unselecting);
+            item.element.classList.remove(this.config.classes.selecting);
+            item.element.classList.remove(this.config.classes.selected);
 
             this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 
@@ -624,13 +635,16 @@
      * @return {void}
      */
     Selectable.prototype.destroy = function() {
+        var o = this.config.classes;
 
         each(this.items, function(item) {
             var el = item.element;
-            el.classList.remove("ui-unselecting");
-            el.classList.remove("ui-selecting");
-            el.classList.remove("ui-selected");
+            el.classList.remove(o.unselecting);
+            el.classList.remove(o.selecting);
+            el.classList.remove(o.selected);
         });
+
+        this.container.classList.add(o.container);
 
         this.disable();
     };
