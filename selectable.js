@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.3
+ * Version: 0.2.4
  *
  */
 (function(root, factory) {
@@ -331,7 +331,7 @@
         var o = this.config,
             originalEl;
 
-        var validEl = closest(e.target, function(el) {
+        var node = closest(e.target, function(el) {
             return classList.contains(el, o.filter.replace('.', ''));
         });
 
@@ -346,8 +346,8 @@
             return;
         }
 
-        if (validEl) {
-            classList.add(validEl, o.classes.selecting);
+        if (node) {
+            classList.add(node, o.classes.selecting);
         }
 
         if (o.autoRefresh) {
@@ -360,7 +360,7 @@
             // Look back over the items until we find the on we've clicked
             for (var i = this.items.length - 1; i >= 0; i--) {
                 // found the item we clicked
-                if (this.items[i].element === e.target) {
+                if (this.items[i].element === node) {
                     found = true;
                 }
 
@@ -379,7 +379,7 @@
 
         each(this.items, function(item) {
             var el = item.element;
-            if (item.selected && el !== validEl) {
+            if (item.selected && el !== node) {
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
                     classList.remove(el, o.classes.selected);
@@ -389,14 +389,14 @@
                     item.unselecting = true;
                 }
             }
-            if (el === validEl) {
+            if (el === node) {
                 originalEl = item;
             }
         });
 
         this.dragging = true;
 
-        if (validEl) {
+        if (node) {
             this.emit('selectable.down', originalEl);
         }
     };
