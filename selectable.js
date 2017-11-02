@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.1
+ * Version: 0.2.2
  *
  */
 (function(root, factory) {
@@ -32,7 +32,7 @@
         tolerance: "touch",
 
         lasso: {
-            border: '1px solid #3498db',
+            border: '1px dotted #3498db',
             backgroundColor: 'rgba(52, 152, 219, 0.2)',
         },
 
@@ -376,10 +376,9 @@
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
                     classList.remove(el, o.classes.selected);
-
                     item.selected = false;
-                    classList.add(el, o.classes.unselecting);
 
+                    classList.add(el, o.classes.unselecting);
                     item.unselecting = true;
                 }
             }
@@ -539,10 +538,13 @@
         if (this.items.indexOf(item) >= 0 && this.selectedItems.indexOf(item) < 0) {
             var el = item.element,
                 o = this.config.classes;
+
             classList.remove(el, o.selecting);
             classList.add(el, o.selected);
+
             item.selecting = false;
-            item.selected = item.startselected = true;
+            item.selected = true;
+            item.startselected = true;
 
             this.selectedItems.push(item);
 
@@ -558,10 +560,14 @@
      * @return {Boolean}
      */
     Selectable.prototype.deselectItem = function(item) {
-        if (this.items.indexOf(item) >= 0 && this.selectedItems.indexOf(item) >= 0) {
+        if (this.items.indexOf(item) >= 0) {
             var el = item.element,
                 o = this.config.classes;
-            item.selecting = item.selected = item.unselecting = item.startselected = false;
+
+            item.selecting = false;
+            item.selected = false;
+            item.unselecting = false;
+            item.startselected = false;
 
             classList.remove(el, o.unselecting);
             classList.remove(el, o.selecting);
