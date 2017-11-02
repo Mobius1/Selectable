@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.0
+ * Version: 0.2.1
  *
  */
 (function(root, factory) {
@@ -536,7 +536,7 @@
      * @return {Boolean}
      */
     Selectable.prototype.selectItem = function(item) {
-        if (this.items.indexOf(item) >= 0) {
+        if (this.items.indexOf(item) >= 0 && this.selectedItems.indexOf(item) < 0) {
             var el = item.element,
                 o = this.config.classes;
             classList.remove(el, o.selecting);
@@ -558,7 +558,7 @@
      * @return {Boolean}
      */
     Selectable.prototype.deselectItem = function(item) {
-        if (this.items.indexOf(item) >= 0) {
+        if (this.items.indexOf(item) >= 0 && this.selectedItems.indexOf(item) >= 0) {
             var el = item.element,
                 o = this.config.classes;
             item.selecting = item.selected = item.unselecting = item.startselected = false;
@@ -590,7 +590,6 @@
      * @return {Void}
      */
     Selectable.prototype.selectAll = function() {
-        this.selectedItems = [];
         each(this.items, function(item) {
             this.selectItem(item);
         }, this);
@@ -601,10 +600,9 @@
      * @return {Void}
      */
     Selectable.prototype.clear = function() {
-        each(this.selectedItems, function(item) {
-            this.deselectItem(item);
-        }, this);
-        this.selectedItems = [];
+        for (var i = this.items.length - 1; i >= 0; i--) {
+            this.deselectItem(this.items[i]);
+        };
     };
 
     /**
