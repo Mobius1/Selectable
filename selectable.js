@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.1.1
+ * Version: 0.1.2
  *
  */
 (function(root, factory) {
@@ -285,8 +285,6 @@
         } else if (this.config.appendTo.nodeName) {
             this.container = this.config.appendTo;
         }
-
-        classList.add(this.container, this.config.classes.container);
 
         this.update();
 
@@ -633,6 +631,8 @@
 
             on(window, 'resize', this.events.recalculate);
             on(window, 'scroll', this.events.recalculate);
+
+            classList.add(this.container, this.config.classes.container);
         }
 
         return this.enabled;
@@ -652,6 +652,8 @@
 
             off(window, 'resize', this.events.recalculate);
             off(window, 'scroll', this.events.recalculate);
+
+            classList.remove(this.container, this.config.classes.container);
         }
 
         return this.enabled;
@@ -670,8 +672,6 @@
             classList.remove(el, o.selecting);
             classList.remove(el, o.selected);
         });
-
-        classList.remove(this.container, o.container);
 
         this.disable();
     };
