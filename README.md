@@ -99,6 +99,12 @@ Select all valid items.
 ### clear()
 Deselects all valid items.
 
+### getItems()
+Returns an `Array` of all items.
+
+### getNodes()
+Returns an `Array` of all `HTMLElement` nodes.
+
 ### getSelectedItems()
 Returns an `Array` of selected items.
 

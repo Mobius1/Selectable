@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.2.5
+ * Version: 0.3.0
  *
  */
 (function(root, factory) {
@@ -275,19 +275,20 @@
      * @return {void}
      */
     Selectable.prototype.init = function() {
+        var o = this.config;
         /* lasso */
         this.lasso = document.createElement('div');
         this.lasso.className = 'ui-lasso';
 
         css(this.lasso, extend({
             position: "fixed",
-            opacity: 0, // border will show event at zero width / height
-        }, this.config.lasso));
+            opacity: 0, // border will show even at zero width / height
+        }, o.lasso));
 
-        if (typeof this.config.appendTo === 'string' || this.config.appendTo instanceof String) {
-            this.container = document.querySelector(this.config.appendTo);
-        } else if (this.config.appendTo.nodeName) {
-            this.container = this.config.appendTo;
+        if (typeof o.appendTo === 'string' || o.appendTo instanceof String) {
+            this.container = document.querySelector(o.appendTo);
+        } else if (o.appendTo.nodeName) {
+            this.container = o.appendTo;
         }
 
         this.update();
@@ -302,11 +303,12 @@
     Selectable.prototype.update = function() {
         var that = this,
             o = this.config;
+
         this.nodes = this.container.querySelectorAll(o.filter);
         this.items = [];
 
         each(this.nodes, function(el, i) {
-            classList.add(el, that.config.classes.selectable);
+            classList.add(el, o.classes.selectable);
             that.items[i] = {
                 index: i,
                 element: el,
@@ -326,11 +328,11 @@
      */
     Selectable.prototype.mousedown = function(e) {
         e.preventDefault();
+
         var o = this.config,
             originalEl;
-
         var node = closest(e.target, function(el) {
-            return classList.contains(el, o.filter.replace('.', ''));
+            return classList.contains(el, o.filter.replace(".", ""));
         });
 
         this.container.appendChild(this.lasso);
@@ -613,11 +615,29 @@
     };
 
     /**
+     * Get all items
+     * @return {Array}
+     */
+    Selectable.prototype.getItems = function() {
+        return this.items;
+    };
+
+    /**
+     * Get all nodes
+     * @return {Array}
+     */
+    Selectable.prototype.getNodes = function() {
+        return this.items.map(function(item) {
+            return item.element;
+        });
+    };
+
+    /**
      * Get all selected items
      * @return {Array}
      */
     Selectable.prototype.getSelectedItems = function() {
-        return this.items.filter(function(item) {
+        return this.getItems().filter(function(item) {
             return item.selected;
         });
     };
@@ -641,7 +661,7 @@
             this.enabled = true;
 
             // Bind events
-            this.events = {
+            var e = {
                 mousedown: this.mousedown.bind(this),
                 mousemove: this.mousemove.bind(this),
                 mouseup: this.mouseup.bind(this),
@@ -649,12 +669,14 @@
             };
 
             // Attach event listeners
-            on(this.container, 'mousedown', this.events.mousedown);
-            on(document, 'mousemove', this.events.mousemove);
-            on(document, 'mouseup', this.events.mouseup);
+            on(this.container, 'mousedown', e.mousedown);
+            on(document, 'mousemove', e.mousemove);
+            on(document, 'mouseup', e.mouseup);
 
-            on(window, 'resize', this.events.recalculate);
-            on(window, 'scroll', this.events.recalculate);
+            on(window, 'resize', e.recalculate);
+            on(window, 'scroll', e.recalculate);
+
+            this.events = e;
 
             classList.add(this.container, this.config.classes.container);
         }
@@ -668,14 +690,15 @@
      */
     Selectable.prototype.disable = function() {
         if (this.enabled) {
+            var e = this.events;
             this.enabled = false;
 
-            off(this.container, 'mousedown', this.events.mousedown);
-            off(document, 'mousemove', this.events.mousemove);
-            off(document, 'mouseup', this.events.mouseup);
+            off(this.container, 'mousedown', e.mousedown);
+            off(document, 'mousemove', e.mousemove);
+            off(document, 'mouseup', e.mouseup);
 
-            off(window, 'resize', this.events.recalculate);
-            off(window, 'scroll', this.events.recalculate);
+            off(window, 'resize', e.recalculate);
+            off(window, 'scroll', e.recalculate);
 
             classList.remove(this.container, this.config.classes.container);
         }
