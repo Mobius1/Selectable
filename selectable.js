@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.0.11
+ * Version: 0.0.12
  *
  */
 (function(root, factory) {
@@ -112,59 +112,86 @@
     };
 
     /**
-     * Emulate jQuery's css method
-     * @param  {Object} el   HTMLElement
-     * @param  {(Object|String)} prop Object of CSS properties and values or CSS propery string
-     * @param  {Object} val CSS property value
-     * @return {Object|Void}
+     * Mass assign style properties
+     * @param  {Object} t
+     * @param  {(String|Object)} e
+     * @param  {String|Object}
      */
-    var css = function(el, prop, val) {
-        var style = el && el.style,
-            isObj = isObject(prop);
+    var css = function(i, t, e) {
+        var n = i && i.style,
+            o = isObject(t);
+        if (n) {
+            if (void 0 === e && !o) return e = window.getComputedStyle(i, ""), void 0 === t ? e : e[t];
+            o ? each(t, function(i, t) {
+                t in n || (t = "-webkit-" + t), n[t] = i + ("string" == typeof i ? "" : "opacity" === t ? "" : "px")
+            }) : (t in n || (t = "-webkit-" + t), n[t] = e + ("string" == typeof e ? "" : "opacity" === t ? "" : "px"))
+        }
+    };
 
-        if (style) {
-            if (val === void 0 && !isObj) {
-                val = window.getComputedStyle(el, '');
-                return prop === void 0 ? val : val[prop];
-            } else {
-                if (isObj) {
-                    each(prop, function(v, p) {
-                        if (!(p in style)) {
-                            p = '-webkit-' + p;
-                        }
-                        style[p] = v + (typeof v === 'string' ? '' : p === "opacity" ? "" : "px");
-                    });
-                } else {
-                    if (!(prop in style)) {
-                        prop = '-webkit-' + prop;
-                    }
-                    style[prop] = val + (typeof val === 'string' ? '' : prop === "opacity" ? "" : "px");
-                }
-            }
+    /**
+     * Get an element's DOMRect relative to the document instead of the viewport.
+     * @param  {Object} t   HTMLElement
+     * @param  {Boolean} e  Include margins
+     * @return {Object}     Formatted DOMRect copy
+     */
+    var rect = function(e) {
+        var w = window,
+            o = e.getBoundingClientRect(),
+            b = document.documentElement || document.body.parentNode || document.body,
+            d = (void 0 !== w.pageXOffset) ? w.pageXOffset : b.scrollLeft,
+            n = (void 0 !== w.pageYOffset) ? w.pageYOffset : b.scrollTop;
+        return {
+            x1: o.left + d,
+            x2: o.left + o.width + d,
+            y1: o.top + n,
+            y2: o.top + o.height + n,
+            height: o.height,
+            width: o.width
+        }
+    };
+
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not be triggered.
+     * @param  {Function} fn
+     * @param  {Number} wait
+     * @param  {Boolean} now
+     * @return {Function}
+     */
+    var debounce = function(n, t, u) {
+        var e;
+        return function() {
+            var i = this,
+                o = arguments,
+                a = u && !e;
+            clearTimeout(e), e = setTimeout(function() {
+                e = null, u || n.apply(i, o)
+            }, t), a && n.apply(i, o)
         }
     }
 
-    var debounce = function(a, b, c) {
-        var d;
-        return function() {
-            var e = this,
-                f = arguments,
-                g = function() {
-                    d = null, c || a.apply(e, f)
-                },
-                h = c && !d;
-            clearTimeout(d), d = setTimeout(g, b), h && a.apply(e, f)
-        }
+    /**
+     * preventDefault
+     * @param  {Object} e Event interface
+     * @return {Boolean}
+     */
+    var preventDefault = function(e) {
+        return e = e || window.event, e.preventDefault ? e.preventDefault() : e.returnValue = !1
     };
 
-    var preventDefault = function(a) {
-        return a = a || window.event, a.preventDefault ? a.preventDefault() : a.returnValue = !1
-    };
-
+    /**
+     * Detect CTRL or META key press
+     * @param  {Object}  e Event interface
+     * @return {Boolean}
+     */
     var isCmdKey = function(e) {
         return !!e.ctrlKey || !!e.metaKey
     };
 
+    /**
+     * Detect SHIFT key press
+     * @param  {Object}  e Event interface
+     * @return {Boolean}
+     */
     var isShiftKey = function(e) {
         return !!e.shiftKey;
     };
@@ -211,15 +238,13 @@
      */
     Selectable.prototype.init = function() {
         /* lasso */
-        var lasso = document.createElement('div');
-        lasso.className = 'ui-lasso';
-        lasso.style.position = "fixed";
+        this.lasso = document.createElement('div');
+        this.lasso.className = 'ui-lasso';
 
-        each(this.config.lasso, function(val, prop) {
-            lasso.style[prop] = val;
-        });
-
-        this.lasso = lasso;
+        css(this.lasso, extend({
+            position: "fixed",
+            opacity: 0, // border will show event at zero width / height
+        }, this.config.lasso));
 
         if (typeof this.config.appendTo === 'string' || this.config.appendTo instanceof String) {
             this.container = document.querySelector(this.config.appendTo);
@@ -245,7 +270,7 @@
             that.items[i] = {
                 index: i,
                 element: elem,
-                rect: elem.getBoundingClientRect(),
+                rect: rect(elem),
                 startselected: false,
                 selected: elem.classList.contains("ui-selected"),
                 selecting: elem.classList.contains("ui-selecting"),
@@ -289,27 +314,26 @@
         }
 
         if (isShiftKey(e)) {
-            var item = false;
-            var items = [];
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].element === e.target) {
-                    item = this.items[i];
-                    break;
-                }
-            };
-
             var found = false;
-            for (var i = item.index; i >= 0; i--) {
-                if (this.items[i].selected) {
+
+            // Look back over the items until we find the on we've clicked
+            for (var i = this.items.length - 1; i >= 0; i--) {
+                // found the item we clicked
+                if (this.items[i].element === e.target) {
                     found = true;
                 }
 
-                if (found && !this.items[i].selected) {
+                // found a selected item so stop
+                if (this.items[i].selected) {
                     break;
                 }
 
-                this.items[i].selecting = true;
-            };
+                // continue selecting items until we find a selected item
+                // or the first item if there aren't any
+                if (found) {
+                    this.items[i].selecting = true;
+                }
+            }
         }
 
         each(this.items, function(item) {
@@ -366,6 +390,7 @@
         }
 
         css(this.lasso, {
+            opacity: 1,
             left: c.x1,
             width: c.x2 - c.x1,
             top: c.y1,
@@ -377,9 +402,9 @@
             var el = item.element;
             var over = false;
             if (o.tolerance == 'touch') {
-                over = !(item.rect.left > c.x2 || (item.rect.right < c.x1 || (item.rect.top > c.y2 || item.rect.bottom < c.y1)));
+                over = !(item.rect.x1 > c.x2 || (item.rect.x2 < c.x1 || (item.rect.y1 > c.y2 || item.rect.y2 < c.y1)));
             } else if (o.tolerance == 'fit') {
-                over = item.rect.left > c.x1 && (item.rect.right < c.x2 && (item.rect.top > c.y1 && item.rect.bottom < c.y2));
+                over = item.rect.x1 > c.x1 && (item.rect.x2 < c.x2 && (item.rect.y1 > c.y1 && item.rect.y2 < c.y2));
             }
             if (over) {
                 if (item.selected) {
@@ -449,6 +474,7 @@
         this.selectedItems = [];
 
         css(this.lasso, {
+            opacity: 0,
             left: 0,
             width: 0,
             top: 0,
@@ -521,7 +547,7 @@
      */
     Selectable.prototype.recalculate = function() {
         each(this.nodes, function(el, i) {
-            this.items[i].rect = el.getBoundingClientRect();
+            this.items[i].rect = rect(el);
         }, this);
     };
 
