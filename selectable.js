@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.3.1
+ * Version: 0.4.0
  *
  */
 (function(root, factory) {
@@ -79,6 +79,15 @@
     var isObject = function(val) {
         return Object.prototype.toString.call(val) === "[object Object]";
     };
+
+    /**
+     * Check is item array or array-like
+     * @param  {Mixed} arr
+     * @return {Boolean}
+     */
+    var isCollection = function(arr) {
+        return Array.isArray(arr) || arr instanceof NodeList || arr instanceof HTMLCollection;
+    }
 
     /**
      * Merge objects (reccursive)
@@ -275,7 +284,8 @@
      * @return {void}
      */
     Selectable.prototype.init = function() {
-        var o = this.config;
+        var that = this,
+            o = this.config;
         /* lasso */
         this.lasso = document.createElement('div');
         this.lasso.className = 'ui-lasso';
@@ -293,7 +303,11 @@
 
         this.update();
 
-        this.enable()
+        this.enable();
+
+        setTimeout(function() {
+            that.emit("init");
+        }, 10);
     };
 
     /**
@@ -307,7 +321,7 @@
         if (o.filter instanceof NodeList || o.filter instanceof HTMLCollection) {
             this.nodes = o.filter;
         } else if (typeof o.filter === "string") {
-            this.nodes = this.container.querySelectorAll(o.filter);
+            this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
         }
 
         this.items = [];
@@ -324,6 +338,8 @@
                 unselecting: classList.contains(el, o.classes.unselecting)
             }
         });
+
+        that.emit("update");
     };
 
     /**
@@ -402,7 +418,7 @@
         this.dragging = true;
 
         if (node) {
-            this.emit('selectable.down', originalEl);
+            this.emit('mousedown', originalEl);
         }
     };
 
@@ -497,7 +513,7 @@
 
         });
 
-        this.emit('selectable.drag', c);
+        this.emit('mousemove', c);
     };
 
     /**
@@ -524,21 +540,24 @@
             height: 0
         });
 
+        var selected = [];
+
         each(this.items, function(item) {
             var el = item.element;
 
             if (item.unselecting) {
-                that.deselectItem(item);
+                that.unselect(item);
             }
 
             if (item.selecting) {
-                that.selectItem(item);
+                selected.push(item);
+                that.select(item);
             }
         });
 
         this.container.removeChild(this.lasso);
 
-        this.emit('selectable.up', this.getSelectedItems());
+        this.emit('mouseup', selected);
     };
 
     /**
@@ -546,8 +565,19 @@
      * @param  {Object} item
      * @return {Boolean}
      */
-    Selectable.prototype.selectItem = function(item) {
-        if (this.items.indexOf(item) >= 0) {
+    Selectable.prototype.select = function(item) {
+
+        if (isCollection(item)) {
+            each(item, function(itm) {
+                this.select(itm);
+            }, this);
+
+            return this.getSelectedItems();
+        }
+
+        item = this.getItem(item);
+
+        if (item) {
             var el = item.element,
                 o = this.config.classes;
 
@@ -558,19 +588,32 @@
             item.selected = true;
             item.startselected = true;
 
-            return this.emit('selectable.selected', item);
+            this.emit('select', item);
+
+            return item;
         }
 
         return false;
     };
 
     /**
-     * Deselect an item
+     * Unselect an item
      * @param  {Object} item
      * @return {Boolean}
      */
-    Selectable.prototype.deselectItem = function(item) {
-        if (this.items.indexOf(item) >= 0) {
+    Selectable.prototype.unselect = function(item) {
+
+        if (isCollection(item)) {
+            each(item, function(itm) {
+                this.unselect(itm);
+            }, this);
+
+            return this.getSelectedItems();
+        }
+
+        item = this.getItem(item);
+
+        if (item) {
             var el = item.element,
                 o = this.config.classes;
 
@@ -583,7 +626,9 @@
             classList.remove(el, o.selecting);
             classList.remove(el, o.selected);
 
-            return this.emit('selectable.deselected', item);
+            this.emit('unselect', item);
+
+            return item;
         }
 
         return false;
@@ -597,6 +642,7 @@
         each(this.nodes, function(el, i) {
             this.items[i].rect = rect(el);
         }, this);
+        this.emit('recalculate');
     };
 
     /**
@@ -605,18 +651,42 @@
      */
     Selectable.prototype.selectAll = function() {
         each(this.items, function(item) {
-            this.selectItem(item);
+            this.select(item);
         }, this);
     };
 
     /**
-     * Deselect all items
+     * Unselect all items
      * @return {Void}
      */
     Selectable.prototype.clear = function() {
         for (var i = this.items.length - 1; i >= 0; i--) {
-            this.deselectItem(this.items[i]);
+            this.unselect(this.items[i]);
         };
+        this.emit('clear');
+    };
+
+    /**
+     * Get an item
+     * @return {Object|Boolean}
+     */
+    Selectable.prototype.getItem = function(item) {
+        var found = false;
+        // item is an index
+        if (!isNaN(item)) {
+            if (this.items.indexOf(this.items[item]) >= 0) {
+                found = this.items[item];
+            }
+        }
+        // item is a node
+        else if (item instanceof Element) {
+            found = this.items[this.nodes.indexOf(item)];
+        }
+        // item is an item
+        else if (isObject(item) && this.items.indexOf(item) >= 0) {
+            found = item;
+        }
+        return found;
     };
 
     /**
@@ -632,9 +702,7 @@
      * @return {Array}
      */
     Selectable.prototype.getNodes = function() {
-        return this.items.map(function(item) {
-            return item.element;
-        });
+        return this.nodes;
     };
 
     /**
@@ -684,6 +752,8 @@
             this.events = e;
 
             classList.add(this.container, this.config.classes.container);
+
+            this.emit('enable');
         }
 
         return this.enabled;
@@ -706,6 +776,8 @@
             off(window, 'scroll', e.recalculate);
 
             classList.remove(this.container, this.config.classes.container);
+
+            this.emit('disable');
         }
 
         return this.enabled;
@@ -720,12 +792,15 @@
 
         each(this.items, function(item) {
             var el = item.element;
+            classList.remove(el, o.selectable);
             classList.remove(el, o.unselecting);
             classList.remove(el, o.selecting);
             classList.remove(el, o.selected);
         });
 
         this.disable();
+
+        this.emit('destroy');
     };
 
     return Selectable;

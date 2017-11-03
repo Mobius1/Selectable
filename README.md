@@ -74,78 +74,8 @@ By default the instance will look for any nodes with the `".ui-selectable"` clas
 
 ## Public Methods
 
-| Method               | Args     | Effect                                                                                                                                                               |
-|----------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `destroy()`          |          | Destroy the instance. This will return the DOM to it's initial state before initialsing.                                                                             |
-| `init()`             |          | Initialise the instance after destroying.                                                                                                                            |
-| `disable()`          |          | Disable the instance. Removes all event listeners to prevent further selection / deselection.                                                                        |
-| `enable()`           |          | Enable the instance.                                                                                                                                                 |
-| `update()`           |          | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
-| `recalculate()`      |          | Recalculates the coords for all valid items. If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly. |
-| `selectItem()`       | `Object` | Select an item.                                                                                                                                                      |
-| `deselectItem()`     | `Object` | Deselect an item.                                                                                                                                                    |
-| `selectAll()`        |          | Select all valid items.                                                                                                                                              |
-| `clear()`            |          | Deselects all valid items.                                                                                                                                           |
-| `getItems()`         |          | Returns an `Array` of all items.                                                                                                                                     |
-| `getNodes()`         |          | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
-| `getSelectedItems()` |          | Returns an `Array` of selected items.                                                                                                                                |
-| `getSelectedNodes()` |          | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
 
-
----
-
-## Events
-
-```javascript
-// Intitialise Selectable
-const selectable = new Selectable(options);
-
-// Listen for the 'selectable.XXXX' event
-selectable.on('selectable.XXXX', function() {
-    // Do something when 'selectable.XXXX' fires
-});
-```
-
-* `selectable.down` fires on mousedown (within container)
-* `selectable.drag` fires when dragging the lasso
-* `selectable.up` fires on mouse up (within container)
-* `selectable.selected` fires on each element selected
-
-```javascript
-/**
- * @param item - the first item selected
- * @return {object}
- */
-selectable.on('selectable.down', function(item) {
-	// Do something when selectable.down fires
-});
-
-/**
- * @param coords - lasso coords (x1, x2, y1, y2)
- * @return {object}
- */
-selectable.on('selectable.drag', function(coords) {
-	// Do something when selectable.drag fires
-});
-
-/**
- * @param selectedItems - returns an array of selected items (objects)
- * @return {array}
- */
-selectable.on('selectable.up', function(selectedItems) {
-	// Do something when selectable.up fires
-});
-
-/**
- * @param item - the selected item (fires for each item that is selected)
- * @return {object}
- */
-selectable.on('selectable.selected', function(item) {
-	// Do something when selectable.selected fires
-});
-```
-
-Note that items returned by these events are objects of the following format:
+Items returned by the instance are objects of the following format:
 
 ```javascript
 {
@@ -158,5 +88,53 @@ Note that items returned by these events are objects of the following format:
     unselecting: Boolean // is the item currently being deselected
 }
 ```
+
+| Method               | Args     |   Return   | Effect                                                                                                                                                               |
+|----------------------|----------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `destroy()`          |          |            | Destroy the instance. This will return the DOM to it's initial state before initialsing.                                                                             |
+| `init()`             |          |            | Initialise the instance after destroying.                                                                                                                            |
+| `disable()`          |          |            | Disable the instance. Removes all event listeners to prevent further selection / deselection.                                                                        |
+| `enable()`           |          |            | Enable the instance.                                                                                                                                                 |
+| `update()`           |          |            | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
+| `recalculate()`      |          |            | Recalculates the coords for all valid items. If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly. |
+| `select()`           | `Mixed`  | `Mixed`    | Select an item or items. You can pass a `Number` representing the index of the item, a reference to the `HTMLElement` node, the `Object` as it appears in the `items` array or an `Array` of numbers / nodes / objects.                                                                                                                                                  |
+| `unselect()`         | `Mixed`  | `Mixed`    | Same as `select()`, but the item or items are unselected.                                                                                                                                                  |
+| `selectAll()`        |          |            | Select all valid items.                                                                                                                                              |
+| `clear()`            |          |            | Deselects all valid items.                                                                                                                                           |
+| `getItem()`          | `Mixed`  | `Object`   | Returns a reference to the item if found or `false` if not. You can pass the same mixed argument as with `select()` and `unselect()`.                                                                                                                            |
+| `getItems()`         |          | `Array`    | Returns an `Array` of all items.                                                                                                                                     |
+| `getNodes()`         |          | `Array`    | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
+| `getSelectedItems()` |          | `Array`    | Returns an `Array` of selected items.                                                                                                                                |
+| `getSelectedNodes()` |          | `Array`    | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
+
+
+---
+
+## Events
+
+```javascript
+// Intitialise Selectable
+const selectable = new Selectable(options);
+
+// Listen for the 'XXXX' event
+selectable.on('XXXX', function(/* args */) {
+    // Do something when 'XXXX' fires
+});
+```
+
+| Name | Fired   | Params |
+|---|---|---|
+|`selectable.init` | when the instance is ready |
+|`selectable.enable` | when the instance is enabled |
+|`selectable.disable` | when the instance is disabled |
+|`selectable.mousedown` | on mousedown (within container) | `element` - the item that was clicked on |
+|`selectable.mousemove` | when dragging the lasso | `coords` - the coords of the lasso
+|`selectable.mouseup` | on mouse up (within container) | `items` - the current selection of item(s)
+|`selectable.select` | when an item is selected | `item` - the selected item |
+|`selectable.unselect` | when an item is unselected | `item` - the unselected item
+|`selectable.update` | when the instance is updated |
+|`selectable.recalculate` | when the item coords are recalculated |
+
+---
 
 Copyright © 2017 Karl Saunders | BSD & MIT license
