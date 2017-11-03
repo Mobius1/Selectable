@@ -117,7 +117,7 @@ Items returned by the instance are objects of the following format:
 const selectable = new Selectable(options);
 
 // Listen for the 'selectable.XXXX' event
-selectable.on('selectable.XXXX', function(/* args */) {
+selectable.on('selectable.XXXX', function(/* params */) {
     // Do something when 'selectable.XXXX' fires
 });
 ```
