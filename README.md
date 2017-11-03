@@ -13,6 +13,13 @@ Works in most modern browsers including IE9+.
 
 ---
 
+## Demos
+
+[Tables](https://codepen.io/Mobius1/pen/XzXyVw)
+
+
+---
+
 ## Install
 
 ### Bower
