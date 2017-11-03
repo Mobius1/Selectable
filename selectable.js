@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.3.0
+ * Version: 0.3.1
  *
  */
 (function(root, factory) {
@@ -285,7 +285,7 @@
             opacity: 0, // border will show even at zero width / height
         }, o.lasso));
 
-        if (typeof o.appendTo === 'string' || o.appendTo instanceof String) {
+        if (typeof o.appendTo === 'string') {
             this.container = document.querySelector(o.appendTo);
         } else if (o.appendTo.nodeName) {
             this.container = o.appendTo;
@@ -304,7 +304,12 @@
         var that = this,
             o = this.config;
 
-        this.nodes = this.container.querySelectorAll(o.filter);
+        if (o.filter instanceof NodeList || o.filter instanceof HTMLCollection) {
+            this.nodes = o.filter;
+        } else if (typeof o.filter === "string") {
+            this.nodes = this.container.querySelectorAll(o.filter);
+        }
+
         this.items = [];
 
         each(this.nodes, function(el, i) {
@@ -332,7 +337,7 @@
         var o = this.config,
             originalEl;
         var node = closest(e.target, function(el) {
-            return classList.contains(el, o.filter.replace(".", ""));
+            return classList.contains(el, o.classes.selectable);
         });
 
         this.container.appendChild(this.lasso);
