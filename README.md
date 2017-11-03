@@ -7,6 +7,8 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 Works in most modern browsers including IE9+.
 
+**Selectable is still in active development and therefore the API is in constant flux so check back for any changes and make sure you have the latsest version installed.**
+
 ## [Demo](http://codepen.io/Mobius1/debug/qRxaqQ/) | [Changelog](https://github.com/Mobius1/Selectable/releases)
 
 ---
