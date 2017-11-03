@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.4.0
+ * Version: 0.4.1
  *
  */
 (function(root, factory) {
@@ -306,7 +306,7 @@
         this.enable();
 
         setTimeout(function() {
-            that.emit("init");
+            that.emit("selectable.init");
         }, 10);
     };
 
@@ -339,7 +339,7 @@
             }
         });
 
-        that.emit("update");
+        that.emit("selectable.update");
     };
 
     /**
@@ -418,7 +418,7 @@
         this.dragging = true;
 
         if (node) {
-            this.emit('mousedown', originalEl);
+            this.emit('selectable.mousedown', originalEl);
         }
     };
 
@@ -513,7 +513,7 @@
 
         });
 
-        this.emit('mousemove', c);
+        this.emit('selectable.mousemove', c);
     };
 
     /**
@@ -557,7 +557,7 @@
 
         this.container.removeChild(this.lasso);
 
-        this.emit('mouseup', selected);
+        this.emit('selectable.mouseup', selected);
     };
 
     /**
@@ -588,7 +588,7 @@
             item.selected = true;
             item.startselected = true;
 
-            this.emit('select', item);
+            this.emit('selectable.select', item);
 
             return item;
         }
@@ -626,7 +626,7 @@
             classList.remove(el, o.selecting);
             classList.remove(el, o.selected);
 
-            this.emit('unselect', item);
+            this.emit('selectable.unselect', item);
 
             return item;
         }
@@ -642,7 +642,7 @@
         each(this.nodes, function(el, i) {
             this.items[i].rect = rect(el);
         }, this);
-        this.emit('recalculate');
+        this.emit('selectable.recalculate');
     };
 
     /**
@@ -663,7 +663,6 @@
         for (var i = this.items.length - 1; i >= 0; i--) {
             this.unselect(this.items[i]);
         };
-        this.emit('clear');
     };
 
     /**
@@ -753,7 +752,7 @@
 
             classList.add(this.container, this.config.classes.container);
 
-            this.emit('enable');
+            this.emit('selectable.enable');
         }
 
         return this.enabled;
@@ -777,7 +776,7 @@
 
             classList.remove(this.container, this.config.classes.container);
 
-            this.emit('disable');
+            this.emit('selectable.disable');
         }
 
         return this.enabled;
@@ -800,7 +799,7 @@
 
         this.disable();
 
-        this.emit('destroy');
+        this.emit('selectable.destroy');
     };
 
     return Selectable;
