@@ -81,7 +81,7 @@ Items returned by the instance are objects of the following format:
 {
     element: HTMLElement, // the element
     index: Number, // the position of the item in the list
-    rect: DOMRect Object, // the element's bounding rects
+    rect: DOMRect, // the element's bounding rects
     startselected: Boolean,
     selected: Boolean, // is the item currently selected
     selecting: Boolean, // is the item currently being selected
@@ -89,7 +89,7 @@ Items returned by the instance are objects of the following format:
 }
 ```
 
-| Method               | Args     |   Return   | Effect                                                                                                                                                               |
+| Method               | Arg      |   Return   | Effect                                                                                                                                                               |
 |----------------------|----------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `destroy()`          |          |            | Destroy the instance. This will return the DOM to it's initial state before initialsing.                                                                             |
 | `init()`             |          |            | Initialise the instance after destroying.                                                                                                                            |
@@ -101,6 +101,8 @@ Items returned by the instance are objects of the following format:
 | `unselect()`         | `Mixed`  | `Mixed`    | Same as `select()`, but the item or items are unselected.                                                                                                                                                  |
 | `selectAll()`        |          |            | Select all valid items.                                                                                                                                              |
 | `clear()`            |          |            | Deselects all valid items.                                                                                                                                           |
+| `add()`              | `Object` |            | Add a new item. Must me a valid `HTMLElement` node.                                                                                                                                         |
+| `remove()`           | `Mixed`  |            | Removes an item or items. Can be an index, node, item or collection.                                                                                                                                           |
 | `getItem()`          | `Mixed`  | `Object`   | Returns a reference to the item if found or `false` if not. You can pass the same mixed argument as with `select()` and `unselect()`.                                                                                                                            |
 | `getItems()`         |          | `Array`    | Returns an `Array` of all items.                                                                                                                                     |
 | `getNodes()`         |          | `Array`    | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |

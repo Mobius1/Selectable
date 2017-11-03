@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.4.1
+ * Version: 0.5.0
  *
  */
 (function(root, factory) {
@@ -328,6 +328,7 @@
 
         each(this.nodes, function(el, i) {
             classList.add(el, o.classes.selectable);
+
             that.items[i] = {
                 index: i,
                 element: el,
@@ -336,7 +337,7 @@
                 selected: classList.contains(el, o.classes.selected),
                 selecting: classList.contains(el, o.classes.selecting),
                 unselecting: classList.contains(el, o.classes.unselecting)
-            }
+            };
         });
 
         that.emit("selectable.update");
@@ -634,6 +635,52 @@
         return false;
     };
 
+    Selectable.prototype.add = function(node) {
+        var o = this.config;
+
+        if (isCollection(node)) {
+            each(node, function(i) {
+                this.add(i);
+            }, this);
+        } else {
+            if (this.nodes.indexOf(node) < 0) {
+                classList.add(node, o.classes.selectable);
+
+                this.items.push({
+                    index: this.items.length,
+                    element: node,
+                    rect: rect(node),
+                    startselected: false,
+                    selected: classList.contains(node, o.classes.selected),
+                    selecting: classList.contains(node, o.classes.selecting),
+                    unselecting: classList.contains(node, o.classes.unselecting)
+                });
+            }
+        }
+
+        this.update();
+    };
+
+    Selectable.prototype.remove = function(item) {
+        item = this.getItem(item);
+
+        if (item) {
+            if (isCollection(item)) {
+                for (var i = item.length - 1; i >= 0; i--) {
+                    this.remove(item[i]);
+                }
+            } else {
+                var el = item.element,
+                    o = this.config.classes;
+                classList.remove(el, o.selectable);
+                classList.remove(el, o.unselecting);
+                classList.remove(el, o.selecting);
+                classList.remove(el, o.selected);
+                this.items.splice(this.items.indexOf(item), 1);
+            }
+        }
+    };
+
     /**
      * Update item coords
      * @return {Void}
@@ -671,19 +718,27 @@
      */
     Selectable.prototype.getItem = function(item) {
         var found = false;
-        // item is an index
-        if (!isNaN(item)) {
-            if (this.items.indexOf(this.items[item]) >= 0) {
-                found = this.items[item];
+
+        if (isCollection(item)) {
+            found = [];
+            each(item, function(i) {
+                found.push(this.getItem(i));
+            }, this);
+        } else {
+            // item is an index
+            if (!isNaN(item)) {
+                if (this.items.indexOf(this.items[item]) >= 0) {
+                    found = this.items[item];
+                }
             }
-        }
-        // item is a node
-        else if (item instanceof Element) {
-            found = this.items[this.nodes.indexOf(item)];
-        }
-        // item is an item
-        else if (isObject(item) && this.items.indexOf(item) >= 0) {
-            found = item;
+            // item is a node
+            else if (item instanceof Element) {
+                found = this.items[this.nodes.indexOf(item)];
+            }
+            // item is an item
+            else if (isObject(item) && this.items.indexOf(item) >= 0) {
+                found = item;
+            }
         }
         return found;
     };
