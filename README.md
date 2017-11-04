@@ -93,19 +93,19 @@ Items returned by the instance are objects of the following format:
 | `init()`             | [See Docs](https://github.com/Mobius1/Selectable/wiki/init())                                                                                                                            |
 | `disable()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/disable())                                                                        |
 | `enable()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/enable())                                                                                                                                                 |
-| `update()`           | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
+| `update()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/update())                                                  |
 | `recalculate()`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/recalculate())  |
-| `select(items)`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/select())                                                                                                                                                  |
-| `unselect(items)`    | [See Docs](https://github.com/Mobius1/Selectable/wiki/unselect())                                                                                                                                                  |
+| `select()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/select())                                                                                                                                                  |
+| `unselect()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/unselect())                                                                                                                                                  |
 | `selectAll()`        | [See Docs](https://github.com/Mobius1/Selectable/wiki/selectAll())                                                                                                                                               |
 | `clear()`            | [See Docs](https://github.com/Mobius1/Selectable/wiki/clear())                                                                                                                                          |
-| `add(node)`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/add())                                                                                                                                         |
-| `remove(items)`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/remove())                                                                                                                                            |
-| `getItem(items)`     | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItem())                                                                                                                             |
-| `getItems()`         | Returns an `Array` of all items.                                                                                                                                     |
-| `getNodes()`         | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
-| `getSelectedItems()` | Returns an `Array` of selected items.                                                                                                                                |
-| `getSelectedNodes()` | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
+| `add()`              | [See Docs](https://github.com/Mobius1/Selectable/wiki/add())                                                                                                                                         |
+| `remove()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/remove())                                                                                                                                            |
+| `getItem()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItem())                                                                                                                             |
+| `getItems()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItems())                                                                                                                                      |
+| `getNodes()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/getNodes())                                                                                                                        |
+| `getSelectedItems()` | [See Docs](https://github.com/Mobius1/Selectable/wiki/getSelectedItems())                                                                                                                             |
+| `getSelectedNodes()` | [See Docs](https://github.com/Mobius1/Selectable/wiki/getSelectedNodes())                                                                                                                   |
 
 
 ---
