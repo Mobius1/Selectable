@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.4
+ * Version: 0.5.5
  *
  */
 (function(root, factory) {
@@ -20,6 +20,8 @@
     }
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
+
+    var version = "0.5.5";
 
     var supports = 'classList' in document.documentElement;
 
@@ -272,12 +274,8 @@
 
     /* SELECTABLE */
     function Selectable(options) {
-
+        this.version = version;
         this.config = extend(defaultConfig, options);
-
-        /* Enable emitter */
-        Emitter.mixin(this);
-
         this.init();
     };
 
@@ -288,6 +286,10 @@
     Selectable.prototype.init = function() {
         var that = this,
             o = this.config;
+
+        /* Enable emitter */
+        Emitter.mixin(this);
+
         /* lasso */
         this.lasso = document.createElement('div');
         this.lasso.className = 'ui-lasso';
@@ -299,7 +301,7 @@
 
         if (typeof o.appendTo === 'string') {
             this.container = document.querySelector(o.appendTo);
-        } else if (o.appendTo.nodeName) {
+        } else if (o.appendTo instanceof Element && o.appendTo.nodeName) {
             this.container = o.appendTo;
         }
 
@@ -664,13 +666,13 @@
      * @param  {Mixed} item index, node or object
      * @return {Boolean}
      */
-    Selectable.prototype.remove = function(item) {
+    Selectable.prototype.remove = function(item, stop) {
         item = this.getItem(item);
 
         if (item) {
             if (isCollection(item)) {
                 for (var i = item.length - 1; i >= 0; i--) {
-                    this.remove(item[i]);
+                    this.remove(item[i], i > 0);
                 }
             } else {
                 var el = item.node,
@@ -682,7 +684,9 @@
                 this.nodes.splice(this.nodes.indexOf(item.node), 1);
             }
 
-            this.update();
+            if (!stop) {
+                this.update();
+            }
 
             return true;
         }
@@ -853,17 +857,13 @@
     Selectable.prototype.destroy = function() {
         var o = this.config.classes;
 
-        each(this.items, function(item) {
-            var el = item.node;
-            classList.remove(el, o.selectable);
-            classList.remove(el, o.unselecting);
-            classList.remove(el, o.selecting);
-            classList.remove(el, o.selected);
-        });
-
         this.disable();
 
-        this.emit('selectable.destroy');
+        this.remove(this.items);
+
+        each(this, function(val, prop) {
+            if (prop !== "version" && prop !== "config") delete(this[prop]);
+        }, this);
     };
 
     return Selectable;
