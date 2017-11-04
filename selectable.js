@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.1
+ * Version: 0.5.0
  *
  */
 (function(root, factory) {
@@ -20,6 +20,8 @@
     }
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
+    
+    var supports = 'classList' in document.documentElement;
 
     /**
      * Default configuration properties
@@ -196,7 +198,7 @@
      */
     var classList = {
         add: function(s, a) {
-            if (s.classList) {
+            if (supports) {
                 s.classList.add(a);
             } else {
                 if (!classList.contains(s, a)) {
@@ -205,7 +207,7 @@
             }
         },
         remove: function(s, a) {
-            if (s.classList) {
+            if (supports) {
                 s.classList.remove(a);
             } else {
                 if (classList.contains(s, a)) {
@@ -218,7 +220,7 @@
         },
         contains: function(s, a) {
             if (s)
-                return s.classList ?
+                return supports ?
                     s.classList.contains(a) :
                     !!s.className &&
                     !!s.className.match(new RegExp("(\\s|^)" + a + "(\\s|$)"));
@@ -300,6 +302,12 @@
         } else if (o.appendTo.nodeName) {
             this.container = o.appendTo;
         }
+        
+        if (isCollection(o.filter)) {
+            this.nodes = [].slice.call(o.filter);
+        } else if (typeof o.filter === "string") {
+            this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
+        }       
 
         this.update();
 
@@ -315,14 +323,7 @@
      * @return {Void}
      */
     Selectable.prototype.update = function() {
-        var that = this,
-            o = this.config;
-
-        if (isCollection(o.filter)) {
-            this.nodes = [].slice.call(o.filter);
-        } else if (typeof o.filter === "string") {
-            this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
-        }
+        var that = this, o = this.config;
 
         this.items = [];
 
@@ -330,7 +331,6 @@
             classList.add(el, o.classes.selectable);
 
             that.items[i] = {
-                index: i,
                 element: el,
                 rect: rect(el),
                 startselected: false,
@@ -382,7 +382,7 @@
             // Look back over the items until we find the on we've clicked
             for (var i = this.items.length - 1; i >= 0; i--) {
                 // found the item we clicked
-                if (this.items[i].element === node) {
+                if (this.items[i].node === node) {
                     found = true;
                 }
 
@@ -400,7 +400,7 @@
         }
 
         each(this.items, function(item) {
-            var el = item.element;
+            var el = item.node;
             if (item.selected && el !== node) {
                 item.startselected = true;
                 if (!isCmdKey(e) && !isShiftKey(e)) {
@@ -461,7 +461,7 @@
 
         /* highlight */
         each(this.items, function(item) {
-            var el = item.element;
+            var el = item.node;
             var over = false;
             if (o.tolerance == 'touch') {
                 over = !(item.rect.x1 > c.x2 || (item.rect.x2 < c.x1 || (item.rect.y1 > c.y2 || item.rect.y2 < c.y1)));
@@ -544,7 +544,7 @@
         var selected = [];
 
         each(this.items, function(item) {
-            var el = item.element;
+            var el = item.node;
 
             if (item.unselecting) {
                 that.unselect(item);
@@ -579,7 +579,7 @@
         item = this.getItem(item);
 
         if (item) {
-            var el = item.element,
+            var el = item.node,
                 o = this.config.classes;
 
             classList.remove(el, o.selecting);
@@ -615,7 +615,7 @@
         item = this.getItem(item);
 
         if (item) {
-            var el = item.element,
+            var el = item.node,
                 o = this.config.classes;
 
             item.selecting = false;
@@ -634,50 +634,41 @@
 
         return false;
     };
-
+    
     Selectable.prototype.add = function(node) {
         var o = this.config;
-
-        if (isCollection(node)) {
+        
+        if ( isCollection(node) ) {
             each(node, function(i) {
                 this.add(i);
             }, this);
         } else {
-            if (this.nodes.indexOf(node) < 0) {
-                classList.add(node, o.classes.selectable);
-
-                this.items.push({
-                    index: this.items.length,
-                    element: node,
-                    rect: rect(node),
-                    startselected: false,
-                    selected: classList.contains(node, o.classes.selected),
-                    selecting: classList.contains(node, o.classes.selecting),
-                    unselecting: classList.contains(node, o.classes.unselecting)
-                });
+            if ( this.nodes.indexOf(node) < 0 && node instanceof Element ) {
+                this.nodes.push(node);
             }
         }
-
+        
         this.update();
-    };
-
+    };  
+    
     Selectable.prototype.remove = function(item) {
         item = this.getItem(item);
-
-        if (item) {
-            if (isCollection(item)) {
-                for (var i = item.length - 1; i >= 0; i--) {
+        
+        if ( item ) {
+            if ( isCollection(item) ) {
+                for ( var i = item.length - 1; i >= 0; i-- ) {
                     this.remove(item[i]);
                 }
             } else {
-                var el = item.element,
-                    o = this.config.classes;
+                var el = item.node, o = this.config.classes;
                 classList.remove(el, o.selectable);
                 classList.remove(el, o.unselecting);
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
-                this.items.splice(this.items.indexOf(item), 1);
+                this.nodes.splice(this.nodes.indexOf(item.node), 1);
             }
+            
+            this.update();
         }
     };
 
@@ -718,8 +709,8 @@
      */
     Selectable.prototype.getItem = function(item) {
         var found = false;
-
-        if (isCollection(item)) {
+        
+        if ( isCollection(item) ) {
             found = [];
             each(item, function(i) {
                 found.push(this.getItem(i));
@@ -775,7 +766,7 @@
      */
     Selectable.prototype.getSelectedNodes = function() {
         return this.getSelectedItems().map(function(item) {
-            return item.element;
+            return item.node;
         });
     };
 
@@ -845,7 +836,7 @@
         var o = this.config.classes;
 
         each(this.items, function(item) {
-            var el = item.element;
+            var el = item.node;
             classList.remove(el, o.selectable);
             classList.remove(el, o.unselecting);
             classList.remove(el, o.selecting);
