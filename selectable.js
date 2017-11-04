@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.6.0
+ * Version: 0.6.1
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.6.0";
+    var _version = "0.6.1";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -825,9 +825,9 @@
             };
 
             // Attach event listeners
-            on(this.container, 'start', e.start);
-            on(document, 'drag', e.drag);
-            on(document, 'end', e.end);
+            on(this.container, 'mousedown', e.start);
+            on(document, 'mousemove', e.drag);
+            on(document, 'mouseup', e.end);
 
             // Mobile
             on(this.container, "touchstart", e.start);
@@ -857,9 +857,9 @@
             var e = this.events;
             this.enabled = false;
 
-            off(this.container, 'start', e.start);
-            off(document, 'drag', e.drag);
-            off(document, 'end', e.end);
+            off(this.container, 'mousedown', e.start);
+            off(document, 'mousemove', e.drag);
+            off(document, 'mouseup', e.end);
 
             // Mobile
             off(this.container, "touchstart", e.start);
