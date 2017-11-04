@@ -87,25 +87,25 @@ Items returned by the instance are objects of the following format:
 }
 ```
 
-| Method               | Arg      |   Return   | Effect                                                                                                                                                               |
-|----------------------|----------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `destroy()`          |          |            | Destroy the instance. This will return the DOM to it's initial state before initialsing.                                                                             |
-| `init()`             |          |            | Initialise the instance after destroying.                                                                                                                            |
-| `disable()`          |          |            | Disable the instance. Removes all event listeners to prevent further selection / deselection.                                                                        |
-| `enable()`           |          |            | Enable the instance.                                                                                                                                                 |
-| `update()`           |          |            | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
-| `recalculate()`      |          |            | Recalculates the coords for all valid items. If the dimensions of the item / items change then call this method otherwise the lasso will not select items correctly. |
-| `select(items)`           | `Mixed`  | `Mixed`    | Select an item or items. You can pass a `Number` representing the index of the item, a reference to the `HTMLElement` node, the `Object` as it appears in the `items` array or an `Array` of numbers / nodes / objects.                                                                                                                                                  |
-| `unselect(items)`         | `Mixed`  | `Mixed`    | Same as `select()`, but the item or items are unselected.                                                                                                                                                  |
-| `selectAll()`        |          |            | Select all valid items.                                                                                                                                              |
-| `clear()`            |          |            | Deselects all valid items.                                                                                                                                           |
-| `add(node)`              | `Object` |            | Add a new item. Must me a valid `HTMLElement` node.                                                                                                                                         |
-| `remove(items)`           | `Mixed`  |            | Removes an item or items. Can be an index, node, item or collection.                                                                                                                                           |
-| `getItem(items)`          | `Mixed`  | `Object`   | Returns a reference to the item if found or `false` if not. You can pass the same mixed argument as with `select()` and `unselect()`.                                                                                                                            |
-| `getItems()`         |          | `Array`    | Returns an `Array` of all items.                                                                                                                                     |
-| `getNodes()`         |          | `Array`    | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
-| `getSelectedItems()` |          | `Array`    | Returns an `Array` of selected items.                                                                                                                                |
-| `getSelectedNodes()` |          | `Array`    | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
+| Method               | Effect                                                                                                                                                               |
+|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `destroy()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/destroy())                                                                             |
+| `init()`             | [See Docs](https://github.com/Mobius1/Selectable/wiki/init())                                                                                                                            |
+| `disable()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/disable())                                                                        |
+| `enable()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/enable())                                                                                                                                                 |
+| `update()`           | Updates the instance. Can be used if new items are added or old ones removed. All item coords are updated as well.                                                   |
+| `recalculate()`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/recalculate())  |
+| `select(items)`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/select())                                                                                                                                                  |
+| `unselect(items)`    | [See Docs](https://github.com/Mobius1/Selectable/wiki/unselect())                                                                                                                                                  |
+| `selectAll()`        | [See Docs](https://github.com/Mobius1/Selectable/wiki/selectAll())                                                                                                                                               |
+| `clear()`            | [See Docs](https://github.com/Mobius1/Selectable/wiki/clear())                                                                                                                                          |
+| `add(node)`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/add())                                                                                                                                         |
+| `remove(items)`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/remove())                                                                                                                                            |
+| `getItem(items)`     | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItem())                                                                                                                             |
+| `getItems()`         | Returns an `Array` of all items.                                                                                                                                     |
+| `getNodes()`         | Returns an `Array` of all `HTMLElement` nodes.                                                                                                                       |
+| `getSelectedItems()` | Returns an `Array` of selected items.                                                                                                                                |
+| `getSelectedNodes()` | Returns an `Array` of selected `HTMLElement` nodes.                                                                                                                  |
 
 
 ---
