@@ -9,7 +9,7 @@ Works in most modern deskop and mobile browsers including IE9+ as well a touchsc
 
 **Selectable is still in active development and therefore the API is in constant flux until `v1.0.0`. Check back regularly for any changes and make sure you have the latest version installed.**
 
-## [Demo](http://codepen.io/Mobius1/debug/qRxaqQ/) | [Changelog](https://github.com/Mobius1/Selectable/releases)
+## [Demo](http://codepen.io/Mobius1/debug/qRxaqQ/) | [Documentation](https://github.com/Mobius1/Selectable/wiki) | [Changelog](https://github.com/Mobius1/Selectable/releases)
 
 ---
 
@@ -73,40 +73,7 @@ By default the instance will look for any nodes with the `".ui-selectable"` clas
 
 ## Public Methods
 
-
-Items returned by the instance are objects of the following format:
-
-```javascript
-{
-    node: HTMLElement, // the element
-    rect: DOMRect, // the element's bounding rects
-    startselected: Boolean,
-    selected: Boolean, // is the item currently selected
-    selecting: Boolean, // is the item currently being selected
-    unselecting: Boolean // is the item currently being deselected
-}
-```
-
-| Method               | Effect                                                                                                                                                               |
-|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `destroy()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/destroy())                                                                             |
-| `init()`             | [See Docs](https://github.com/Mobius1/Selectable/wiki/init())                                                                                                                            |
-| `disable()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/disable())                                                                        |
-| `enable()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/enable())                                                                                                                                                 |
-| `update()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/update())                                                  |
-| `recalculate()`      | [See Docs](https://github.com/Mobius1/Selectable/wiki/recalculate())  |
-| `select()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/select())                                                                                                                                                  |
-| `unselect()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/unselect())                                                                                                                                                  |
-| `selectAll()`        | [See Docs](https://github.com/Mobius1/Selectable/wiki/selectAll())                                                                                                                                               |
-| `clear()`            | [See Docs](https://github.com/Mobius1/Selectable/wiki/clear())                                                                                                                                          |
-| `add()`              | [See Docs](https://github.com/Mobius1/Selectable/wiki/add())                                                                                                                                         |
-| `remove()`           | [See Docs](https://github.com/Mobius1/Selectable/wiki/remove())                                                                                                                                            |
-| `getItem()`          | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItem())                                                                                                                             |
-| `getItems()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/getItems())                                                                                                                                      |
-| `getNodes()`         | [See Docs](https://github.com/Mobius1/Selectable/wiki/getNodes())                                                                                                                        |
-| `getSelectedItems()` | [See Docs](https://github.com/Mobius1/Selectable/wiki/getSelectedItems())                                                                                                                             |
-| `getSelectedNodes()` | [See Docs](https://github.com/Mobius1/Selectable/wiki/getSelectedNodes())                                                                                                                   |
-
+[See Documentation](https://github.com/Mobius1/Selectable/wiki)
 
 ---
 
