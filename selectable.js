@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.3
+ * Version: 0.5.4
  *
  */
 (function(root, factory) {
@@ -332,7 +332,7 @@
             classList.add(el, o.classes.selectable);
 
             that.items[i] = {
-                element: el,
+                node: el,
                 rect: rect(el),
                 startselected: false,
                 selected: classList.contains(el, o.classes.selected),
