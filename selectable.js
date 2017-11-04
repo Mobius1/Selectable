@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.0
+ * Version: 0.5.3
  *
  */
 (function(root, factory) {
@@ -20,7 +20,7 @@
     }
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
-    
+
     var supports = 'classList' in document.documentElement;
 
     /**
@@ -302,12 +302,12 @@
         } else if (o.appendTo.nodeName) {
             this.container = o.appendTo;
         }
-        
+
         if (isCollection(o.filter)) {
             this.nodes = [].slice.call(o.filter);
         } else if (typeof o.filter === "string") {
             this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
-        }       
+        }
 
         this.update();
 
@@ -323,7 +323,8 @@
      * @return {Void}
      */
     Selectable.prototype.update = function() {
-        var that = this, o = this.config;
+        var that = this,
+            o = this.config;
 
         this.items = [];
 
@@ -634,42 +635,59 @@
 
         return false;
     };
-    
+
+    /**
+     * Add a node to the instance
+     * @param {Object} node HTMLElement
+     * * @return {Void}
+     */
     Selectable.prototype.add = function(node) {
         var o = this.config;
-        
-        if ( isCollection(node) ) {
-            each(node, function(i) {
-                this.add(i);
+
+        if (isCollection(node)) {
+            each(node, function(el) {
+                if (this.nodes.indexOf(el) < 0 && el instanceof Element) {
+                    this.nodes.push(el);
+                }
             }, this);
         } else {
-            if ( this.nodes.indexOf(node) < 0 && node instanceof Element ) {
+            if (this.nodes.indexOf(node) < 0 && node instanceof Element) {
                 this.nodes.push(node);
             }
         }
-        
+
         this.update();
-    };  
-    
+    };
+
+    /**
+     * Remove an item from the instance so it's unselectable
+     * @param  {Mixed} item index, node or object
+     * @return {Boolean}
+     */
     Selectable.prototype.remove = function(item) {
         item = this.getItem(item);
-        
-        if ( item ) {
-            if ( isCollection(item) ) {
-                for ( var i = item.length - 1; i >= 0; i-- ) {
+
+        if (item) {
+            if (isCollection(item)) {
+                for (var i = item.length - 1; i >= 0; i--) {
                     this.remove(item[i]);
                 }
             } else {
-                var el = item.node, o = this.config.classes;
+                var el = item.node,
+                    o = this.config.classes;
                 classList.remove(el, o.selectable);
                 classList.remove(el, o.unselecting);
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
                 this.nodes.splice(this.nodes.indexOf(item.node), 1);
             }
-            
+
             this.update();
+
+            return true;
         }
+
+        return false;
     };
 
     /**
@@ -709,8 +727,8 @@
      */
     Selectable.prototype.getItem = function(item) {
         var found = false;
-        
-        if ( isCollection(item) ) {
+
+        if (isCollection(item)) {
             found = [];
             each(item, function(i) {
                 found.push(this.getItem(i));
