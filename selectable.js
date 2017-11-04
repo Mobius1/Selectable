@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.0
+ * Version: 0.5.1
  *
  */
 (function(root, factory) {
@@ -318,8 +318,8 @@
         var that = this,
             o = this.config;
 
-        if (o.filter instanceof NodeList || o.filter instanceof HTMLCollection) {
-            this.nodes = o.filter;
+        if (isCollection(o.filter)) {
+            this.nodes = [].slice.call(o.filter);
         } else if (typeof o.filter === "string") {
             this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
         }
