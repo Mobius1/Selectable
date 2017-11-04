@@ -79,8 +79,7 @@ Items returned by the instance are objects of the following format:
 
 ```javascript
 {
-    element: HTMLElement, // the element
-    index: Number, // the position of the item in the list
+    node: HTMLElement, // the element
     rect: DOMRect, // the element's bounding rects
     startselected: Boolean,
     selected: Boolean, // is the item currently selected
