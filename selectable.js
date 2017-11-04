@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.5.5
+ * Version: 0.6.0
  *
  */
 (function(root, factory) {
@@ -21,9 +21,11 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var version = "0.5.5";
+    var _version = "0.6.0";
 
-    var supports = 'classList' in document.documentElement;
+    var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+
+    var _supports = 'classList' in document.documentElement;
 
     /**
      * Default configuration properties
@@ -200,7 +202,7 @@
      */
     var classList = {
         add: function(s, a) {
-            if (supports) {
+            if (_supports) {
                 s.classList.add(a);
             } else {
                 if (!classList.contains(s, a)) {
@@ -209,7 +211,7 @@
             }
         },
         remove: function(s, a) {
-            if (supports) {
+            if (_supports) {
                 s.classList.remove(a);
             } else {
                 if (classList.contains(s, a)) {
@@ -222,7 +224,7 @@
         },
         contains: function(s, a) {
             if (s)
-                return supports ?
+                return _supports ?
                     s.classList.contains(a) :
                     !!s.className &&
                     !!s.className.match(new RegExp("(\\s|^)" + a + "(\\s|$)"));
@@ -274,7 +276,7 @@
 
     /* SELECTABLE */
     function Selectable(options) {
-        this.version = version;
+        this.version = _version;
         this.config = extend(defaultConfig, options);
         this.init();
     };
@@ -347,36 +349,50 @@
     };
 
     /**
-     * mousedown event listener
+     * mousedown / touchstart event listener
      * @param  {Object} e
      * @return {Void}
      */
-    Selectable.prototype.mousedown = function(e) {
+    Selectable.prototype.start = function(e) {
         e.preventDefault();
 
-        var o = this.config,
-            originalEl;
+        var that = this;
+        var o = this.config;
+        var originalEl;
+
         var node = closest(e.target, function(el) {
-            return classList.contains(el, o.classes.selectable);
+            return el === that.container || classList.contains(el, o.classes.selectable);
         });
+
+        if (!node || o.disabled) return false;
+
+        this.dragging = true;
+
+        this.origin = {
+            x: _touch && e.type === "touchstart" ? e.touches[0].clientX : e.pageX,
+            y: _touch && e.type === "touchstart" ? e.touches[0].clientY : e.pageY,
+        };
 
         this.container.appendChild(this.lasso);
 
-        this.origin = {
-            x: e.pageX,
-            y: e.pageY,
-        };
-
-        if (o.disabled) {
-            return;
-        }
-
-        if (node) {
+        if (node !== this.container) {
             classList.add(node, o.classes.selecting);
         }
 
         if (o.autoRefresh) {
             this.update();
+        }
+
+        // Unselect single item if touched (touchscreens)
+        if (_touch) {
+            var item = this.getItem(node);
+
+            if (item.selected) {
+                // cancel drag
+                this.dragging = false;
+                this.unselect(item);
+                return;
+            }
         }
 
         if (isShiftKey(e)) {
@@ -404,34 +420,33 @@
 
         each(this.items, function(item) {
             var el = item.node;
-            if (item.selected && el !== node) {
+            if (item.selected) {
+
                 item.startselected = true;
-                if (!isCmdKey(e) && !isShiftKey(e)) {
+
+                if (!_touch && el !== node && !isCmdKey(e) && !isShiftKey(e)) {
                     classList.remove(el, o.classes.selected);
                     item.selected = false;
 
                     classList.add(el, o.classes.unselecting);
                     item.unselecting = true;
                 }
+
             }
             if (el === node) {
                 originalEl = item;
             }
         });
 
-        this.dragging = true;
-
-        if (node) {
-            this.emit('selectable.mousedown', originalEl);
-        }
+        this.emit('selectable.start', originalEl);
     };
 
     /**
-     * mousemove event listener
+     * mousmove / touchmove event listener
      * @param  {Object} e
      * @return {Void}
      */
-    Selectable.prototype.mousemove = function(e) {
+    Selectable.prototype.drag = function(e) {
         if (!this.dragging) return;
 
         var o = this.config;
@@ -443,8 +458,8 @@
         var c = {
             x1: this.origin.x,
             y1: this.origin.y,
-            x2: e.pageX,
-            y2: e.pageY,
+            x2: _touch && e.type === "touchmove" ? e.touches[0].clientX : e.pageX,
+            y2: _touch && e.type === "touchmove" ? e.touches[0].clientY : e.pageY,
         };
 
         if (c.x1 > c.x2) {
@@ -517,15 +532,15 @@
 
         });
 
-        this.emit('selectable.mousemove', c);
+        this.emit('selectable.drag', c);
     };
 
     /**
-     * mouseup event listener
+     * mouseup / touchend event listener
      * @param  {Object} e
      * @return {Void}
      */
-    Selectable.prototype.mouseup = function(e) {
+    Selectable.prototype.end = function(e) {
         if (this.dragging) {
             this.dragging = false;
         }
@@ -533,8 +548,6 @@
         if (!this.container.contains(e.target)) {
             return
         }
-
-        var that = this;
 
         css(this.lasso, {
             opacity: 0,
@@ -550,18 +563,21 @@
             var el = item.node;
 
             if (item.unselecting) {
-                that.unselect(item);
+                this.unselect(item);
             }
 
             if (item.selecting) {
                 selected.push(item);
-                that.select(item);
+                this.select(item);
             }
-        });
 
-        this.container.removeChild(this.lasso);
+        }, this);
 
-        this.emit('selectable.mouseup', selected);
+        if (this.container.contains(this.lasso)) {
+            this.container.removeChild(this.lasso);
+        }
+
+        this.emit('selectable.end', selected);
     };
 
     /**
@@ -802,16 +818,22 @@
 
             // Bind events
             var e = {
-                mousedown: this.mousedown.bind(this),
-                mousemove: this.mousemove.bind(this),
-                mouseup: this.mouseup.bind(this),
+                start: this.start.bind(this),
+                drag: this.drag.bind(this),
+                end: this.end.bind(this),
                 recalculate: debounce(this.recalculate, 50).bind(this)
             };
 
             // Attach event listeners
-            on(this.container, 'mousedown', e.mousedown);
-            on(document, 'mousemove', e.mousemove);
-            on(document, 'mouseup', e.mouseup);
+            on(this.container, 'start', e.start);
+            on(document, 'drag', e.drag);
+            on(document, 'end', e.end);
+
+            // Mobile
+            on(this.container, "touchstart", e.start);
+            on(document, "touchend", e.end);
+            on(document, "touchcancel", e.end);
+            on(document, "touchmove", e.drag);
 
             on(window, 'resize', e.recalculate);
             on(window, 'scroll', e.recalculate);
@@ -835,9 +857,15 @@
             var e = this.events;
             this.enabled = false;
 
-            off(this.container, 'mousedown', e.mousedown);
-            off(document, 'mousemove', e.mousemove);
-            off(document, 'mouseup', e.mouseup);
+            off(this.container, 'start', e.start);
+            off(document, 'drag', e.drag);
+            off(document, 'end', e.end);
+
+            // Mobile
+            off(this.container, "touchstart", e.start);
+            off(document, "touchend", e.end);
+            off(document, "touchcancel", e.end);
+            off(document, "touchmove", e.drag);
 
             off(window, 'resize', e.recalculate);
             off(window, 'scroll', e.recalculate);

@@ -5,7 +5,7 @@ Inspired by the jQuery UI Selectable plugin. Functionality and options are ident
 
 Selectable mimics the Windows file / directory behaviour, i.e. click and / or drag to select items, hold CTRL to select multiple or hold SHIFT to select consecutive groups of items.
 
-Works in most modern browsers including IE9+.
+Works in most modern deskop and mobile browsers including IE9+ as well a touchscreen devices.
 
 **Selectable is still in active development and therefore the API is in constant flux until `v1.0.0`. Check back regularly for any changes and make sure you have the latest version installed.**
 
@@ -16,7 +16,6 @@ Works in most modern browsers including IE9+.
 ## Demos
 
 [Tables](https://codepen.io/Mobius1/pen/XzXyVw)
-
 
 ---
 
@@ -128,9 +127,9 @@ selectable.on('selectable.XXXX', function(/* params */) {
 |`selectable.init` | when the instance is ready |
 |`selectable.enable` | when the instance is enabled |
 |`selectable.disable` | when the instance is disabled |
-|`selectable.mousedown` | on mousedown (within container) | `element` - the item that was clicked on |
-|`selectable.mousemove` | when dragging the lasso | `coords` - the coords of the lasso
-|`selectable.mouseup` | on mouse up (within container) | `items` - the current selection of item(s)
+|`selectable.start` | on mousedown / touchstart (within container) | `element` - the item that was clicked on |
+|`selectable.drag` | when dragging the lasso | `coords` - the coords of the lasso
+|`selectable.end` | on mouseup / touchend (within container) | `items` - the current selection of item(s)
 |`selectable.select` | when an item is selected | `item` - the selected item |
 |`selectable.unselect` | when an item is unselected | `item` - the unselected item
 |`selectable.update` | when the instance is updated |
