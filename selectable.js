@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.7.3
+ * Version: 0.7.4
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.7.3";
+    var _version = "0.7.4";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -580,6 +580,20 @@
     };
 
     /**
+     * keydown event listener
+     * @param  {Object} e
+     * @return {Void}
+     */
+    Selectable.prototype.keydown = function(e) {
+        if (isCmdKey(e)) {
+            if (e.keyCode == 65 || e.keyCode == 97) {
+                e.preventDefault();
+                this.selectAll();
+            }
+        }
+    };
+
+    /**
      * Select an item
      * @param  {Object} item
      * @return {Boolean}
@@ -823,6 +837,7 @@
                 start: this.start.bind(this),
                 drag: this.drag.bind(this),
                 end: this.end.bind(this),
+                keydown: this.keydown.bind(this),
                 recalculate: debounce(this.recalculate, 50).bind(this)
             };
 
@@ -830,6 +845,7 @@
             on(this.container, 'mousedown', e.start);
             on(document, 'mousemove', e.drag);
             on(document, 'mouseup', e.end);
+            on(document, 'keydown', e.keydown);
 
             // Mobile
             on(this.container, "touchstart", e.start);
@@ -862,6 +878,7 @@
             off(this.container, 'mousedown', e.start);
             off(document, 'mousemove', e.drag);
             off(document, 'mouseup', e.end);
+            off(document, 'keydown', e.keydown);
 
             // Mobile
             off(this.container, "touchstart", e.start);
