@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.6.3
+ * Version: 0.6.4
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.6.3";
+    var _version = "0.6.4";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -43,11 +43,12 @@
         },
 
         classes: {
-            container: "ui-container",
-            selectable: "ui-selectable",
-            selecting: "ui-selecting",
-            unselecting: "ui-unselecting",
+            lasso: "ui-lasso",
             selected: "ui-selected",
+            container: "ui-container",
+            selecting: "ui-selecting",
+            selectable: "ui-selectable",
+            unselecting: "ui-unselecting"
         }
     };
 
@@ -294,7 +295,7 @@
 
         /* lasso */
         this.lasso = document.createElement('div');
-        this.lasso.className = 'ui-lasso';
+        this.lasso.className = o.classes.lasso;
 
         css(this.lasso, extend({
             position: "fixed",
