@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.7.2
+ * Version: 0.7.3
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.7.2";
+    var _version = "0.7.3";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -450,7 +450,7 @@
      * @return {Void}
      */
     Selectable.prototype.drag = function(e) {
-        if (!this.dragging) return;
+        if (!this.dragging || isShiftKey(e)) return;
 
         var o = this.config;
         if (o.disabled) {
