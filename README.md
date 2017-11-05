@@ -16,7 +16,7 @@ Works in most modern deskop and mobile browsers including IE9+ as well a touchsc
 ## Demos
 
 * [Tables](https://codepen.io/Mobius1/pen/XzXyVw)
-* [Advanced](https://s.codepen.io/Mobius1/debug/OOXPwo)
+* [Advanced Usage](https://s.codepen.io/Mobius1/debug/OOXPwo)
 
 ---
 
