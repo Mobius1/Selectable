@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.7.5
+ * Version: 0.8.0
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.7.5";
+    var _version = "0.8.0";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -36,6 +36,7 @@
         autoRefresh: true,
         filter: ".ui-selectable",
         tolerance: "touch",
+        multiple: true,
         shiftDirection: "normal",
 
         lasso: {
@@ -45,6 +46,7 @@
 
         classes: {
             lasso: "ui-lasso",
+            multiple: "ui-multiple",
             selected: "ui-selected",
             container: "ui-container",
             selecting: "ui-selecting",
@@ -370,72 +372,78 @@
 
         if (!node || o.disabled) return false;
 
-        this.dragging = true;
+        // multiple check
+        if ( !o.multiple ) {
+            this.select(node);
+        } else {
 
-        this.origin = {
-            x: _touch && e.type === "touchstart" ? e.touches[0].clientX : e.pageX,
-            y: _touch && e.type === "touchstart" ? e.touches[0].clientY : e.pageY,
-        };
+            this.dragging = true;
 
-        this.container.appendChild(this.lasso);
-
-        if (node !== this.container) {
-            classList.add(node, o.classes.selecting);
-        }
-
-        if (o.autoRefresh) {
-            this.update();
-        }
-
-        // Unselect single item if touched (touchscreens)
-        if (_touch) {
-            var item = this.get(node);
-
-            if (item.selected) {
-                // cancel drag
-                this.dragging = false;
-                this.unselect(item);
-                return;
-            }
-        }
-
-        if (isShiftKey(e)) {
-
-            var items = this.items,
-                found = false,
-                num = this.items.length,
-                reverse = o.shiftDirection !== "normal";
-
-            var shiftSelect = function(n) {
-                // found the item we clicked
-                if (items[n].node === node) {
-                    found = true;
-                }
-
-                // found a selected item so stop
-                if (found && items[n].selected) {
-                    return true;
-                }
-
-                // continue selecting items until we find a selected item
-                // or the first / last item if there aren't any
-                if (found) {
-                    items[n].selecting = true;
-                }
-
-                return false;
+            this.origin = {
+                x: _touch && e.type === "touchstart" ? e.touches[0].clientX : e.pageX,
+                y: _touch && e.type === "touchstart" ? e.touches[0].clientY : e.pageY,
             };
 
-            if (reverse) {
-                for (var i = 0; i < num; i++) {
-                    if (shiftSelect(i)) {
-                        break;
-                    }
+            this.container.appendChild(this.lasso);
+
+            if (node !== this.container) {
+                classList.add(node, o.classes.selecting);
+            }
+
+            if (o.autoRefresh) {
+                this.update();
+            }
+
+            // Unselect single item if touched (touchscreens)
+            if (_touch) {
+                var item = this.get(node);
+
+                if (item.selected) {
+                    // cancel drag
+                    this.dragging = false;
+                    this.unselect(item);
+                    return;
                 }
-            } else {
-                while (num--) {
-                    if (shiftSelect(num)) {
-                        break;
+            }
+
+            if (isShiftKey(e)) {
+
+                var items = this.items,
+                    found = false,
+                    num = this.items.length,
+                    reverse = o.shiftDirection !== "normal";
+
+                var shiftSelect = function(n) {
+                    // found the item we clicked
+                    if (items[n].node === node) {
+                        found = true;
+                    }
+
+                    // found a selected item so stop
+                    if (found && items[n].selected) {
+                        return true;
+                    }
+
+                    // continue selecting items until we find a selected item
+                    // or the first / last item if there aren't any
+                    if (found) {
+                        items[n].selecting = true;
+                    }
+
+                    return false;
+                };
+
+                if (reverse) {
+                    for (var i = 0; i < num; i++) {
+                        if (shiftSelect(i)) {
+                            break;
+                        }
+                    }
+                } else {
+                    while (num--) {
+                        if (shiftSelect(num)) {
+                            break;
+                        }
                     }
                 }
             }
@@ -564,7 +572,7 @@
      * @return {Void}
      */
     Selectable.prototype.end = function(e) {
-        if (!this.dragging) return;
+        if (!this.dragging && this.config.multiple) return;
 
         this.dragging = false;
 
@@ -880,6 +888,10 @@
 
             classList.add(this.container, this.config.classes.container);
 
+            if ( this.config.multiple ) {
+                classList.add(this.container, this.config.classes.multiple);
+            }
+
             this.emit('selectable.enable');
         }
 
@@ -909,6 +921,7 @@
             off(window, 'resize', e.recalculate);
             off(window, 'scroll', e.recalculate);
 
+            classList.remove(this.container, this.config.classes.multiple);
             classList.remove(this.container, this.config.classes.container);
 
             this.emit('selectable.disable');
