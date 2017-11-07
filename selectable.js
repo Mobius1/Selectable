@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.1
+ * Version: 0.8.2
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.1";
+    var _version = "0.8.2";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -78,8 +78,14 @@
         el.removeEventListener(type, callback);
     }
 
+    /**
+     * Find the closest matching ancestor to a node
+     * @param  {Object}   el HTMLElement
+     * @param  {Function} fn Callback
+     * @return {Object|Boolean}
+     */
     var closest = function(el, fn) {
-        return el && el !== document.body && (fn(el) ? el : closest(el.parentNode, fn));
+        return el && (fn(el) ? el : closest(el.parentNode, fn));
     };
 
     /**
