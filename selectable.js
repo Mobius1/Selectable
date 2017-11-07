@@ -32,11 +32,13 @@
      * @type {Object}
      */
     var defaultConfig = {
-        appendTo: document.body,
+        multiple: true,
         autoRefresh: true,
+
+        appendTo: document.body,
+
         filter: ".ui-selectable",
         tolerance: "touch",
-        multiple: true,
         shiftDirection: "normal",
 
         lasso: {
@@ -102,7 +104,7 @@
      * @return {Boolean}
      */
     var isCollection = function(arr) {
-        return Array.isArray(arr) || arr instanceof NodeList || arr instanceof HTMLCollection;
+        return Array.isArray(arr) || arr instanceof HTMLCollection || arr instanceof NodeList;
     }
 
     /**
@@ -328,22 +330,9 @@
      */
     Selectable.prototype.update = function() {
         var that = this,
-            o = this.config;
+            o = this.config.classes;
 
-        this.items = [];
-
-        each(this.nodes, function(el, i) {
-            classList.add(el, o.classes.selectable);
-
-            that.items[i] = {
-                node: el,
-                rect: rect(el),
-                startselected: false,
-                selected: classList.contains(el, o.classes.selected),
-                selecting: classList.contains(el, o.classes.selecting),
-                unselecting: classList.contains(el, o.classes.unselecting)
-            };
-        });
+        this.setItems();
 
         that.emit("selectable.update", that.items);
     };
@@ -403,9 +392,9 @@
 
         if (!this.container.contains(e.target)) return;
 
-        var that = this;
-        var o = this.config;
-        var originalEl;
+        var that = this,
+            o = this.config,
+            originalEl;
 
         var node = closest(e.target, function(el) {
             return el === that.container || classList.contains(el, o.classes.selectable);
@@ -418,11 +407,13 @@
             this.select(node);
         } else {
 
+            var t = e.type === "touchstart";
+
             this.dragging = true;
 
             this.origin = {
-                x: _touch && e.type === "touchstart" ? e.touches[0].clientX : e.pageX,
-                y: _touch && e.type === "touchstart" ? e.touches[0].clientY : e.pageY,
+                x: t ? e.touches[0].clientX : e.pageX,
+                y: t ? e.touches[0].clientY : e.pageY,
             };
 
             this.container.appendChild(this.lasso);
@@ -528,12 +519,12 @@
             return;
         }
 
-        var tmp;
+        var tmp, cl = classList, cls = o.classes, t = e.type === "touchstart";;
         var c = {
             x1: this.origin.x,
             y1: this.origin.y,
-            x2: _touch && e.type === "touchmove" ? e.touches[0].clientX : e.pageX,
-            y2: _touch && e.type === "touchmove" ? e.touches[0].clientY : e.pageY,
+            x2: t ? e.touches[0].clientX : e.pageX,
+            y2: t ? e.touches[0].clientY : e.pageY,
         };
 
         if (c.x1 > c.x2) {
@@ -553,40 +544,40 @@
 
         /* highlight */
         each(this.items, function(item) {
-            var el = item.node;
+            var el = item.node, r = item.rect;
             var over = false;
             if (o.tolerance == 'touch') {
-                over = !(item.rect.x1 > c.x2 || (item.rect.x2 < c.x1 || (item.rect.y1 > c.y2 || item.rect.y2 < c.y1)));
+                over = !(r.x1 > c.x2 || (r.x2 < c.x1 || (r.y1 > c.y2 || r.y2 < c.y1)));
             } else if (o.tolerance == 'fit') {
-                over = item.rect.x1 > c.x1 && (item.rect.x2 < c.x2 && (item.rect.y1 > c.y1 && item.rect.y2 < c.y2));
+                over = r.x1 > c.x1 && (r.x2 < c.x2 && (r.y1 > c.y1 && r.y2 < c.y2));
             }
             if (over) {
                 if (item.selected) {
-                    classList.remove(el, o.classes.selected);
+                    cl.remove(el, cls.selected);
                     item.selected = false;
                 }
                 if (item.unselecting) {
-                    classList.remove(el, o.classes.unselecting);
+                    cl.remove(el, cls.unselecting);
                     item.unselecting = false;
                 }
                 if (!item.selecting) {
-                    classList.add(el, o.classes.selecting);
+                    cl.add(el, cls.selecting);
                     item.selecting = true;
                 }
             } else {
                 if (item.selecting) {
                     if (isCmdKey(e) && item.startselected) {
-                        classList.remove(el, o.classes.selecting);
+                        cl.remove(el, cls.selecting);
                         item.selecting = false;
 
-                        classList.add(el, o.classes.selected);
+                        cl.add(el, cls.selected);
                         item.selected = true;
                     } else {
-                        classList.remove(el, o.classes.selecting);
+                        cl.remove(el, cls.selecting);
                         item.selecting = false;
 
                         if (item.startselected) {
-                            classList.add(el, o.classes.unselecting);
+                            cl.add(el, cls.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -594,10 +585,10 @@
                 if (el.selected) {
                     if (!isCmdKey(e)) {
                         if (!item.startselected) {
-                            classList.remove(el, o.classes.selected);
+                            cl.remove(el, cls.selected);
                             item.selected = false;
 
-                            classList.add(el, o.classes.unselecting);
+                            cl.add(el, cls.unselecting);
                             item.unselecting = true;
                         }
                     }
