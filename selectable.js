@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.3
+ * Version: 0.8.4
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.3";
+    var _version = "0.8.4";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -691,7 +691,7 @@
             classList.remove(old, this.config.classes.container);
 
             if ( this.config.multiple ) {
-                classList.add(old, this.config.classes.multiple);
+                classList.remove(old, this.config.classes.multiple);
             }
 
             this.unbind();
