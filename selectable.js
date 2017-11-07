@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.2
+ * Version: 0.8.3
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.2";
+    var _version = "0.8.3";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -311,17 +311,7 @@
             opacity: 0, // border will show even at zero width / height
         }, o.lasso));
 
-        if (typeof o.appendTo === 'string') {
-            this.container = document.querySelector(o.appendTo);
-        } else if (o.appendTo instanceof Element && o.appendTo.nodeName) {
-            this.container = o.appendTo;
-        }
-
-        if (isCollection(o.filter)) {
-            this.nodes = [].slice.call(o.filter);
-        } else if (typeof o.filter === "string") {
-            this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
-        }
+        this.setContainer();
 
         this.update();
 
@@ -356,6 +346,51 @@
         });
 
         that.emit("selectable.update", that.items);
+    };
+
+    Selectable.prototype.bind = function() {
+        var e = {
+            start: this.start.bind(this),
+            drag: this.drag.bind(this),
+            end: this.end.bind(this),
+            keydown: this.keydown.bind(this),
+            recalculate: debounce(this.recalculate, 50).bind(this)
+        };
+
+        // Attach event listeners
+        on(this.container, 'mousedown', e.start);
+        on(document, 'mousemove', e.drag);
+        on(document, 'mouseup', e.end);
+        on(document, 'keydown', e.keydown);
+
+        // Mobile
+        on(this.container, "touchstart", e.start);
+        on(document, "touchend", e.end);
+        on(document, "touchcancel", e.end);
+        on(document, "touchmove", e.drag);
+
+        on(window, 'resize', e.recalculate);
+        on(window, 'scroll', e.recalculate);
+
+        this.events = e;
+    };
+
+    Selectable.prototype.unbind = function() {
+        var e = this.events;
+
+        off(this.container, 'mousedown', e.start);
+        off(document, 'mousemove', e.drag);
+        off(document, 'mouseup', e.end);
+        off(document, 'keydown', e.keydown);
+
+        // Mobile
+        off(this.container, "touchstart", e.start);
+        off(document, "touchend", e.end);
+        off(document, "touchcancel", e.end);
+        off(document, "touchmove", e.drag);
+
+        off(window, 'resize', e.recalculate);
+        off(window, 'scroll', e.recalculate);
     };
 
     /**
@@ -629,6 +664,67 @@
         }
     };
 
+    Selectable.prototype.setContainer = function(container) {
+
+        var o = this.config,
+            old;
+
+        if (this.container) {
+            old = this.container;
+        }
+
+        container = container || o.appendTo;
+
+        if (typeof container === 'string') {
+            this.container = document.querySelector(container);
+        } else if (container instanceof Element && container.nodeName) {
+            this.container = container;
+        }
+
+        classList.add(this.container, this.config.classes.container);
+
+        if ( this.config.multiple ) {
+            classList.add(this.container, this.config.classes.multiple);
+        }
+
+        if (old) {
+            classList.remove(old, this.config.classes.container);
+
+            if ( this.config.multiple ) {
+                classList.add(old, this.config.classes.multiple);
+            }
+
+            this.unbind();
+        }
+
+        if (isCollection(o.filter)) {
+            this.nodes = [].slice.call(o.filter);
+        } else if (typeof o.filter === "string") {
+            this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
+        }
+
+        this.bind();
+    };
+
+    Selectable.prototype.setItems = function() {
+        var o = this.config.classes;
+
+        this.items = [];
+
+        each(this.nodes, function(el, i) {
+            classList.add(el, o.selectable);
+
+            this.items[i] = {
+                node: el,
+                rect: rect(el),
+                startselected: false,
+                selected: classList.contains(el, o.selected),
+                selecting: classList.contains(el, o.selecting),
+                unselecting: classList.contains(el, o.unselecting)
+            };
+        }, this);
+    };
+
     /**
      * Select an item
      * @param  {Object} item
@@ -868,31 +964,7 @@
         if (!this.enabled) {
             this.enabled = true;
 
-            // Bind events
-            var e = {
-                start: this.start.bind(this),
-                drag: this.drag.bind(this),
-                end: this.end.bind(this),
-                keydown: this.keydown.bind(this),
-                recalculate: debounce(this.recalculate, 50).bind(this)
-            };
-
-            // Attach event listeners
-            on(this.container, 'mousedown', e.start);
-            on(document, 'mousemove', e.drag);
-            on(document, 'mouseup', e.end);
-            on(document, 'keydown', e.keydown);
-
-            // Mobile
-            on(this.container, "touchstart", e.start);
-            on(document, "touchend", e.end);
-            on(document, "touchcancel", e.end);
-            on(document, "touchmove", e.drag);
-
-            on(window, 'resize', e.recalculate);
-            on(window, 'scroll', e.recalculate);
-
-            this.events = e;
+            this.bind();
 
             classList.add(this.container, this.config.classes.container);
 
@@ -912,25 +984,15 @@
      */
     Selectable.prototype.disable = function() {
         if (this.enabled) {
-            var e = this.events;
             this.enabled = false;
 
-            off(this.container, 'mousedown', e.start);
-            off(document, 'mousemove', e.drag);
-            off(document, 'mouseup', e.end);
-            off(document, 'keydown', e.keydown);
+            this.unbind();
 
-            // Mobile
-            off(this.container, "touchstart", e.start);
-            off(document, "touchend", e.end);
-            off(document, "touchcancel", e.end);
-            off(document, "touchmove", e.drag);
-
-            off(window, 'resize', e.recalculate);
-            off(window, 'scroll', e.recalculate);
-
-            classList.remove(this.container, this.config.classes.multiple);
             classList.remove(this.container, this.config.classes.container);
+
+            if ( this.config.multiple ) {
+                classList.remove(this.container, this.config.classes.multiple);
+            }
 
             this.emit('selectable.disable');
         }
