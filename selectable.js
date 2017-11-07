@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.7.4
+ * Version: 0.7.5
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.7.4";
+    var _version = "0.7.5";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -36,6 +36,7 @@
         autoRefresh: true,
         filter: ".ui-selectable",
         tolerance: "touch",
+        shiftDirection: "normal",
 
         lasso: {
             border: '1px dotted #3498db',
@@ -399,24 +400,43 @@
         }
 
         if (isShiftKey(e)) {
-            var found = false;
 
-            // Look back over the items until we find the on we've clicked
-            for (var i = this.items.length - 1; i >= 0; i--) {
+            var items = this.items,
+                found = false,
+                num = this.items.length,
+                reverse = o.shiftDirection !== "normal";
+
+            var shiftSelect = function(n) {
                 // found the item we clicked
-                if (this.items[i].node === node) {
+                if (items[n].node === node) {
                     found = true;
                 }
 
                 // found a selected item so stop
-                if (found && this.items[i].selected) {
-                    break;
+                if (found && items[n].selected) {
+                    return true;
                 }
 
                 // continue selecting items until we find a selected item
-                // or the first item if there aren't any
+                // or the first / last item if there aren't any
                 if (found) {
-                    this.items[i].selecting = true;
+                    items[n].selecting = true;
+                }
+
+                return false;
+            };
+
+            if (reverse) {
+                for (var i = 0; i < num; i++) {
+                    if (shiftSelect(i)) {
+                        break;
+                    }
+                }
+            } else {
+                while (num--) {
+                    if (shiftSelect(num)) {
+                        break;
+                    }
                 }
             }
         }
