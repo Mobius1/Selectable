@@ -1,5 +1,5 @@
 {
-  "name": "mobius1-selectable",
+  "name": "selectable.js",
   "version": "0.8.8",
   "description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
   "main": "selectable.min.js",
@@ -16,6 +16,5 @@
   "bugs": {
     "url": "https://github.com/Mobius1/Selectable/issues"
   },
-  "homepage": "https://github.com/Mobius1/Selectable#readme",
-  "deprecated": "Package name has been changed to selectable.js. Please install with the new name."
+  "homepage": "https://github.com/Mobius1/Selectable#readme"
 }
