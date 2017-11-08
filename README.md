@@ -5,7 +5,10 @@ Inspired by the jQuery UI Selectable plugin. Functionality and options are ident
 
 Selectable mimics the Windows file / directory behaviour, i.e. click and / or drag to select items, hold CTRL to select multiple or hold SHIFT to select consecutive groups of items.
 
-Works in most modern deskop and mobile browsers including IE9+ as well a touchscreen devices.
+* No dependencies
+* 3kb gzipped
+* IE9+
+* Touch enabled
 
 **Selectable is still in active development and therefore the API is in constant flux until `v1.0.0`. Check back regularly for any changes and make sure you have the latest version installed.**
 
