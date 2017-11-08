@@ -1,6 +1,6 @@
 {
   "name": "mobius1-selectable",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
   "main": "selectable.min.js",
   "scripts": {
