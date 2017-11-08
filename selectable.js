@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.4
+ * Version: 0.8.5
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.4";
+    var _version = "0.8.5";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -313,6 +313,14 @@
             opacity: 0, // border will show even at zero width / height
         }, o.lasso));
 
+        this.events = {
+            start: this.start.bind(this),
+            drag: this.drag.bind(this),
+            end: this.end.bind(this),
+            keydown: this.keydown.bind(this),
+            recalculate: debounce(this.recalculate, 50).bind(this)
+        }
+
         this.setContainer();
 
         this.update();
@@ -338,13 +346,7 @@
     };
 
     Selectable.prototype.bind = function() {
-        var e = {
-            start: this.start.bind(this),
-            drag: this.drag.bind(this),
-            end: this.end.bind(this),
-            keydown: this.keydown.bind(this),
-            recalculate: debounce(this.recalculate, 50).bind(this)
-        };
+        var e = this.events;
 
         // Attach event listeners
         on(this.container, 'mousedown', e.start);
@@ -360,8 +362,6 @@
 
         on(window, 'resize', e.recalculate);
         on(window, 'scroll', e.recalculate);
-
-        this.events = e;
     };
 
     Selectable.prototype.unbind = function() {
