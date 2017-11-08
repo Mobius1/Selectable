@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.5
+ * Version: 0.8.6
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.5";
+    var _version = "0.8.6";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -196,7 +196,7 @@
      * @param  {Boolean} now
      * @return {Function}
      */
-    var debounce = function(n, t, u) {
+    var throttle = function(n, t, u) {
         var e;
         return function() {
             var i = this,
@@ -261,30 +261,6 @@
         return !!e.shiftKey;
     };
 
-    /* EMITTER */
-    var Emitter = function() {};
-    Emitter.prototype = {
-        on: function(a, b) {
-            this._events = this._events || {}, this._events[a] = this._events[a] || [], this._events[a].push(b)
-        },
-        off: function(a, b) {
-            this._events = this._events || {}, a in this._events != !1 && this._events[a].splice(this._events[a].indexOf(b), 1)
-        },
-        emit: function(a) {
-            if (this._events = this._events || {}, a in this._events != !1) {
-                for (var b = 0; b < this._events[a].length; b++) {
-                    this._events[a][b].apply(this, Array.prototype.slice.call(arguments, 1))
-                }
-            }
-        }
-    };
-
-    Emitter.mixin = function(a) {
-        var b = ["on", "off", "emit"],
-            c = b.length;
-        for (; c--;) "function" == typeof a ? a.prototype[b[c]] = Emitter.prototype[b[c]] : a[b[c]] = Emitter.prototype[b[c]];
-        return a
-    };
 
     /* SELECTABLE */
     function Selectable(options) {
@@ -301,9 +277,6 @@
         var that = this,
             o = this.config;
 
-        /* Enable emitter */
-        Emitter.mixin(this);
-
         /* lasso */
         this.lasso = document.createElement('div');
         this.lasso.className = o.classes.lasso;
@@ -318,7 +291,7 @@
             drag: this.drag.bind(this),
             end: this.end.bind(this),
             keydown: this.keydown.bind(this),
-            recalculate: debounce(this.recalculate, 50).bind(this)
+            recalculate: throttle(this.recalculate, 50).bind(this)
         }
 
         this.setContainer();
@@ -945,6 +918,43 @@
         return this.getSelectedItems().map(function(item) {
             return item.node;
         });
+    };
+
+    /**
+     * Add custom event listener
+     * @param  {String} event
+     * @param  {Function} callback
+     * @return {Void}
+     */
+    Selectable.prototype.on = function (event, callback) {
+        this.events = this.events || {};
+        this.events[event] = this.events[event] || [];
+        this.events[event].push(callback);
+    };
+
+    /**
+     * Remove custom event listener
+     * @param  {String} event
+     * @param  {Function} callback
+     * @return {Void}
+     */
+    Selectable.prototype.off = function (event, callback) {
+        this.events = this.events || {};
+        if (event in this.events === false) return;
+        this.events[event].splice(this.events[event].indexOf(callback), 1);
+    };
+
+    /**
+     * Fire custom event
+     * @param  {String} event
+     * @return {Void}
+     */
+    Selectable.prototype.emit = function (event) {
+        this.events = this.events || {};
+        if (event in this.events === false) return;
+        for (var i = 0; i < this.events[event].length; i++) {
+            this.events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
+        }
     };
 
     /**
