@@ -1,5 +1,5 @@
 # Selectable
-[![npm version](https://badge.fury.io/js/mobius1-selectable.svg)](https://badge.fury.io/js/mobius1-selectable) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Percentage of issues still open") ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js) ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped)
+[![npm version](https://badge.fury.io/js/selectable.js.svg)](https://badge.fury.io/js/selectable.js) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Percentage of issues still open") ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js) ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped)
 
 Inspired by the jQuery UI Selectable plugin. Functionality and options are identical to the jQuery UI version with some additions and performance enhancements.
 
@@ -27,12 +27,12 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 ### Bower
 ```
-bower install mobius1-selectable --save
+bower install selectable.js --save
 ```
 
 ### npm
 ```
-npm install mobius1-selectable --save
+npm install selectable.js --save
 ```
 
 ---
@@ -42,12 +42,12 @@ npm install mobius1-selectable --save
 Grab the file from one of the CDNs and include it in your page:
 
 ```
-https://unpkg.com/mobius1-selectable@latest/selectable.min.js
+https://unpkg.com/selectable.js@latest/selectable.min.js
 ```
 or
 
 ```
-https://cdn.jsdelivr.net/npm/mobius1-selectable@latest/selectable.min.js
+https://cdn.jsdelivr.net/npm/selectable.js@latest/selectable.min.js
 ```
 
 You can replace `latest` with the required release number if needed.
