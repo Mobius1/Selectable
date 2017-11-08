@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/Mobius1/Selectable.git"
   },
-  "keywords": [],
+  "keywords": ["selectable", "select", "drag"],
   "author": "Karl Saunders",
   "license": "MIT",
   "bugs": {
