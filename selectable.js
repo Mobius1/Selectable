@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.10
+ * Version: 0.8.11
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.10";
+    var _version = "0.8.11";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -614,12 +614,13 @@
             height: 0
         });
 
-        var selected = [];
+        var selected = [], unselected = [];
 
         each(this.items, function(item) {
             var el = item.node;
 
             if (item.unselecting) {
+                unselected.push(item);
                 this.unselect(item);
             }
 
@@ -634,7 +635,7 @@
             this.container.removeChild(this.lasso);
         }
 
-        this.emit('selectable.end', selected);
+        this.emit('selectable.end', selected, unselected);
     };
 
     /**

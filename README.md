@@ -77,28 +77,7 @@ const selectable = new Selectable(options);
 
 ## Events
 
-```javascript
-// Intitialise Selectable
-const selectable = new Selectable(options);
-
-// Listen for the 'selectable.XXXX' event
-selectable.on('selectable.XXXX', function(/* params */) {
-    // Do something when 'selectable.XXXX' fires
-});
-```
-
-| Name | Fired   | Params |
-|---|---|---|
-|`selectable.init` | when the instance is ready |
-|`selectable.enable` | when the instance is enabled |
-|`selectable.disable` | when the instance is disabled |
-|`selectable.start` | on mousedown / touchstart (within container) | `element` - the item that was clicked on |
-|`selectable.drag` | when dragging the lasso | `coords` - the coords of the lasso
-|`selectable.end` | on mouseup / touchend (within container) | `items` - the current selection of item(s)
-|`selectable.select` | when an item is selected | `item` - the selected item |
-|`selectable.unselect` | when an item is unselected | `item` - the unselected item
-|`selectable.update` | when the instance is updated |
-|`selectable.recalculate` | when the item coords are recalculated |
+[See Documentation](https://github.com/Mobius1/Selectable/wiki/events)
 
 ---
 
