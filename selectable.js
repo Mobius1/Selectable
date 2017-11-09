@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.8
+ * Version: 0.8.9
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.8";
+    var _version = "0.8.9";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -65,7 +65,7 @@
      * @param  {Object}   scope    Function scope
      * @return {Void}
      */
-    function on(el, type, callback, scope) {
+    var on = function(el, type, callback, scope) {
         el.addEventListener(type, callback, false);
     }
 
@@ -76,7 +76,7 @@
      * @param  {Function} callback Event callback
      * @return {Void}
      */
-    function off(el, type, callback) {
+    var off = function(el, type, callback) {
         el.removeEventListener(type, callback);
     }
 
@@ -261,7 +261,6 @@
         return !!e.shiftKey;
     };
 
-
     /* SELECTABLE */
     function Selectable(options) {
         this.version = _version;
@@ -310,12 +309,24 @@
      * @return {Void}
      */
     Selectable.prototype.update = function() {
-        var that = this,
-            o = this.config.classes;
+        var o = this.config.classes;
 
-        this.setItems();
+        this.items = [];
 
-        that.emit("selectable.update", that.items);
+        each(this.nodes, function(el, i) {
+            classList.add(el, o.selectable);
+
+            this.items[i] = {
+                node: el,
+                rect: rect(el),
+                startselected: false,
+                selected: classList.contains(el, o.selected),
+                selecting: classList.contains(el, o.selecting),
+                unselecting: classList.contains(el, o.unselecting)
+            };
+        }, this);
+
+        this.emit("selectable.update", this.items);
     };
 
     Selectable.prototype.bind = function() {
@@ -376,7 +387,7 @@
         if (!node || o.disabled) return false;
 
         // multiple check
-        if ( !o.multiple ) {
+        if (!o.multiple) {
             this.select(node);
         } else {
 
@@ -492,7 +503,9 @@
             return;
         }
 
-        var tmp, cl = classList, cls = o.classes, t = e.type === "touchstart";;
+        var tmp, cl = classList,
+            cls = o.classes,
+            t = e.type === "touchstart";;
         var c = {
             x1: this.origin.x,
             y1: this.origin.y,
@@ -517,7 +530,8 @@
 
         /* highlight */
         each(this.items, function(item) {
-            var el = item.node, r = item.rect;
+            var el = item.node,
+                r = item.rect;
             var over = false;
             if (o.tolerance == 'touch') {
                 over = !(r.x1 > c.x2 || (r.x2 < c.x1 || (r.y1 > c.y2 || r.y2 < c.y1)));
@@ -647,14 +661,14 @@
 
         classList.add(this.container, this.config.classes.container);
 
-        if ( this.config.multiple ) {
+        if (this.config.multiple) {
             classList.add(this.container, this.config.classes.multiple);
         }
 
         if (old) {
             classList.remove(old, this.config.classes.container);
 
-            if ( this.config.multiple ) {
+            if (this.config.multiple) {
                 classList.remove(old, this.config.classes.multiple);
             }
 
@@ -668,25 +682,6 @@
         }
 
         this.bind();
-    };
-
-    Selectable.prototype.setItems = function() {
-        var o = this.config.classes;
-
-        this.items = [];
-
-        each(this.nodes, function(el, i) {
-            classList.add(el, o.selectable);
-
-            this.items[i] = {
-                node: el,
-                rect: rect(el),
-                startselected: false,
-                selected: classList.contains(el, o.selected),
-                selecting: classList.contains(el, o.selecting),
-                unselecting: classList.contains(el, o.unselecting)
-            };
-        }, this);
     };
 
     /**
@@ -926,7 +921,7 @@
      * @param  {Function} callback
      * @return {Void}
      */
-    Selectable.prototype.on = function (event, callback) {
+    Selectable.prototype.on = function(event, callback) {
         this.events = this.events || {};
         this.events[event] = this.events[event] || [];
         this.events[event].push(callback);
@@ -938,7 +933,7 @@
      * @param  {Function} callback
      * @return {Void}
      */
-    Selectable.prototype.off = function (event, callback) {
+    Selectable.prototype.off = function(event, callback) {
         this.events = this.events || {};
         if (event in this.events === false) return;
         this.events[event].splice(this.events[event].indexOf(callback), 1);
@@ -949,7 +944,7 @@
      * @param  {String} event
      * @return {Void}
      */
-    Selectable.prototype.emit = function (event) {
+    Selectable.prototype.emit = function(event) {
         this.events = this.events || {};
         if (event in this.events === false) return;
         for (var i = 0; i < this.events[event].length; i++) {
@@ -969,7 +964,7 @@
 
             classList.add(this.container, this.config.classes.container);
 
-            if ( this.config.multiple ) {
+            if (this.config.multiple) {
                 classList.add(this.container, this.config.classes.multiple);
             }
 
@@ -991,7 +986,7 @@
 
             classList.remove(this.container, this.config.classes.container);
 
-            if ( this.config.multiple ) {
+            if (this.config.multiple) {
                 classList.remove(this.container, this.config.classes.multiple);
             }
 
