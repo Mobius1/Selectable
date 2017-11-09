@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.9.0
+ * Version: 0.9.1
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.9.0";
+    var _version = "0.9.1";
 
     /**
      * Check for touch screen
@@ -211,17 +211,19 @@
      * @param  {Boolean} now
      * @return {Function}
      */
-    var throttle = function(n, t, u) {
-        var e;
+    var throttle = function(fn, limit, context) {
+        var wait = undefined;
         return function() {
-            var i = this,
-                o = arguments,
-                a = u && !e;
-            clearTimeout(e), e = setTimeout(function() {
-                e = null, u || n.apply(i, o)
-            }, t), a && n.apply(i, o)
-        }
-    }
+            context = context || this;
+            if (!wait) {
+                fn.apply(context, arguments);
+                wait = true;
+                return setTimeout(function() {
+                    return wait = false;
+                }, limit);
+            }
+        };
+    };
 
     /**
      * classList shim
@@ -328,11 +330,11 @@
             drag: this.drag.bind(this),
             end: this.end.bind(this),
             keydown: this.keydown.bind(this),
-            recalculate: throttle(this.recalculate, o.throttle).bind(this)
+            recalculate: throttle(this.recalculate, o.throttle, this)
         }
 
         if (this.autoscroll) {
-            this.events.scroll = throttle(this.scroll, o.throttle).bind(this);
+            this.events.scroll = throttle(this.scroll, o.throttle, this);
         }
 
         this.setContainer();
