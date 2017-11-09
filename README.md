@@ -65,19 +65,19 @@ const selectable = new Selectable(options);
 
 ## Options
 
-[See Documentation](https://github.com/Mobius1/Selectable/wiki/Options)
+[See Options](https://github.com/Mobius1/Selectable/wiki/Options)
 
 ---
 
 ## Public Methods
 
-[See Documentation](https://github.com/Mobius1/Selectable/wiki/Public-Methods)
+[See Public Methods](https://github.com/Mobius1/Selectable/wiki/Public-Methods)
 
 ---
 
 ## Events
 
-[See Documentation](https://github.com/Mobius1/Selectable/wiki/events)
+[See Events](https://github.com/Mobius1/Selectable/wiki/events)
 
 ---
 
