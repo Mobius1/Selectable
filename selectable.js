@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.9
+ * Version: 0.8.10
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.9";
+    var _version = "0.8.10";
 
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
@@ -309,7 +309,8 @@
      * @return {Void}
      */
     Selectable.prototype.update = function() {
-        var o = this.config.classes;
+        var o = this.config.classes,
+            c = classList.contains;
 
         this.items = [];
 
@@ -320,15 +321,19 @@
                 node: el,
                 rect: rect(el),
                 startselected: false,
-                selected: classList.contains(el, o.selected),
-                selecting: classList.contains(el, o.selecting),
-                unselecting: classList.contains(el, o.unselecting)
+                selected: c(el, o.selected),
+                selecting: c(el, o.selecting),
+                unselecting: c(el, o.unselecting)
             };
         }, this);
 
         this.emit("selectable.update", this.items);
     };
 
+    /**
+     * Add instance event listeners
+     * @return {Void}
+     */
     Selectable.prototype.bind = function() {
         var e = this.events;
 
@@ -348,6 +353,10 @@
         on(window, 'scroll', e.recalculate);
     };
 
+    /**
+     * Remove instance event listeners
+     * @return {Void}
+     */
     Selectable.prototype.unbind = function() {
         var e = this.events;
 
@@ -642,6 +651,10 @@
         }
     };
 
+    /**
+     * Set the container
+     * @param {String|Object} container CSS3 selector string or HTMLElement
+     */
     Selectable.prototype.setContainer = function(container) {
 
         var o = this.config,
@@ -649,6 +662,8 @@
 
         if (this.container) {
             old = this.container;
+
+            this.unbind();
         }
 
         container = container || o.appendTo;
@@ -671,8 +686,6 @@
             if (this.config.multiple) {
                 classList.remove(old, this.config.classes.multiple);
             }
-
-            this.unbind();
         }
 
         if (isCollection(o.filter)) {
@@ -796,11 +809,14 @@
                 }
             } else {
                 var el = item.node,
-                    o = this.config.classes;
-                classList.remove(el, o.selectable);
-                classList.remove(el, o.unselecting);
-                classList.remove(el, o.selecting);
-                classList.remove(el, o.selected);
+                    o = this.config.classes,
+                    rm = classList.remove;
+
+                rm(el, o.selectable);
+                rm(el, o.unselecting);
+                rm(el, o.selecting);
+                rm(el, o.selected);
+
                 this.nodes.splice(this.nodes.indexOf(item.node), 1);
             }
 
