@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.8.11
+ * Version: 0.9.0
  *
  */
 (function(root, factory) {
@@ -21,10 +21,18 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.8.11";
+    var _version = "0.9.0";
 
+    /**
+     * Check for touch screen
+     * @type {Boolean}
+     */
     var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
+    /**
+     * Check for classList support
+     * @type {Boolean}
+     */
     var _supports = 'classList' in document.documentElement;
 
     /**
@@ -35,11 +43,18 @@
         multiple: true,
         autoRefresh: true,
 
+        throttle: 50,
+
         appendTo: document.body,
 
         filter: ".ui-selectable",
         tolerance: "touch",
         shiftDirection: "normal",
+
+        autoScroll: {
+            offset: 40,
+            increment: 10,
+        },
 
         lasso: {
             border: '1px dotted #000',
@@ -213,33 +228,50 @@
      * @type {Object}
      */
     var classList = {
-        add: function(s, a) {
+        /**
+         * Add a class name to a node
+         * @param {Object} node Element node
+         * @param {String} a Class name
+         */
+        add: function(node, name) {
             if (_supports) {
-                s.classList.add(a);
+                node.classList.add(name);
             } else {
-                if (!classList.contains(s, a)) {
-                    s.className = s.className.trim() + " " + a;
+                if (!classList.contains(node, name)) {
+                    node.className = node.className.trim() + " " + name;
                 }
             }
         },
-        remove: function(s, a) {
+
+        /**
+         * Remove a class name from a node
+         * @param {Object} node Element node
+         * @param {String} name Class name
+         */
+        remove: function(node, name) {
             if (_supports) {
-                s.classList.remove(a);
+                node.classList.remove(name);
             } else {
-                if (classList.contains(s, a)) {
-                    s.className = s.className.replace(
-                        new RegExp("(^|\\s)" + a.split(" ").join("|") + "(\\s|$)", "gi"),
+                if (classList.contains(node, name)) {
+                    node.className = node.className.replace(
+                        new RegExp("(^|\\s)" + name.split(" ").join("|") + "(\\s|$)", "gi"),
                         " "
                     );
                 }
             }
         },
-        contains: function(s, a) {
-            if (s)
+
+        /**
+         * Check a node has class name
+         * @param {Object} node Element node
+         * @param {String} name Class name
+         */
+        contains: function(node, name) {
+            if (node)
                 return _supports ?
-                    s.classList.contains(a) :
-                    !!s.className &&
-                    !!s.className.match(new RegExp("(\\s|^)" + a + "(\\s|$)"));
+                    node.classList.contains(name) :
+                    !!node.className &&
+                    !!node.className.match(new RegExp("(\\s|^)" + name + "(\\s|$)"));
         }
     };
 
@@ -276,6 +308,12 @@
         var that = this,
             o = this.config;
 
+        // Is auto-scroll enabled?
+        this.autoscroll = isObject(o.autoScroll);
+
+        // Scroll data for auto-scroll
+        this.data = { x: 0, y: 0, right: 0, left: 0, down: 0, up: 0 };
+
         /* lasso */
         this.lasso = document.createElement('div');
         this.lasso.className = o.classes.lasso;
@@ -290,7 +328,11 @@
             drag: this.drag.bind(this),
             end: this.end.bind(this),
             keydown: this.keydown.bind(this),
-            recalculate: throttle(this.recalculate, 50).bind(this)
+            recalculate: throttle(this.recalculate, o.throttle).bind(this)
+        }
+
+        if (this.autoscroll) {
+            this.events.scroll = throttle(this.scroll, o.throttle).bind(this);
         }
 
         this.setContainer();
@@ -311,6 +353,14 @@
     Selectable.prototype.update = function() {
         var o = this.config.classes,
             c = classList.contains;
+
+        this.size = {
+            rect: rect(this.container),
+            x: this.container.scrollLeft,
+            y: this.container.scrollTop,
+            w: this.container.scrollWidth,
+            h: this.container.scrollHeight
+        };
 
         this.items = [];
 
@@ -343,6 +393,10 @@
         on(document, 'mouseup', e.end);
         on(document, 'keydown', e.keydown);
 
+        if (this.autoscroll) {
+            on(this.container, "scroll", e.scroll);
+        }
+
         // Mobile
         on(this.container, "touchstart", e.start);
         on(document, "touchend", e.end);
@@ -365,6 +419,10 @@
         off(document, 'mouseup', e.end);
         off(document, 'keydown', e.keydown);
 
+        if (this.autoscroll) {
+            off(this.container, "scroll", e.scroll);
+        }
+
         // Mobile
         off(this.container, "touchstart", e.start);
         off(document, "touchend", e.end);
@@ -377,7 +435,7 @@
 
     /**
      * mousedown / touchstart event listener
-     * @param  {Object} e
+     * @param  {Object} e Event interface
      * @return {Void}
      */
     Selectable.prototype.start = function(e) {
@@ -408,6 +466,13 @@
                 x: t ? e.touches[0].clientX : e.pageX,
                 y: t ? e.touches[0].clientY : e.pageY,
             };
+
+            if (this.autoscroll) {
+                this.origin.scroll = {
+                    x: this.container.scrollLeft,
+                    y: this.container.scrollTop,
+                };
+            }
 
             this.container.appendChild(this.lasso);
 
@@ -501,7 +566,7 @@
 
     /**
      * mousmove / touchmove event listener
-     * @param  {Object} e
+     * @param  {Object} e Event interface
      * @return {Void}
      */
     Selectable.prototype.drag = function(e) {
@@ -512,15 +577,33 @@
             return;
         }
 
-        var tmp, cl = classList,
+        var that = this,
+            c,
+            tmp, cl = classList,
             cls = o.classes,
-            t = e.type === "touchstart";;
-        var c = {
+            t = e.type === "touchstart";
+
+        this.offset = c = {
             x1: this.origin.x,
             y1: this.origin.y,
             x2: t ? e.touches[0].clientX : e.pageX,
             y2: t ? e.touches[0].clientY : e.pageY,
+            scroll: { x: 0, y: 0 }
         };
+
+        if (this.autoscroll) {
+            c.scroll = {
+                x: this.container.scrollLeft,
+                y: this.container.scrollTop,
+            };
+
+            this.scrolling = {
+                x: 0,
+                y: 0
+            };
+
+            this.autoScroll(e);
+        }
 
         if (c.x1 > c.x2) {
             tmp = c.x2, c.x2 = c.x1, c.x1 = tmp;
@@ -529,76 +612,43 @@
             tmp = c.y2, c.y2 = c.y1, c.y1 = tmp;
         }
 
-        css(this.lasso, {
-            opacity: 1,
-            left: c.x1,
-            width: c.x2 - c.x1,
-            top: c.y1,
-            height: c.y2 - c.y1
-        });
-
         /* highlight */
         each(this.items, function(item) {
-            var el = item.node,
-                r = item.rect;
-            var over = false;
-            if (o.tolerance == 'touch') {
-                over = !(r.x1 > c.x2 || (r.x2 < c.x1 || (r.y1 > c.y2 || r.y2 < c.y1)));
-            } else if (o.tolerance == 'fit') {
-                over = r.x1 > c.x1 && (r.x2 < c.x2 && (r.y1 > c.y1 && r.y2 < c.y2));
-            }
-            if (over) {
-                if (item.selected) {
-                    cl.remove(el, cls.selected);
-                    item.selected = false;
-                }
-                if (item.unselecting) {
-                    cl.remove(el, cls.unselecting);
-                    item.unselecting = false;
-                }
-                if (!item.selecting) {
-                    cl.add(el, cls.selecting);
-                    item.selecting = true;
-                }
-            } else {
-                if (item.selecting) {
-                    if (isCmdKey(e) && item.startselected) {
-                        cl.remove(el, cls.selecting);
-                        item.selecting = false;
-
-                        cl.add(el, cls.selected);
-                        item.selected = true;
-                    } else {
-                        cl.remove(el, cls.selecting);
-                        item.selecting = false;
-
-                        if (item.startselected) {
-                            cl.add(el, cls.unselecting);
-                            item.unselecting = true;
-                        }
-                    }
-                }
-                if (el.selected) {
-                    if (!isCmdKey(e)) {
-                        if (!item.startselected) {
-                            cl.remove(el, cls.selected);
-                            item.selected = false;
-
-                            cl.add(el, cls.unselecting);
-                            item.unselecting = true;
-                        }
-                    }
-                }
-            }
-
+            that.highlight(item, isCmdKey(e));
         });
 
-        this.emit('selectable.drag', c);
+        var coords = {
+            x1: c.x1 + this.data.right,
+            x2: (c.x2 + this.data.left) - (c.x1 + this.data.right),
+            y1: c.y1 + this.data.down,
+            y2: (c.y2 + this.data.up) - (c.y1 + this.data.down),
+        }
+
+        var style = {
+            opacity: 1,
+            left: coords.x1,
+            width: coords.x2,
+            top: coords.y1,
+            height: coords.y2
+        };
+
+        if (this.autoscroll) {
+            style = extend(style, {
+                zIndex: 0,
+                position: "absolute",
+                left: coords.x1 - this.size.rect.x1 + this.offset.scroll.x,
+                top: coords.y1 - this.size.rect.y1 + this.offset.scroll.y,
+            });
+        }
+
+        css(this.lasso, style);
+
+        this.emit('selectable.drag', coords);
     };
 
     /**
      * mouseup / touchend event listener
-     * @param  {Object} e
+     * @param  {Object} e Event interface
      * @return {Void}
      */
     Selectable.prototype.end = function(e) {
@@ -606,15 +656,16 @@
 
         this.dragging = false;
 
-        css(this.lasso, {
-            opacity: 0,
-            left: 0,
-            width: 0,
-            top: 0,
-            height: 0
-        });
+        // Reset the lasso
+        css(this.lasso, { opacity: 0, left: 0, width: 0, top: 0, height: 0 });
 
-        var selected = [], unselected = [];
+        this.data.right = 0,
+        this.data.left = 0,
+        this.data.down = 0,
+        this.data.up = 0;
+
+        var selected = [],
+            unselected = [];
 
         each(this.items, function(item) {
             var el = item.node;
@@ -640,7 +691,7 @@
 
     /**
      * keydown event listener
-     * @param  {Object} e
+     * @param  {Object} e Event interface
      * @return {Void}
      */
     Selectable.prototype.keydown = function(e) {
@@ -648,6 +699,159 @@
             if (e.keyCode == 65 || e.keyCode == 97) {
                 e.preventDefault();
                 this.selectAll();
+            }
+        }
+    };
+
+    /**
+     * scroll event listener
+     * @param  {Object} e Event interface
+     * @return {Void}
+     */
+    Selectable.prototype.scroll = function(e) {
+        each(this.items, function(item) {
+            item.rect = rect(item.node);
+        });
+    };
+
+    /**
+     * Auto scroll
+     * @param  {Object} e Event interface
+     * @return {Void}
+     */
+    Selectable.prototype.autoScroll = function(e) {
+        var o = this.config.autoScroll,
+            r = this.size.rect,
+            l = this.offset.scroll.x,
+            t = this.offset.scroll.y,
+            w = this.size.w,
+            h = this.size.h,
+            x = 0,
+            y = 0,
+            nl = l,
+            nt = t;
+
+        // Check we're not scrolled all the way to the top or bottom
+        if (t > 0 || t < h - r.height) {
+            // Check we're in the auto-scroll trigger zone
+            if (e.pageY >= r.y2 - o.offset || e.pageY <= r.y1 + o.offset) {
+                if (e.pageY >= r.y2 - o.offset) { // scrolling down
+                    y = o.increment;
+
+                    this.scrolling.y = 1;
+                } else if (e.pageY <= r.y1 + o.offset) { // scrolling up
+                    y = -o.increment;
+
+                    this.scrolling.y = -1;
+                }
+
+                nt += y;
+
+                // scroll the container and store the new position
+                this.container.scrollTop = this.offset.scroll.y = nt;
+            }
+        }
+
+        // Check we're not scrolled all the way to the left or right
+        if (l > 0 || l < w - r.width) {
+            // Check we're in the auto-scroll trigger zone
+            if (e.pageX >= r.x2 - o.offset || e.pageX <= r.x1 + o.offset) {
+                if (e.pageX >= r.x2 - o.offset) { // scrolling right
+                    x = o.increment;
+
+                    this.scrolling.x = 1;
+                } else if (e.pageX <= r.x1 + o.offset) { // scrolling left
+                    x = -o.increment;
+
+                    this.scrolling.x = -1;
+                }
+
+                nl += x;
+
+                // scroll the container and store the new position
+                this.container.scrollLeft = this.offset.scroll.x = nl;
+            }
+        }
+
+        this.data.x = (this.origin.scroll.x - this.offset.scroll.x),
+        this.data.y = (this.origin.scroll.y - this.offset.scroll.y);
+
+        if (this.scrolling.x > 0) {
+            this.data.right = this.data.x;
+        } else if (this.scrolling.x < 0) {
+            this.data.left = this.data.x;
+        }
+
+        if (this.scrolling.y > 0) {
+            this.data.down = this.data.y;
+        } else if (this.scrolling.y < 0) {
+            this.data.up = this.data.y;
+        }
+    };
+
+    /**
+     * Highlight an item
+     * @param  {Object} item   The item
+     * @return {Void}
+     */
+    Selectable.prototype.highlight = function(item, cmd) {
+        var offset = this.offset,
+            o = this.config,
+            cls = o.classes,
+            el = item.node,
+            r = item.rect,
+            d = this.data,
+            over = false;
+
+        if (o.tolerance == "touch") {
+            over = !(r.x1 > offset.x2 + d.left || (r.x2 < offset.x1 + d.right ||
+                (r.y1 > offset.y2 + d.up || r.y2 < offset.y1 + d.down)));
+        } else if (o.tolerance == "fit") {
+            over = r.x1 > offset.x1 + d.right && (r.x2 < offset.x2 + d.left &&
+                (r.y1 > offset.y1 + d.down && r.y2 < offset.y2 + d.up));
+        }
+
+        if (over) {
+            if (item.selected) {
+                classList.remove(el, cls.selected);
+                item.selected = false;
+            }
+            if (item.unselecting) {
+                classList.remove(el, cls.unselecting);
+                item.unselecting = false;
+            }
+            if (!item.selecting) {
+                classList.add(el, cls.selecting);
+                item.selecting = true;
+            }
+        } else {
+            if (item.selecting) {
+                if (cmd && item.startselected) {
+                    classList.remove(el, cls.selecting);
+                    item.selecting = false;
+
+                    classList.add(el, cls.selected);
+                    item.selected = true;
+                } else {
+                    classList.remove(el, cls.selecting);
+                    item.selecting = false;
+
+                    if (item.startselected) {
+                        classList.add(el, cls.unselecting);
+                        item.unselecting = true;
+                    }
+                }
+            }
+            if (el.selected) {
+                if (!cmd) {
+                    if (!item.startselected) {
+                        classList.remove(el, cls.selected);
+                        item.selected = false;
+
+                        classList.add(el, cls.unselecting);
+                        item.unselecting = true;
+                    }
+                }
             }
         }
     };
@@ -693,6 +897,16 @@
             this.nodes = [].slice.call(o.filter);
         } else if (typeof o.filter === "string") {
             this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
+        }
+
+        if (this.autoscroll) {
+            var pos, style = css(this.container);
+
+            if (style.position === "static") {
+                css(this.container, {
+                    position: "relative"
+                });
+            }
         }
 
         this.bind();
