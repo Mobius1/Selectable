@@ -65,13 +65,13 @@ const selectable = new Selectable(options);
 
 ## Options
 
-[See Documentation](https://github.com/Mobius1/Selectable/wiki)
+[See Documentation](https://github.com/Mobius1/Selectable/wiki/Options)
 
 ---
 
 ## Public Methods
 
-[See Documentation](https://github.com/Mobius1/Selectable/wiki)
+[See Documentation](https://github.com/Mobius1/Selectable/wiki/Public-Methods)
 
 ---
 
