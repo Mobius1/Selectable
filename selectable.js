@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.9.1
+ * Version: 0.9.2
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.9.1";
+    var _version = "0.9.2";
 
     /**
      * Check for touch screen
@@ -626,24 +626,7 @@
             y2: (c.y2 + this.data.up) - (c.y1 + this.data.down),
         }
 
-        var style = {
-            opacity: 1,
-            left: coords.x1,
-            width: coords.x2,
-            top: coords.y1,
-            height: coords.y2
-        };
-
-        if (this.autoscroll) {
-            style = extend(style, {
-                zIndex: 0,
-                position: "absolute",
-                left: coords.x1 - this.size.rect.x1 + this.offset.scroll.x,
-                top: coords.y1 - this.size.rect.y1 + this.offset.scroll.y,
-            });
-        }
-
-        css(this.lasso, style);
+        this.updateHelper(coords);
 
         this.emit('selectable.drag', coords);
     };
@@ -714,6 +697,32 @@
         each(this.items, function(item) {
             item.rect = rect(item.node);
         });
+    };
+
+    /**
+     * Update the lasso dimensions
+     * @param  {Object} coords Dimensions
+     * @return {Void}
+     */
+    Selectable.prototype.updateHelper = function(coords) {
+        var style = {
+            opacity: 1,
+            left: coords.x1,
+            width: coords.x2,
+            top: coords.y1,
+            height: coords.y2
+        };
+
+        if ( this.autoscroll ) {
+            style = extend(style, {
+                zIndex: 0,
+                position: "absolute",
+                left: coords.x1 - this.size.rect.x1 + this.offset.scroll.x,
+                top: coords.y1 - this.size.rect.y1 + this.offset.scroll.y,
+            });
+        }
+
+        css(this.lasso, style);
     };
 
     /**
