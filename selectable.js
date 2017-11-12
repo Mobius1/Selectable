@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.9.2
+ * Version: 0.10.0
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.9.2";
+    var _version = "0.10.0";
 
     /**
      * Check for touch screen
@@ -40,7 +40,7 @@
      * @type {Object}
      */
     var defaultConfig = {
-        multiple: true,
+        toggle: false,
         autoRefresh: true,
 
         throttle: 50,
@@ -63,7 +63,6 @@
 
         classes: {
             lasso: "ui-lasso",
-            multiple: "ui-multiple",
             selected: "ui-selected",
             container: "ui-container",
             selecting: "ui-selecting",
@@ -171,14 +170,21 @@
      * @param  {(String|Object)} e
      * @param  {String|Object}
      */
-    var css = function(i, t, e) {
-        var n = i && i.style,
-            o = isObject(t);
-        if (n) {
-            if (void 0 === e && !o) return e = window.getComputedStyle(i, ""), void 0 === t ? e : e[t];
-            o ? each(t, function(i, t) {
-                t in n || (t = "-webkit-" + t), n[t] = i + ("string" == typeof i ? "" : "opacity" === t ? "" : "px");
-            }) : (t in n || (t = "-webkit-" + t), n[t] = e + ("string" == typeof e ? "" : "opacity" === t ? "" : "px"));
+    var css = function(el, obj) {
+        var style = el.style;
+        if (el) {
+            if (obj === undefined) {
+                return window.getComputedStyle(el);
+            } else {
+                if (isObject(obj)) {
+                    each(obj, function(val, prop) {
+                        if (!(prop in style)) {
+                            prop = "-webkit-" + prop;
+                        }
+                        el.style[prop] = val + (typeof val === "string" ? "" : prop === "opacity" ? "" : "px");
+                    });
+                }
+            }
         }
     };
 
@@ -219,7 +225,7 @@
                 fn.apply(context, arguments);
                 wait = true;
                 return setTimeout(function() {
-                    return wait = false;
+                    wait = false;
                 }, limit);
             }
         };
@@ -315,21 +321,33 @@
             this.autoscroll = isObject(o.autoScroll);
 
             // Scroll data for auto-scroll
-            this.data = { x: 0, y: 0, right: 0, left: 0, down: 0, up: 0 };
+            this.data = {
+                x: 0,
+                y: 0,
+                right: 0,
+                left: 0,
+                down: 0,
+                up: 0
+            };
 
-            /* lasso */
-            this.lasso = document.createElement('div');
-            this.lasso.className = o.classes.lasso;
+            this.lasso = false;
 
-            css(this.lasso, extend({
-                position: "fixed",
-                opacity: 0, // border will show even at zero width / height
-            }, o.lasso));
+            if (o.lasso && isObject(o.lasso)) {
+                /* lasso */
+                this.lasso = document.createElement('div');
+                this.lasso.className = o.classes.lasso;
+
+                css(this.lasso, extend({
+                    position: "fixed",
+                    opacity: 0, // border will show even at zero width / height
+                }, o.lasso));
+            }
 
             this.events = {
                 start: this.start.bind(this),
                 drag: this.drag.bind(this),
                 end: this.end.bind(this),
+                keyup: this.keyup.bind(this),
                 keydown: this.keydown.bind(this),
                 recalculate: throttle(this.recalculate, o.throttle, this)
             };
@@ -395,6 +413,7 @@
             on(document, 'mousemove', e.drag);
             on(document, 'mouseup', e.end);
             on(document, 'keydown', e.keydown);
+            on(document, 'keyup', e.keyup);
 
             if (this.autoscroll) {
                 on(this.container, "scroll", e.scroll);
@@ -421,6 +440,7 @@
             off(document, 'mousemove', e.drag);
             off(document, 'mouseup', e.end);
             off(document, 'keydown', e.keydown);
+            off(document, 'keyup', e.keyup);
 
             if (this.autoscroll) {
                 off(this.container, "scroll", e.scroll);
@@ -456,87 +476,83 @@
 
             if (!node || o.disabled) return false;
 
-            // multiple check
-            if (!o.multiple) {
-                this.select(node);
-            } else {
+            var t = e.type === "touchstart";
 
-                var t = e.type === "touchstart";
+            this.dragging = true;
 
-                this.dragging = true;
+            this.origin = {
+                x: t ? e.touches[0].clientX : e.pageX,
+                y: t ? e.touches[0].clientY : e.pageY,
+            };
 
-                this.origin = {
-                    x: t ? e.touches[0].clientX : e.pageX,
-                    y: t ? e.touches[0].clientY : e.pageY,
+            if (this.autoscroll) {
+                this.origin.scroll = {
+                    x: this.container.scrollLeft,
+                    y: this.container.scrollTop,
+                };
+            }
+
+            if (this.lasso) {
+                this.container.appendChild(this.lasso);
+            }
+
+            if (node !== this.container) {
+                classList.add(node, o.classes.selecting);
+            }
+
+            if (o.autoRefresh) {
+                this.update();
+            }
+
+            // Unselect single item if touched (touchscreens)
+            if (_touch) {
+                var item = this.get(node);
+
+                if (item.selected) {
+                    // cancel drag
+                    this.dragging = false;
+                    this.unselect(item);
+                    return;
+                }
+            }
+
+            if (isShiftKey(e)) {
+
+                var items = this.items,
+                    found = false,
+                    num = this.items.length,
+                    reverse = o.shiftDirection !== "normal";
+
+                var shiftSelect = function(n) {
+                    // found the item we clicked
+                    if (items[n].node === node) {
+                        found = true;
+                    }
+
+                    // found a selected item so stop
+                    if (found && items[n].selected) {
+                        return true;
+                    }
+
+                    // continue selecting items until we find a selected item
+                    // or the first / last item if there aren't any
+                    if (found) {
+                        items[n].selecting = true;
+                    }
+
+                    return false;
                 };
 
-                if (this.autoscroll) {
-                    this.origin.scroll = {
-                        x: this.container.scrollLeft,
-                        y: this.container.scrollTop,
-                    };
-                }
-
-                this.container.appendChild(this.lasso);
-
-                if (node !== this.container) {
-                    classList.add(node, o.classes.selecting);
-                }
-
-                if (o.autoRefresh) {
-                    this.update();
-                }
-
-                // Unselect single item if touched (touchscreens)
-                if (_touch) {
-                    var item = this.get(node);
-
-                    if (item.selected) {
-                        // cancel drag
-                        this.dragging = false;
-                        this.unselect(item);
-                        return;
+                if (reverse) {
+                    for (var i = 0; i < num; i++) {
+                        if (shiftSelect(i)) {
+                            break;
+                        }
                     }
-                }
-
-                if (isShiftKey(e)) {
-
-                    var items = this.items,
-                        found = false,
-                        num = this.items.length,
-                        reverse = o.shiftDirection !== "normal";
-
-                    var shiftSelect = function(n) {
-                        // found the item we clicked
-                        if (items[n].node === node) {
-                            found = true;
-                        }
-
-                        // found a selected item so stop
-                        if (found && items[n].selected) {
-                            return true;
-                        }
-
-                        // continue selecting items until we find a selected item
-                        // or the first / last item if there aren't any
-                        if (found) {
-                            items[n].selecting = true;
-                        }
-
-                        return false;
-                    };
-
-                    if (reverse) {
-                        for (var i = 0; i < num; i++) {
-                            if (shiftSelect(i)) {
-                                break;
-                            }
-                        }
-                    } else {
-                        while (num--) {
-                            if (shiftSelect(num)) {
-                                break;
-                            }
+                } else {
+                    while (num--) {
+                        if (shiftSelect(num)) {
+                            break;
                         }
                     }
                 }
@@ -548,16 +564,25 @@
 
                     item.startselected = true;
 
-                    if (el !== node) {
-                        if (!o.multiple || (!_touch && !isCmdKey(e) && !isShiftKey(e))) {
-                            classList.remove(el, o.classes.selected);
-                            item.selected = false;
+                    var unselect = false;
 
-                            classList.add(el, o.classes.unselecting);
-                            item.unselecting = true;
+                    if (o.toggle) {
+                        if (el === node) {
+                            unselect = true;
+                        }
+                    } else {
+                        if (!_touch && !isCmdKey(e) && !isShiftKey(e)) {
+                            unselect = true;
                         }
                     }
 
+                    if (unselect) {
+                        classList.remove(el, o.classes.selected);
+                        item.selected = false;
+
+                        classList.add(el, o.classes.unselecting);
+                        item.unselecting = true;
+                    }
                 }
                 if (el === node) {
                     originalEl = item;
@@ -590,7 +615,10 @@
                 y1: this.origin.y,
                 x2: t ? e.touches[0].clientX : e.pageX,
                 y2: t ? e.touches[0].clientY : e.pageY,
-                scroll: { x: 0, y: 0 }
+                scroll: {
+                    x: 0,
+                    y: 0
+                }
             };
 
             if (this.autoscroll) {
@@ -608,10 +636,14 @@
             }
 
             if (c.x1 > c.x2) {
-                tmp = c.x2; c.x2 = c.x1; c.x1 = tmp;
+                tmp = c.x2;
+                c.x2 = c.x1;
+                c.x1 = tmp;
             }
             if (c.y1 > c.y2) {
-                tmp = c.y2; c.y2 = c.y1; c.y1 = tmp;
+                tmp = c.y2;
+                c.y2 = c.y1;
+                c.y1 = tmp;
             }
 
             /* highlight */
@@ -626,7 +658,9 @@
                 y2: (c.y2 + this.data.up) - (c.y1 + this.data.down),
             };
 
-            this.updateHelper(coords);
+            if (this.lasso) {
+                this.updateHelper(coords);
+            }
 
             this.emit('selectable.drag', coords);
         },
@@ -637,12 +671,21 @@
          * @return {Void}
          */
         end: function(e) {
-            if (!this.dragging && this.config.multiple) return;
+            if (!this.dragging) return;
 
             this.dragging = false;
 
-            // Reset the lasso
-            css(this.lasso, { opacity: 0, left: 0, width: 0, top: 0, height: 0 });
+            if (this.lasso) {
+                this.lasso.style.cssText =
+                    // Reset the lasso
+                    css(this.lasso, {
+                        opacity: 0,
+                        left: 0,
+                        width: 0,
+                        top: 0,
+                        height: 0
+                    });
+            }
 
             this.data.right = 0;
             this.data.left = 0;
@@ -664,7 +707,7 @@
                 }
             }, this);
 
-            if (this.container.contains(this.lasso)) {
+            if (this.lasso && this.container.contains(this.lasso)) {
                 this.container.removeChild(this.lasso);
             }
 
@@ -677,12 +720,25 @@
          * @return {Void}
          */
         keydown: function(e) {
-            if (isCmdKey(e)) {
+            this.cmdDown = isCmdKey(e);
+            this.shiftDown = isShiftKey(e);
+
+            if (this.cmdDown) {
                 if (e.keyCode == 65 || e.keyCode == 97) {
                     e.preventDefault();
                     this.selectAll();
                 }
             }
+        },
+
+        /**
+         * keyup event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        keyup: function(e) {
+            this.cmdDown = isCmdKey(e);
+            this.shiftDown = isShiftKey(e);
         },
 
         /**
@@ -710,7 +766,7 @@
                 height: coords.y2
             };
 
-            if ( this.autoscroll ) {
+            if (this.autoscroll) {
                 style = extend(style, {
                     zIndex: 0,
                     position: "absolute",
@@ -820,11 +876,11 @@
             }
 
             if (over) {
-                if (item.selected) {
+                if (item.selected && !o.toggle) {
                     classList.remove(el, cls.selected);
                     item.selected = false;
                 }
-                if (item.unselecting) {
+                if (item.unselecting && (!o.toggle || o.toggle && o.toggle !== "drag")) {
                     classList.remove(el, cls.unselecting);
                     item.unselecting = false;
                 }
@@ -844,7 +900,7 @@
                         classList.remove(el, cls.selecting);
                         item.selecting = false;
 
-                        if (item.startselected) {
+                        if (item.startselected && !o.toggle) {
                             classList.add(el, cls.unselecting);
                             item.unselecting = true;
                         }
@@ -889,16 +945,8 @@
 
             classList.add(this.container, this.config.classes.container);
 
-            if (this.config.multiple) {
-                classList.add(this.container, this.config.classes.multiple);
-            }
-
             if (old) {
                 classList.remove(old, this.config.classes.container);
-
-                if (this.config.multiple) {
-                    classList.remove(old, this.config.classes.multiple);
-                }
             }
 
             if (isCollection(o.filter)) {
@@ -925,7 +973,7 @@
          * @param  {Object} item
          * @return {Boolean}
          */
-        select: function(item) {
+        select: function(item, all) {
 
             if (isCollection(item)) {
                 each(item, function(itm) {
@@ -938,6 +986,11 @@
             item = this.get(item);
 
             if (item) {
+                // toggle item if already selected
+                if (this.config.toggle && this.config.toggle === "drag" && !all && item.selected && !this.cmdDown) {
+                    return this.unselect(item);
+                }
+
                 var el = item.node,
                     o = this.config.classes;
 
@@ -1068,7 +1121,7 @@
          */
         selectAll: function() {
             each(this.items, function(item) {
-                this.select(item);
+                this.select(item, true);
             }, this);
         },
 
@@ -1201,10 +1254,6 @@
 
                 classList.add(this.container, this.config.classes.container);
 
-                if (this.config.multiple) {
-                    classList.add(this.container, this.config.classes.multiple);
-                }
-
                 this.emit('selectable.enable');
             }
 
@@ -1222,10 +1271,6 @@
                 this.unbind();
 
                 classList.remove(this.container, this.config.classes.container);
-
-                if (this.config.multiple) {
-                    classList.remove(this.container, this.config.classes.multiple);
-                }
 
                 this.emit('selectable.disable');
             }
