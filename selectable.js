@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.0
+ * Version: 0.10.1
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.0";
+    var _version = "0.10.1";
 
     /**
      * Check for touch screen
@@ -470,6 +470,8 @@
                 o = this.config,
                 originalEl;
 
+            // selectable nodes may have child elements
+            // so let's get the closest selectable node
             var node = closest(e.target, function(el) {
                 return el === that.container || classList.contains(el, o.classes.selectable);
             });
@@ -589,6 +591,8 @@
                 }
             });
 
+            this.startEl = node;
+
             this.emit('selectable.start', originalEl);
         },
 
@@ -675,41 +679,69 @@
 
             this.dragging = false;
 
-            if (this.lasso) {
-                this.lasso.style.cssText =
-                    // Reset the lasso
-                    css(this.lasso, {
-                        opacity: 0,
-                        left: 0,
-                        width: 0,
-                        top: 0,
-                        height: 0
-                    });
+            var that = this,
+                o = that.config,
+                node = e.target,
+                endEl,
+                selected = [],
+                unselected = [];
+
+            // remove the lasso
+            if (this.lasso && this.container.contains(this.lasso)) {
+                this.container.removeChild(this.lasso);
             }
+
+            if (this.lasso) {
+                // Reset the lasso
+                css(this.lasso, {
+                    opacity: 0,
+                    left: 0,
+                    width: 0,
+                    top: 0,
+                    height: 0
+                });
+
+                // the lasso was the event.target so let's get the actual
+                // node below the pointer
+                node = document.elementFromPoint(e.pageX, e.pageY);
+            }
+
+            // now let's get the closest valid selectable node
+            endEl = closest(node, function(el) {
+                return classList.contains(el, o.classes.selectable);
+            });
 
             this.data.right = 0;
             this.data.left = 0;
             this.data.down = 0;
             this.data.up = 0;
 
-            var selected = [],
-                unselected = [];
-
+            // loop over items and check their state
             each(this.items, function(item) {
+
+                // If we've mousedown'd and mouseup'd on the same selected item
+                // toggling it's state to unselected won't work if we've dragged even
+                // a small amount. This can happen if we're moving between items quickly
+                // while the mouse button is down. We can fix that here.
+                if (o.toggle && item.node === endEl && item.node === that.startEl) {
+                    if (item.selecting && item.startselected) {
+                        item.unselecting = true;
+                        item.selecting = false;
+                    }
+                }
+
+                // item was marked for unselect
                 if (item.unselecting) {
                     unselected.push(item);
                     this.unselect(item);
                 }
 
+                // item was marked for select
                 if (item.selecting) {
                     selected.push(item);
                     this.select(item);
                 }
             }, this);
-
-            if (this.lasso && this.container.contains(this.lasso)) {
-                this.container.removeChild(this.lasso);
-            }
 
             this.emit('selectable.end', selected, unselected);
         },
