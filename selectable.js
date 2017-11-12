@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.1
+ * Version: 0.10.2
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.1";
+    var _version = "0.10.2";
 
     /**
      * Check for touch screen
@@ -612,7 +612,7 @@
             var that = this,
                 c,
                 tmp,
-                t = e.type === "touchstart";
+                t = e.type === "touchmove";
 
             this.offset = c = {
                 x1: this.origin.x,
