@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.2
+ * Version: 0.10.3
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.2";
+    var _version = "0.10.3";
 
     /**
      * Check for touch screen
@@ -343,8 +343,13 @@
                 }, o.lasso));
             }
 
+            if (_touch) {
+                o.toggle = false;
+            }
+
             this.events = {
                 start: this.start.bind(this),
+                touchstart: this.touchstart.bind(this),
                 drag: this.drag.bind(this),
                 end: this.end.bind(this),
                 keyup: this.keyup.bind(this),
@@ -420,7 +425,7 @@
             }
 
             // Mobile
-            on(this.container, "touchstart", e.start);
+            on(this.container, "touchstart", e.touchstart);
             on(document, "touchend", e.end);
             on(document, "touchcancel", e.end);
             on(document, "touchmove", e.drag);
@@ -457,6 +462,17 @@
         },
 
         /**
+         * touchstart event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        touchstart: function(e) {
+            off(this.container, "mousedown", this.events.start);
+
+            this.start(e);
+        },
+
+        /**
          * mousedown / touchstart event listener
          * @param  {Object} e Event interface
          * @return {Void}
@@ -478,13 +494,15 @@
 
             if (!node || o.disabled) return false;
 
-            var t = e.type === "touchstart";
+            e.preventDefault();
+
+            var touch = e.type === "touchstart";
 
             this.dragging = true;
 
             this.origin = {
-                x: t ? e.touches[0].clientX : e.pageX,
-                y: t ? e.touches[0].clientY : e.pageY,
+                x: touch ? e.touches[0].pageX : e.pageX,
+                y: touch ? e.touches[0].pageY : e.pageY,
             };
 
             if (this.autoscroll) {
@@ -504,18 +522,6 @@
 
             if (o.autoRefresh) {
                 this.update();
-            }
-
-            // Unselect single item if touched (touchscreens)
-            if (_touch) {
-                var item = this.get(node);
-
-                if (item.selected) {
-                    // cancel drag
-                    this.dragging = false;
-                    this.unselect(item);
-                    return;
-                }
             }
 
             if (isShiftKey(e)) {
@@ -568,14 +574,10 @@
 
                     var unselect = false;
 
-                    if (o.toggle) {
-                        if (el === node) {
-                            unselect = true;
-                        }
+                    if (touch || o.toggle) {
+                        unselect = el === node;
                     } else {
-                        if (!_touch && !isCmdKey(e) && !isShiftKey(e)) {
-                            unselect = true;
-                        }
+                        unselect = !isCmdKey(e) && !isShiftKey(e);
                     }
 
                     if (unselect) {
@@ -593,7 +595,7 @@
 
             this.startEl = node;
 
-            this.emit('selectable.start', originalEl);
+            this.emit('selectable.start', e, originalEl);
         },
 
         /**
@@ -602,12 +604,9 @@
          * @return {Void}
          */
         drag: function(e) {
-            if (!this.dragging || isShiftKey(e)) return;
-
             var o = this.config;
-            if (o.disabled) {
-                return;
-            }
+
+            if (o.disabled || !this.dragging || isShiftKey(e)) return;
 
             var that = this,
                 c,
@@ -617,8 +616,8 @@
             this.offset = c = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: t ? e.touches[0].clientX : e.pageX,
-                y2: t ? e.touches[0].clientY : e.pageY,
+                x2: t ? e.touches[0].pageX : e.pageX,
+                y2: t ? e.touches[0].pageY : e.pageY,
                 scroll: {
                     x: 0,
                     y: 0
@@ -666,7 +665,7 @@
                 this.updateHelper(coords);
             }
 
-            this.emit('selectable.drag', coords);
+            this.emit('selectable.drag', e, coords);
         },
 
         /**
@@ -743,7 +742,7 @@
                 }
             }, this);
 
-            this.emit('selectable.end', selected, unselected);
+            this.emit('selectable.end', e, selected, unselected);
         },
 
         /**
