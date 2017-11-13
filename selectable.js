@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.3
+ * Version: 0.10.4
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.3";
+    var _version = "0.10.4";
 
     /**
      * Check for touch screen
@@ -101,7 +101,7 @@
      * @return {Object|Boolean}
      */
     var closest = function(el, fn) {
-        return el && (fn(el) ? el : closest(el.parentNode, fn));
+        return el && el !== document.documentElement && (fn(el) ? el : closest(el.parentNode, fn));
     };
 
     /**
