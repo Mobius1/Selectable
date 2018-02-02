@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.4
+ * Version: 0.10.5
  *
  */
 (function(root, factory) {
@@ -683,7 +683,8 @@
                 node = e.target,
                 endEl,
                 selected = [],
-                unselected = [];
+                unselected = [],
+                evt = e.type === "touchend" ? e.touches[0] : e;
 
             // remove the lasso
             if (this.lasso && this.container.contains(this.lasso)) {
@@ -702,7 +703,7 @@
 
                 // the lasso was the event.target so let's get the actual
                 // node below the pointer
-                node = document.elementFromPoint(e.pageX, e.pageY);
+                node = document.elementFromPoint(evt.pageX, evt.pageY);
             }
 
             // now let's get the closest valid selectable node
