@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.5
+ * Version: 0.10.6
  *
  */
 (function(root, factory) {
@@ -684,7 +684,7 @@
                 endEl,
                 selected = [],
                 unselected = [],
-                evt = e.type === "touchend" ? e.touches[0] : e;
+                evt = e.type === "touchend" ? e.touches[0] || e.changedTouches[0] : e;
 
             // remove the lasso
             if (this.lasso && this.container.contains(this.lasso)) {
