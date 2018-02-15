@@ -36,6 +36,10 @@ describe('selectable', function () {
                 });
             });
 
+            afterEach(function () {
+                selectable.unbind();
+            });
+
             it('adds another element to the selection', function () {
                 clickNode(container.firstChild, true);
 
