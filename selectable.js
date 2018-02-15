@@ -49,7 +49,6 @@
 
         filter: ".ui-selectable",
         tolerance: "touch",
-        shiftDirection: "normal",
 
         autoScroll: {
             offset: 40,
@@ -524,45 +523,15 @@
                 this.update();
             }
 
-            if (isShiftKey(e)) {
+            if (isShiftKey(e) && this.startEl) {
 
                 var items = this.items,
-                    found = false,
-                    num = this.items.length,
-                    reverse = o.shiftDirection !== "normal";
+                    currentIndex = this.getNodes().indexOf(node),
+                    lastIndex = this.getNodes().indexOf(this.startEl),
+                    step = currentIndex < lastIndex ? 1 : -1;
 
-                var shiftSelect = function(n) {
-                    // found the item we clicked
-                    if (items[n].node === node) {
-                        found = true;
-                    }
-
-                    // found a selected item so stop
-                    if (found && items[n].selected) {
-                        return true;
-                    }
-
-                    // continue selecting items until we find a selected item
-                    // or the first / last item if there aren't any
-                    if (found) {
-                        items[n].selecting = true;
-                    }
-
-                    return false;
-                };
-
-                if (reverse) {
-                    for (var i = 0; i < num; i++) {
-                        if (shiftSelect(i)) {
-                            break;
-                        }
-                    }
-                } else {
-                    while (num--) {
-                        if (shiftSelect(num)) {
-                            break;
-                        }
-                    }
+                while ((currentIndex+=step) && currentIndex !== lastIndex) {
+                    items[currentIndex].selecting = true;
                 }
             }
 
