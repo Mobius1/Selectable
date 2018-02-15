@@ -28,7 +28,6 @@ describe('selectable', function () {
                 selectable = new Selectable({
                     appendTo: container,
                     filter: 'li',
-                    multiple: true,
                     toggle: false,
                     classes: {
                         selected: "test-selected"
@@ -61,6 +60,8 @@ describe('selectable', function () {
                 expect(container.lastChild.getAttribute('class')).not.toContain('test-selected');
                 expect(container.firstChild.getAttribute('class')).toContain('test-selected');
             });
+
+
         });
 
 
@@ -73,7 +74,6 @@ describe('selectable', function () {
                 selectable = new Selectable({
                     appendTo: container,
                     filter: 'li',
-                    multiple: true,
                     toggle: false,
                     classes: {
                         selected: "test-selected"
