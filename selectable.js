@@ -574,10 +574,10 @@
 
                     var unselect = false;
 
-                    if (touch || o.toggle) {
+                    if (touch || o.toggle || isCmdKey(e)) {
                         unselect = el === node;
                     } else {
-                        unselect = !isCmdKey(e) && !isShiftKey(e);
+                        unselect = !isShiftKey(e);
                     }
 
                     if (unselect) {
