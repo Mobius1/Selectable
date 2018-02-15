@@ -60,10 +60,7 @@ describe('selectable', function () {
                 expect(container.lastChild.getAttribute('class')).not.toContain('test-selected');
                 expect(container.firstChild.getAttribute('class')).toContain('test-selected');
             });
-
-
         });
-
 
         describe('with shiftKey', function () {
             var container, selectable;
@@ -102,6 +99,39 @@ describe('selectable', function () {
             it('selects all rows reverse', function () {
                 clickNode(container.lastChild, false, false);
                 clickNode(container.firstChild, false, true);
+                expect(container.lastChild.getAttribute('class')).toContain('test-selected');
+                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                expect(container.children[1].getAttribute('class')).toContain('test-selected');
+            });
+        });
+    });
+
+    describe('keyboard shortcuts', function () {
+        var container, selectable;
+        beforeEach(function () {
+            document.body.innerHTML = '<ul id="selectable"><li>1</li><li>2</li><li>3</li></ul>';
+
+            container = document.getElementById('selectable');
+            selectable = new Selectable({
+                appendTo: container,
+                filter: 'li',
+                toggle: false,
+                classes: {
+                    selected: "test-selected"
+                }
+            });
+        });
+        afterEach(function () {
+            selectable.unbind();
+        });
+        describe('select all', function () {
+            it('selects all rows if none are selected', function () {
+                var selectAll = new KeyboardEvent('keydown', {
+                    bubbles: true,
+                    code: 65, // = a
+                    metaKey: true
+                });
+                document.dispatchEvent(selectAll);
                 expect(container.lastChild.getAttribute('class')).toContain('test-selected');
                 expect(container.firstChild.getAttribute('class')).toContain('test-selected');
                 expect(container.children[1].getAttribute('class')).toContain('test-selected');

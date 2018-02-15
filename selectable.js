@@ -725,7 +725,8 @@
             this.shiftDown = isShiftKey(e);
 
             if (this.cmdDown) {
-                if (e.keyCode == 65 || e.keyCode == 97) {
+                var code = e.code || e.keyCode;
+                if (code == 65 || code == 97) {
                     e.preventDefault();
                     this.selectAll();
                 }
