@@ -477,8 +477,6 @@
          * @return {Void}
          */
         start: function(e) {
-            e.preventDefault();
-
             if (!this.container.contains(e.target)) return;
 
             var that = this,
@@ -493,7 +491,10 @@
 
             if (!node || o.disabled) return false;
 
-            e.preventDefault();
+            // allow form inputs to be receive focus
+            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
+                e.preventDefault();
+            }
 
             var touch = e.type === "touchstart";
 
