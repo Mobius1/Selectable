@@ -537,7 +537,8 @@
             }
 
             each(this.items, function(item) {
-                var el = item.node;
+                var el = item.node,
+                    isCurrentNode = el === node;
                 if (item.selected) {
 
                     item.startselected = true;
@@ -545,7 +546,9 @@
                     var unselect = false;
 
                     if (touch || o.toggle || isCmdKey(e)) {
-                        unselect = el === node;
+                        unselect = isCurrentNode;
+                    } else {
+                        unselect = !isCurrentNode && !isShiftKey(e);
                     }
 
                     if (unselect) {
@@ -556,7 +559,7 @@
                         item.unselecting = true;
                     }
                 }
-                if (el === node) {
+                if (isCurrentNode) {
                     originalEl = item;
                 }
             });

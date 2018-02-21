@@ -174,34 +174,60 @@ describe('selectable', function () {
 
                 container = document.getElementById('selectable');
             });
-            it('selections are deselected with toggle on', function () {
-                selectable = new Selectable({
-                    appendTo: container,
-                    filter: 'li',
-                    toggle: true,
-                    classes: {
-                        selected: "test-selected"
-                    }
+            describe('toggle on', function () {
+                beforeEach(function () {
+                    selectable = new Selectable({
+                        appendTo: container,
+                        filter: 'li',
+                        toggle: true,
+                        classes: {
+                            selected: "test-selected"
+                        }
+                    });
                 });
-                clickNode(container.firstChild, false, false);
-                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
-                clickNode(container.firstChild, false, false);
-                expect(container.firstChild.getAttribute('class')).not.toContain('test-selected');
+                it('selections are deselected', function () {
+                    clickNode(container.firstChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                    clickNode(container.firstChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).not.toContain('test-selected');
+                });
+
+                it('new selections are added', function () {
+                    clickNode(container.firstChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                    clickNode(container.lastChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                    expect(container.lastChild.getAttribute('class')).toContain('test-selected');
+                });
             });
 
-            it('selections are not deselected with toggle off', function () {
-                selectable = new Selectable({
-                    appendTo: container,
-                    filter: 'li',
-                    toggle: false,
-                    classes: {
-                        selected: "test-selected"
-                    }
+            describe('toggle off', function () {
+                beforeEach(function () {
+                    selectable = new Selectable({
+                        appendTo: container,
+                        filter: 'li',
+                        toggle: false,
+                        classes: {
+                            selected: "test-selected"
+                        }
+                    });
                 });
-                clickNode(container.firstChild, false, false);
-                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
-                clickNode(container.firstChild, false, false);
-                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                it('selections are not deselected', function () {
+
+                    clickNode(container.firstChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                    clickNode(container.firstChild, false, false);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                });
+
+                it('does not maintain previous selection', function () {
+                    clickNode(container.firstChild);
+                    expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+
+                    clickNode(container.lastChild);
+                    expect(container.firstChild.getAttribute('class')).not.toContain('test-selected');
+                    expect(container.lastChild.getAttribute('class')).toContain('test-selected');
+                });
             });
         });
     });
