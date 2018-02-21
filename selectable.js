@@ -546,8 +546,6 @@
 
                     if (touch || o.toggle || isCmdKey(e)) {
                         unselect = el === node;
-                    } else {
-                        unselect = !isShiftKey(e);
                     }
 
                     if (unselect) {

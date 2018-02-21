@@ -166,6 +166,44 @@ describe('selectable', function () {
                 expect(events.mouseDown.preventDefault).not.toHaveBeenCalled();
             });
         });
+
+        describe('Toggle', function () {
+            var container, selectable;
+            beforeEach(function () {
+                document.body.innerHTML = '<ul id="selectable"><li>1</li><li>2</li><li>3</li></ul>';
+
+                container = document.getElementById('selectable');
+            });
+            it('selections are deselected with toggle on', function () {
+                selectable = new Selectable({
+                    appendTo: container,
+                    filter: 'li',
+                    toggle: true,
+                    classes: {
+                        selected: "test-selected"
+                    }
+                });
+                clickNode(container.firstChild, false, false);
+                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                clickNode(container.firstChild, false, false);
+                expect(container.firstChild.getAttribute('class')).not.toContain('test-selected');
+            });
+
+            it('selections are not deselected with toggle off', function () {
+                selectable = new Selectable({
+                    appendTo: container,
+                    filter: 'li',
+                    toggle: false,
+                    classes: {
+                        selected: "test-selected"
+                    }
+                });
+                clickNode(container.firstChild, false, false);
+                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+                clickNode(container.firstChild, false, false);
+                expect(container.firstChild.getAttribute('class')).toContain('test-selected');
+            });
+        });
     });
 
     describe('keyboard shortcuts', function () {
