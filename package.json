@@ -4,17 +4,29 @@
   "description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
   "main": "selectable.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/karma start --single-run --reporters=progress"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mobius1/Selectable.git"
   },
-  "keywords": ["selectable", "select", "drag"],
+  "keywords": [
+    "selectable",
+    "select",
+    "drag"
+  ],
   "author": "Karl Saunders",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Mobius1/Selectable/issues"
   },
-  "homepage": "https://github.com/Mobius1/Selectable#readme"
+  "homepage": "https://github.com/Mobius1/Selectable#readme",
+  "devDependencies": {
+    "jasmine": "^3.0.0",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-jasmine": "^1.1.1"
+  }
 }

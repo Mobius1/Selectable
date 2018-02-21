@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.4";
+    var _version = "0.10.6";
 
     /**
      * Check for touch screen
@@ -49,7 +49,6 @@
 
         filter: ".ui-selectable",
         tolerance: "touch",
-        shiftDirection: "normal",
 
         autoScroll: {
             offset: 40,
@@ -478,8 +477,6 @@
          * @return {Void}
          */
         start: function(e) {
-            e.preventDefault();
-
             if (!this.container.contains(e.target)) return;
 
             var that = this,
@@ -494,7 +491,10 @@
 
             if (!node || o.disabled) return false;
 
-            e.preventDefault();
+            // allow form inputs to be receive focus
+            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
+                e.preventDefault();
+            }
 
             var touch = e.type === "touchstart";
 
@@ -524,45 +524,15 @@
                 this.update();
             }
 
-            if (isShiftKey(e)) {
+            if (isShiftKey(e) && this.startEl) {
 
                 var items = this.items,
-                    found = false,
-                    num = this.items.length,
-                    reverse = o.shiftDirection !== "normal";
+                    currentIndex = this.getNodes().indexOf(node),
+                    lastIndex = this.getNodes().indexOf(this.startEl),
+                    step = currentIndex < lastIndex ? 1 : -1;
 
-                var shiftSelect = function(n) {
-                    // found the item we clicked
-                    if (items[n].node === node) {
-                        found = true;
-                    }
-
-                    // found a selected item so stop
-                    if (found && items[n].selected) {
-                        return true;
-                    }
-
-                    // continue selecting items until we find a selected item
-                    // or the first / last item if there aren't any
-                    if (found) {
-                        items[n].selecting = true;
-                    }
-
-                    return false;
-                };
-
-                if (reverse) {
-                    for (var i = 0; i < num; i++) {
-                        if (shiftSelect(i)) {
-                            break;
-                        }
-                    }
-                } else {
-                    while (num--) {
-                        if (shiftSelect(num)) {
-                            break;
-                        }
-                    }
+                while ((currentIndex+=step) && currentIndex !== lastIndex) {
+                    items[currentIndex].selecting = true;
                 }
             }
 
@@ -574,10 +544,8 @@
 
                     var unselect = false;
 
-                    if (touch || o.toggle) {
+                    if (touch || o.toggle || isCmdKey(e)) {
                         unselect = el === node;
-                    } else {
-                        unselect = !isCmdKey(e) && !isShiftKey(e);
                     }
 
                     if (unselect) {
@@ -756,7 +724,8 @@
             this.shiftDown = isShiftKey(e);
 
             if (this.cmdDown) {
-                if (e.keyCode == 65 || e.keyCode == 97) {
+                var code = e.code || e.keyCode;
+                if (code == 65 || code == 97) {
                     e.preventDefault();
                     this.selectAll();
                 }
