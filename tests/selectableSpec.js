@@ -349,7 +349,8 @@ describe('selectable', function () {
                         toggle: false,
                         lasso: false,
                         classes: {
-                            selected: "test-selected"
+                            selected: "test-selected",
+                            selecting: "test-selecting"
                         }
                     });
                 });
@@ -359,7 +360,7 @@ describe('selectable', function () {
                     var firstNodeExpectation = expect(container.children[0].getAttribute('class')),
                         secondNodeExpectation = expect(container.children[1].getAttribute('class')),
                         lastNodeExpectation = expect(container.children[2].getAttribute('class'));
-                    firstNodeExpectation.not.toContain('test-selecting');
+                    firstNodeExpectation.toContain('test-selecting');
                     firstNodeExpectation.not.toContain('test-selected');
                     secondNodeExpectation.not.toContain('test-selected');
                     secondNodeExpectation.not.toContain('test-selecting');
@@ -370,7 +371,7 @@ describe('selectable', function () {
                     firstNodeExpectation = expect(container.children[0].getAttribute('class'));
                     secondNodeExpectation = expect(container.children[1].getAttribute('class'));
                     lastNodeExpectation = expect(container.children[2].getAttribute('class'));
-                    firstNodeExpectation.not.toContain('test-selecting');
+                    firstNodeExpectation.toContain('test-selecting');
                     secondNodeExpectation.not.toContain('test-selecting');
                     lastNodeExpectation.not.toContain('test-selecting');
 
@@ -378,7 +379,7 @@ describe('selectable', function () {
                     firstNodeExpectation = expect(container.children[0].getAttribute('class'));
                     secondNodeExpectation = expect(container.children[1].getAttribute('class'));
                     lastNodeExpectation = expect(container.children[2].getAttribute('class'));
-                    firstNodeExpectation.not.toContain('test-selecting');
+                    firstNodeExpectation.toContain('test-selecting');
                     firstNodeExpectation.not.toContain('test-selected');
                     secondNodeExpectation.not.toContain('test-selecting');
                     secondNodeExpectation.not.toContain('test-selected');
