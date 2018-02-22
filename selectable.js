@@ -414,7 +414,7 @@
 
             // Attach event listeners
             on(this.container, 'mousedown', e.start);
-            on(document, 'mousemove', e.drag);
+
             on(document, 'mouseup', e.end);
             on(document, 'keydown', e.keydown);
             on(document, 'keyup', e.keyup);
@@ -427,7 +427,11 @@
             on(this.container, "touchstart", e.touchstart);
             on(document, "touchend", e.end);
             on(document, "touchcancel", e.end);
-            on(document, "touchmove", e.drag);
+
+            if (this.lasso !== false) {
+                on(document, "touchmove", e.drag);
+                on(document, 'mousemove', e.drag);
+            }
 
             on(window, 'resize', e.recalculate);
             on(window, 'scroll', e.recalculate);

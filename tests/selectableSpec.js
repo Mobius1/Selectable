@@ -5,15 +5,38 @@ describe('selectable', function () {
     afterEach(function () {
         document.body.innerHTML = '';
     });
+    //copied from selectable.js, should be kept in sync!
+    function rect(e) {
+        var w = window,
+            o = e.getBoundingClientRect(),
+            b = document.documentElement || document.body.parentNode || document.body,
+            d = (void 0 !== w.pageXOffset) ? w.pageXOffset : b.scrollLeft,
+            n = (void 0 !== w.pageYOffset) ? w.pageYOffset : b.scrollTop;
+        return {
+            x1: o.left + d,
+            x2: o.left + o.width + d,
+            y1: o.top + n,
+            y2: o.top + o.height + n,
+            height: o.height,
+            width: o.width
+        };
+    }
+    function buildMouseOptions(node, metaKey, shiftKey){
+        var box = rect(node);
+
+        return {
+            metaKey: !!metaKey,
+            shiftKey: !!shiftKey,
+            bubbles: true,
+            clientX: box.x1+((box.width)/2),
+            clientY: box.y1+((box.height)/2)
+        };
+    }
 
     describe('Mouse behaviour', function () {
         function clickNode(node, metaKey, shiftKey) {
-            var mouseOptions = {
-                metaKey: !!metaKey,
-                shiftKey: !!shiftKey,
-                bubbles: true
-            };
-            var mouseDown = new MouseEvent('mousedown', mouseOptions);
+            var mouseOptions = buildMouseOptions(node, metaKey, shiftKey),
+                mouseDown = new MouseEvent('mousedown', mouseOptions);
             spyOn(mouseDown, 'preventDefault');
             mouseDown.preventDefault.and.callThrough();
             var mouseUp = new MouseEvent('mouseup', mouseOptions);
@@ -26,6 +49,38 @@ describe('selectable', function () {
                 mouseUp: mouseUp
             };
         }
+        function lassoStart(node, metaKey, shiftKey) {
+            var mouseOptions = buildMouseOptions(node, metaKey, shiftKey),
+                mouseDown = new MouseEvent('mousedown', mouseOptions);
+            spyOn(mouseDown, 'preventDefault');
+            mouseDown.preventDefault.and.callThrough();
+            node.dispatchEvent(mouseDown);
+            return {
+                mouseDown: mouseDown
+            };
+        }
+        function lassoEnd(node, metaKey, shiftKey) {
+            var mouseOptions = buildMouseOptions(node, metaKey, shiftKey),
+                mouseUp = new MouseEvent('mouseup', mouseOptions);
+            spyOn(mouseUp, 'preventDefault');
+            mouseUp.preventDefault.and.callThrough();
+            node.dispatchEvent(mouseUp);
+            return {
+                mouseUp: mouseUp
+            };
+        }
+        function moveToNode(node, metaKey, shiftKey) {
+            var mouseOptions = buildMouseOptions(node, metaKey, shiftKey),
+                mouseMove = new MouseEvent('mousemove', mouseOptions);
+            spyOn(mouseMove, 'preventDefault');
+            mouseMove.preventDefault.and.callThrough();
+            node.dispatchEvent(mouseMove);
+
+            return {
+                mouseMove: mouseMove
+            };
+        }
+
         describe('with metaKey', function () {
             var container, selectable;
             beforeEach(function () {
@@ -227,6 +282,108 @@ describe('selectable', function () {
                     clickNode(container.lastChild);
                     expect(container.firstChild.getAttribute('class')).not.toContain('test-selected');
                     expect(container.lastChild.getAttribute('class')).toContain('test-selected');
+                });
+            });
+        });
+
+        describe('Lasso', function () {
+            var container, selectable;
+            beforeEach(function () {
+                document.body.innerHTML = '<ul id="selectable"><li>1</li><li>2</li><li>3</li></ul>';
+
+                container = document.getElementById('selectable');
+            });
+
+            describe('Lasso enabled', function () {
+                beforeEach(function () {
+                    selectable = new Selectable({
+                        appendTo: container,
+                        filter: 'li',
+                        toggle: false,
+                        classes: {
+                            selected: "test-selected",
+                            selecting: "test-selecting"
+                        }
+                    });
+                });
+
+                it('selected all elements moved over by the lasso', function () {
+                    lassoStart(container.children[0]);
+                    var firstNodeExpectation = expect(container.children[0].getAttribute('class')),
+                        secondNodeExpectation = expect(container.children[1].getAttribute('class')),
+                        lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.toContain('test-selecting');
+                    firstNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.not.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selected');
+                    lastNodeExpectation.not.toContain('test-selecting');
+
+                    moveToNode(container.children[1]);
+                    firstNodeExpectation = expect(container.children[0].getAttribute('class'));
+                    secondNodeExpectation = expect(container.children[1].getAttribute('class'));
+                    lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.toContain('test-selecting');
+                    secondNodeExpectation.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selecting');
+
+                    moveToNode(container.children[2]);
+                    firstNodeExpectation = expect(container.children[0].getAttribute('class'));
+                    secondNodeExpectation = expect(container.children[1].getAttribute('class'));
+                    lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.toContain('test-selecting');
+                    firstNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.toContain('test-selecting');
+                    secondNodeExpectation.not.toContain('test-selected');
+                    lastNodeExpectation.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selected');
+
+                });
+            });
+
+            describe('Lasso disabled', function () {
+                beforeEach(function () {
+                    selectable = new Selectable({
+                        appendTo: container,
+                        filter: 'li',
+                        toggle: false,
+                        lasso: false,
+                        classes: {
+                            selected: "test-selected"
+                        }
+                    });
+                });
+
+                it('moved over elements are not selected', function () {
+                    lassoStart(container.children[0]);
+                    var firstNodeExpectation = expect(container.children[0].getAttribute('class')),
+                        secondNodeExpectation = expect(container.children[1].getAttribute('class')),
+                        lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.not.toContain('test-selecting');
+                    firstNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.not.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selected');
+                    lastNodeExpectation.not.toContain('test-selecting');
+
+                    moveToNode(container.children[1]);
+                    firstNodeExpectation = expect(container.children[0].getAttribute('class'));
+                    secondNodeExpectation = expect(container.children[1].getAttribute('class'));
+                    lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.not.toContain('test-selecting');
+                    secondNodeExpectation.not.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selecting');
+
+                    moveToNode(container.children[2]);
+                    firstNodeExpectation = expect(container.children[0].getAttribute('class'));
+                    secondNodeExpectation = expect(container.children[1].getAttribute('class'));
+                    lastNodeExpectation = expect(container.children[2].getAttribute('class'));
+                    firstNodeExpectation.not.toContain('test-selecting');
+                    firstNodeExpectation.not.toContain('test-selected');
+                    secondNodeExpectation.not.toContain('test-selecting');
+                    secondNodeExpectation.not.toContain('test-selected');
+                    lastNodeExpectation.not.toContain('test-selecting');
+                    lastNodeExpectation.not.toContain('test-selected');
                 });
             });
         });
