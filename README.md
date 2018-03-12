@@ -57,11 +57,43 @@ You can replace `latest` with the required release number if needed.
 
 ---
 
-Initialise the plugin:
+### Default
+
+This will create a new instance and add any element found in the DOM with the `"ui-selectable"` class name and make them selectable.
 
 ```javascript
-const selectable = new Selectable(options);
+const selectable = new Selectable();
 ```
+
+### Custom filter
+
+If you don't add the `"ui-selectable"` class name to your items then simply tell the instance what to look for instead with the [`filter`](https://github.com/Mobius1/Selectable/wiki/filter) option:
+
+```javascript
+const selectable = new Selectable({
+   filter: ".my-classname"
+});
+
+// or
+
+const selectable = new Selectable({
+   filter: document.querySelectorAll(".my-classname")
+});
+```
+
+### No items
+
+If your document doesn't have any selectable items yet, e.g. they're added asynchronously via an ajax call, then simply create a new instance as normal, then use the [`add()`](https://github.com/Mobius1/Selectable/wiki/add()) method when they're available:
+
+```javascript
+const selectable = new Selectable();
+
+// items added to DOM ...
+
+// then...
+selectable.add(items);
+```
+
 ---
 
 ## Options
