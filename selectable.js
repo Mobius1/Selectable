@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.8
+ * Version: 0.10.9
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.8";
+    var _version = "0.10.9";
 
     /**
      * Check for touch screen
@@ -34,41 +34,6 @@
      * @type {Boolean}
      */
     var _supports = 'classList' in document.documentElement;
-
-    /**
-     * Default configuration properties
-     * @type {Object}
-     */
-    var defaultConfig = {
-        toggle: false,
-        autoRefresh: true,
-
-        throttle: 50,
-
-        appendTo: document.body,
-
-        filter: ".ui-selectable",
-        tolerance: "touch",
-
-        autoScroll: {
-            offset: 40,
-            increment: 10,
-        },
-
-        lasso: {
-            border: '1px dotted #000',
-            backgroundColor: 'rgba(52, 152, 219, 0.2)',
-        },
-
-        classes: {
-            lasso: "ui-lasso",
-            selected: "ui-selected",
-            container: "ui-container",
-            selecting: "ui-selecting",
-            selectable: "ui-selectable",
-            unselecting: "ui-unselecting"
-        }
-    };
 
     /**
      * Attach removable event listener
@@ -302,6 +267,42 @@
 
     /* SELECTABLE */
     function Selectable(options) {
+
+        /**
+         * Default configuration properties
+         * @type {Object}
+         */
+        var defaultConfig = {
+            toggle: false,
+            autoRefresh: true,
+
+            throttle: 50,
+
+            appendTo: document.body,
+
+            filter: ".ui-selectable",
+            tolerance: "touch",
+
+            autoScroll: {
+                offset: 40,
+                increment: 10,
+            },
+
+            lasso: {
+                border: '1px dotted #000',
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+            },
+
+            classes: {
+                lasso: "ui-lasso",
+                selected: "ui-selected",
+                container: "ui-container",
+                selecting: "ui-selecting",
+                selectable: "ui-selectable",
+                unselecting: "ui-unselecting"
+            }
+        };
+
         this.version = _version;
         this.config = extend(defaultConfig, options);
         this.init();
@@ -412,25 +413,29 @@
         bind: function() {
             var e = this.events;
 
-            // Attach event listeners
-            on(this.container, 'mousedown', e.start);
 
-            on(document, 'mouseup', e.end);
-            on(document, 'keydown', e.keydown);
-            on(document, 'keyup', e.keyup);
+            if (_touch) {
+                on(this.container, "touchstart", e.touchstart);
+                on(document, "touchend", e.end);
+                on(document, "touchcancel", e.end);
+
+                if (this.lasso !== false) {
+                    on(document, "touchmove", e.drag);
+                }
+            } else {
+                on(this.container, 'mousedown', e.start);
+
+                on(document, 'mouseup', e.end);
+                on(document, 'keydown', e.keydown);
+                on(document, 'keyup', e.keyup);
+
+                if (this.lasso !== false) {
+                    on(document, 'mousemove', e.drag);
+                }
+            }
 
             if (this.autoscroll) {
                 on(this.container, "scroll", e.scroll);
-            }
-
-            // Mobile
-            on(this.container, "touchstart", e.touchstart);
-            on(document, "touchend", e.end);
-            on(document, "touchcancel", e.end);
-
-            if (this.lasso !== false) {
-                on(document, "touchmove", e.drag);
-                on(document, 'mousemove', e.drag);
             }
 
             on(window, 'resize', e.recalculate);
@@ -535,7 +540,7 @@
                     lastIndex = this.getNodes().indexOf(this.startEl),
                     step = currentIndex < lastIndex ? 1 : -1;
 
-                while ((currentIndex+=step) && currentIndex !== lastIndex) {
+                while ((currentIndex += step) && currentIndex !== lastIndex) {
                     items[currentIndex].selecting = true;
                 }
             }
@@ -1219,34 +1224,34 @@
          * @param  {Function} callback
          * @return {Void}
          */
-        on: function(event, callback) {
-            this.events = this.events || {};
-            this.events[event] = this.events[event] || [];
-            this.events[event].push(callback);
+        on: function(listener, callback) {
+            this.listeners = this.listeners || {};
+            this.listeners[listener] = this.listeners[listener] || [];
+            this.listeners[listener].push(callback);
         },
 
         /**
-         * Remove custom event listener
-         * @param  {String} event
+         * Remove custom listener listener
+         * @param  {String} listener
          * @param  {Function} callback
          * @return {Void}
          */
-        off: function(event, callback) {
-            this.events = this.events || {};
-            if (event in this.events === false) return;
-            this.events[event].splice(this.events[event].indexOf(callback), 1);
+        off: function(listener, callback) {
+            this.listeners = this.listeners || {};
+            if (listener in this.listeners === false) return;
+            this.listeners[listener].splice(this.listeners[listener].indexOf(callback), 1);
         },
 
         /**
-         * Fire custom event
-         * @param  {String} event
+         * Fire custom listener
+         * @param  {String} listener
          * @return {Void}
          */
-        emit: function(event) {
-            this.events = this.events || {};
-            if (event in this.events === false) return;
-            for (var i = 0; i < this.events[event].length; i++) {
-                this.events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
+        emit: function(listener) {
+            this.listeners = this.listeners || {};
+            if (listener in this.listeners === false) return;
+            for (var i = 0; i < this.listeners[listener].length; i++) {
+                this.listeners[listener][i].apply(this, Array.prototype.slice.call(arguments, 1));
             }
         },
 
@@ -1292,12 +1297,8 @@
          */
         destroy: function() {
             this.disable();
-
+            this.listeners = false;
             this.remove(this.items);
-
-            each(this, function(val, prop) {
-                if (prop !== "version" && prop !== "config") delete(this[prop]);
-            }, this);
         }
     };
 
