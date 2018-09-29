@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.10.9
+ * Version: 0.11.0
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.10.9";
+    var _version = "0.11.0";
 
     /**
      * Check for touch screen
@@ -245,6 +245,36 @@
                     !!node.className &&
                     !!node.className.match(new RegExp("(\\s|^)" + name + "(\\s|$)"));
         }
+    };
+
+    /**
+     * Check if node is clickable
+     * @param  {HTMLElement} node
+     * @param  {String|Array} Ignor elist
+     * @return {Boolean}
+     */
+    var isClickable = function(node, ignore) {
+
+        if (!Array.isArray(ignore)) {
+            ignore = [ignore];
+        }
+
+        // check for ignored nodeNames
+        var hasNodeName = ignore.indexOf(node.nodeName.toLowerCase()) > -1;
+
+        // check for ignored classNames
+        var hasClass = false;
+        for (var i = 0; i < ignore.length; i++) {
+            // string is a className
+            if (ignore[i].charAt(0) == ".") {
+                if (classList.contains(node, ignore[i].substring(1))) {
+                    hasClass = true;
+                    break;
+                }
+            }
+        }
+
+        return hasNodeName || hasClass;
     };
 
     /**
@@ -486,7 +516,13 @@
          * @return {Void}
          */
         start: function(e) {
+            var target = e.target;
+
             if (!this.container.contains(e.target) || e.which === 3 || e.button > 0) return;
+
+            if (isClickable(target, this.config.ignore)) {
+                return false;
+            }
 
             var that = this,
                 o = this.config,
