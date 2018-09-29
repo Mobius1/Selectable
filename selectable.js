@@ -318,6 +318,8 @@
                 increment: 10,
             },
 
+            ignore: false,
+
             lasso: {
                 border: '1px dotted #000',
                 backgroundColor: 'rgba(52, 152, 219, 0.2)',
@@ -520,8 +522,11 @@
 
             if (!this.container.contains(e.target) || e.which === 3 || e.button > 0) return;
 
-            if (isClickable(target, this.config.ignore)) {
-                return false;
+            // check for ignored children
+            if (this.config.ignore) {
+                if ( isClickable(target, this.config.ignore) ) {
+                    return false;
+                }
             }
 
             var that = this,
