@@ -25,7 +25,7 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 * [Tables](https://codepen.io/Mobius1/pen/XzXyVw)
 * [Toggle enabled](https://codepen.io/Mobius1/pen/jamBzV/)
-* [Advanced Usage](https://s.codepen.io/Mobius1/debug/OOXPwo)
+* [Advanced Usage](https://codepen.io/Mobius1/pen/OOXPwo)
 
 ---
 
