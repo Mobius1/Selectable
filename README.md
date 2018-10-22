@@ -23,7 +23,8 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 ## Demos
 
-* [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
+* [Tables](https://codepen.io/Mobius1/pen/XzXyVw)
+* [Toggle enabled](https://codepen.io/Mobius1/pen/jamBzV/)
 * [Advanced Usage](https://s.codepen.io/Mobius1/debug/OOXPwo)
 
 ---
