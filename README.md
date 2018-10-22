@@ -17,15 +17,14 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 **Selectable is still in active development and therefore the API is in constant flux until `v1.0.0`. Check back regularly for any changes and make sure you have the latest version installed.**
 
-## [Demo](http://codepen.io/Mobius1/debug/qRxaqQ/) | [Documentation](https://github.com/Mobius1/Selectable/wiki) | [Changelog](https://github.com/Mobius1/Selectable/releases)
+## [Demo](http://codepen.io/Mobius1/pen/qRxaqQ/) | [Documentation](https://github.com/Mobius1/Selectable/wiki) | [Changelog](https://github.com/Mobius1/Selectable/releases)
 
 ---
 
 ## Demos
 
-* [Tables](https://codepen.io/Mobius1/pen/XzXyVw)
-* [Toggle enabled](https://codepen.io/Mobius1/pen/jamBzV/)
-* [Advanced Usage](https://s.codepen.io/Mobius1/debug/OOXPwo)
+* [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
+* [Advanced Usage](https://s.codepen.io/Mobius1/pen/OOXPwo)
 
 ---
 
