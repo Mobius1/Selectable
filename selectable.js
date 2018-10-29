@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.11.0
+ * Version: 0.12.0
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.11.0";
+    var _version = "0.12.0";
 
     /**
      * Check for touch screen
@@ -315,7 +315,7 @@
 
             autoScroll: {
                 offset: 40,
-                increment: 10,
+                increment: 20,
             },
 
             ignore: false,
@@ -349,18 +349,9 @@
             var that = this,
                 o = this.config;
 
+
             // Is auto-scroll enabled?
             this.autoscroll = isObject(o.autoScroll);
-
-            // Scroll data for auto-scroll
-            this.data = {
-                x: 0,
-                y: 0,
-                right: 0,
-                left: 0,
-                down: 0,
-                up: 0
-            };
 
             this.lasso = false;
 
@@ -370,7 +361,7 @@
                 this.lasso.className = o.classes.lasso;
 
                 css(this.lasso, extend({
-                    position: "fixed",
+                    position: "absolute",
                     opacity: 0, // border will show even at zero width / height
                 }, o.lasso));
             }
@@ -390,7 +381,7 @@
             };
 
             if (this.autoscroll) {
-                this.events.scroll = throttle(this.scroll, o.throttle, this);
+                this.events.scroll = this.onScroll.bind(this);
             }
 
             this.setContainer();
@@ -410,14 +401,21 @@
          */
         update: function() {
             var o = this.config.classes,
-                c = classList.contains;
+                c = classList.contains,
+                x = this.container.scrollLeft,
+                y = this.container.scrollTop,
+                w = this.container.scrollWidth,
+                h = this.container.scrollHeight;
 
-            this.size = {
-                rect: rect(this.container),
-                x: this.container.scrollLeft,
-                y: this.container.scrollTop,
-                w: this.container.scrollWidth,
-                h: this.container.scrollHeight
+            this.rect = rect(this.container);
+
+            this.scroll = {
+                x: x,
+                y: y,
+                max: {
+                    x: w - this.container.clientWidth,
+                    y: h - this.container.clientHeight
+                }
             };
 
             this.items = [];
@@ -444,7 +442,6 @@
          */
         bind: function() {
             var e = this.events;
-
 
             if (_touch) {
                 on(this.container, "touchstart", e.touchstart);
@@ -524,7 +521,7 @@
 
             // check for ignored children
             if (this.config.ignore) {
-                if ( isClickable(target, this.config.ignore) ) {
+                if (isClickable(target, this.config.ignore)) {
                     return false;
                 }
             }
@@ -551,16 +548,13 @@
             this.dragging = true;
 
             this.origin = {
-                x: touch ? e.touches[0].pageX : e.pageX,
-                y: touch ? e.touches[0].pageY : e.pageY,
+                x: (touch ? e.touches[0].clientX : e.clientX) + this.scroll.x,
+                y: (touch ? e.touches[0].clientY : e.clientY) + this.scroll.y,
+                scroll: {
+                    x: this.scroll.x,
+                    y: this.scroll.y
+                }
             };
-
-            if (this.autoscroll) {
-                this.origin.scroll = {
-                    x: this.container.scrollLeft,
-                    y: this.container.scrollTop,
-                };
-            }
 
             if (this.lasso) {
                 this.container.appendChild(this.lasso);
@@ -634,40 +628,22 @@
                 tmp,
                 t = e.type === "touchmove";
 
-            this.offset = c = {
+            this.current = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: t ? e.touches[0].pageX : e.pageX,
-                y2: t ? e.touches[0].pageY : e.pageY,
-                scroll: {
-                    x: 0,
-                    y: 0
-                }
+                x2: e.clientX + this.scroll.x,
+                y2: e.clientY + this.scroll.y,
             };
 
-            if (this.autoscroll) {
-                c.scroll = {
-                    x: this.container.scrollLeft,
-                    y: this.container.scrollTop,
-                };
-
-                this.scrolling = {
-                    x: 0,
-                    y: 0
-                };
-
-                this.autoScroll(e);
+            if (this.current.x1 > this.current.x2) {
+                tmp = this.current.x2;
+                this.current.x2 = this.current.x1;
+                this.current.x1 = tmp;
             }
-
-            if (c.x1 > c.x2) {
-                tmp = c.x2;
-                c.x2 = c.x1;
-                c.x1 = tmp;
-            }
-            if (c.y1 > c.y2) {
-                tmp = c.y2;
-                c.y2 = c.y1;
-                c.y1 = tmp;
+            if (this.current.y1 > this.current.y2) {
+                tmp = this.current.y2;
+                this.current.y2 = this.current.y1;
+                this.current.y1 = tmp;
             }
 
             /* highlight */
@@ -675,18 +651,29 @@
                 that.highlight(item, isCmdKey(e));
             });
 
-            var coords = {
-                x1: c.x1 + this.data.right,
-                x2: (c.x2 + this.data.left) - (c.x1 + this.data.right),
-                y1: c.y1 + this.data.down,
-                y2: (c.y2 + this.data.up) - (c.y1 + this.data.down),
+            this.coords = {
+                x1: this.current.x1,
+                x2: (this.current.x2) - (this.current.x1),
+                y1: this.current.y1,
+                y2: (this.current.y2) - (this.current.y1),
             };
 
-            if (this.lasso) {
-                this.updateHelper(coords);
+            if (this.autoscroll) {
+                this.autoScroll(e);
             }
 
-            this.emit('selectable.drag', e, coords);
+            if (this.lasso) {
+                // style the lasso
+                css(this.lasso, {
+                    left: this.coords.x1 - this.rect.x1,
+                    top: this.coords.y1 - this.rect.y1,
+                    width: this.coords.x2,
+                    height: this.coords.y2,
+                    opacity: 1,
+                });
+            }
+
+            this.emit('selectable.drag', e);
         },
 
         /**
@@ -698,6 +685,7 @@
             if (!this.dragging) return;
 
             this.dragging = false;
+            this.stopY = false;
 
             var that = this,
                 o = that.config,
@@ -731,11 +719,6 @@
             endEl = closest(node, function(el) {
                 return classList.contains(el, o.classes.selectable);
             });
-
-            this.data.right = 0;
-            this.data.left = 0;
-            this.data.down = 0;
-            this.data.up = 0;
 
             // loop over items and check their state
             each(this.items, function(item) {
@@ -800,36 +783,13 @@
          * @param  {Object} e Event interface
          * @return {Void}
          */
-        scroll: function(e) {
+        onScroll: function(e) {
+            this.scroll.x = this.container.scrollLeft;
+            this.scroll.y = this.container.scrollTop;
+
             each(this.items, function(item) {
                 item.rect = rect(item.node);
             });
-        },
-
-        /**
-         * Update the lasso dimensions
-         * @param  {Object} coords Dimensions
-         * @return {Void}
-         */
-        updateHelper: function(coords) {
-            var style = {
-                opacity: 1,
-                left: coords.x1,
-                width: coords.x2,
-                top: coords.y1,
-                height: coords.y2
-            };
-
-            if (this.autoscroll) {
-                style = extend(style, {
-                    zIndex: 0,
-                    position: "absolute",
-                    left: coords.x1 - this.size.rect.x1 + this.offset.scroll.x,
-                    top: coords.y1 - this.size.rect.y1 + this.offset.scroll.y,
-                });
-            }
-
-            css(this.lasso, style);
         },
 
         /**
@@ -838,73 +798,24 @@
          * @return {Void}
          */
         autoScroll: function(e) {
-            var o = this.config.autoScroll,
-                r = this.size.rect,
-                l = this.offset.scroll.x,
-                t = this.offset.scroll.y,
-                w = this.size.w,
-                h = this.size.h,
-                x = 0,
-                y = 0,
-                nl = l,
-                nt = t;
+            const o = this.config.autoScroll;
+            let nx = 0;
+            let ny = 0;
 
-            // Check we're not scrolled all the way to the top or bottom
-            if (t > 0 || t < h - r.height) {
-                // Check we're in the auto-scroll trigger zone
-                if (e.pageY >= r.y2 - o.offset || e.pageY <= r.y1 + o.offset) {
-                    if (e.pageY >= r.y2 - o.offset) { // scrolling down
-                        y = o.increment;
-
-                        this.scrolling.y = 1;
-                    } else if (e.pageY <= r.y1 + o.offset) { // scrolling up
-                        y = -o.increment;
-
-                        this.scrolling.y = -1;
-                    }
-
-                    nt += y;
-
-                    // scroll the container and store the new position
-                    this.container.scrollTop = this.offset.scroll.y = nt;
-                }
+            if (e.clientY >= this.rect.y2 - o.offset && this.scroll.y < this.scroll.max.y) {
+                ny = o.increment;
+            } else if (e.clientY <= this.rect.y1 + o.offset && this.scroll.y > 0) {
+                ny = -o.increment;
             }
 
-            // Check we're not scrolled all the way to the left or right
-            if (l > 0 || l < w - r.width) {
-                // Check we're in the auto-scroll trigger zone
-                if (e.pageX >= r.x2 - o.offset || e.pageX <= r.x1 + o.offset) {
-                    if (e.pageX >= r.x2 - o.offset) { // scrolling right
-                        x = o.increment;
-
-                        this.scrolling.x = 1;
-                    } else if (e.pageX <= r.x1 + o.offset) { // scrolling left
-                        x = -o.increment;
-
-                        this.scrolling.x = -1;
-                    }
-
-                    nl += x;
-
-                    // scroll the container and store the new position
-                    this.container.scrollLeft = this.offset.scroll.x = nl;
-                }
+            if (e.clientX >= this.rect.x2 - o.offset && this.scroll.x < this.scroll.max.x) {
+                nx = o.increment;
+            } else if (e.clientX <= this.rect.x1 + o.offset && this.scroll.x > 0) {
+                nx = -o.increment;
             }
 
-            this.data.x = (this.origin.scroll.x - this.offset.scroll.x);
-            this.data.y = (this.origin.scroll.y - this.offset.scroll.y);
-
-            if (this.scrolling.x > 0) {
-                this.data.right = this.data.x;
-            } else if (this.scrolling.x < 0) {
-                this.data.left = this.data.x;
-            }
-
-            if (this.scrolling.y > 0) {
-                this.data.down = this.data.y;
-            } else if (this.scrolling.y < 0) {
-                this.data.up = this.data.y;
-            }
+            this.container.scrollTop += ny;
+            this.container.scrollLeft += nx;
         },
 
         /**
@@ -918,15 +829,14 @@
                 cls = o.classes,
                 el = item.node,
                 r = item.rect,
-                d = this.data,
                 over = false;
 
-            if (o.tolerance == "touch") {
-                over = !(r.x1 > offset.x2 + d.left || (r.x2 < offset.x1 + d.right ||
-                    (r.y1 > offset.y2 + d.up || r.y2 < offset.y1 + d.down)));
-            } else if (o.tolerance == "fit") {
-                over = r.x1 > offset.x1 + d.right && (r.x2 < offset.x2 + d.left &&
-                    (r.y1 > offset.y1 + d.down && r.y2 < offset.y2 + d.up));
+            if (o.tolerance === "touch") {
+                over = !(r.x1 + this.scroll.x > this.current.x2 || (r.x2 + this.scroll.x < this.current.x1 ||
+                    (r.y1 + this.scroll.y > this.current.y2 || r.y2 + this.scroll.y < this.current.y1)));
+            } else if (o.tolerance === "fit") {
+                over = r.x1 + this.scroll.x > this.current.x1 && (r.x2 + this.scroll.x < this.current.x2 &&
+                    (r.y1 + this.scroll.y > this.current.y1 && r.y2 + this.scroll.y < this.current.y2));
             }
 
             if (over) {
@@ -1012,7 +922,7 @@
             if (this.autoscroll) {
                 var style = css(this.container);
 
-                if (style.position === "static") {
+                if (style.position === "static" || this.container !== document.body) {
                     css(this.container, {
                         position: "relative"
                     });
