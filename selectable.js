@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.12.0
+ * Version: 0.12.1
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.12.0";
+    var _version = "0.12.1";
 
     /**
      * Check for touch screen
@@ -543,13 +543,13 @@
                 e.preventDefault();
             }
 
-            var touch = e.type === "touchstart";
+            var touch = e.type === "touchstart", w = window;
 
             this.dragging = true;
 
             this.origin = {
-                x: (touch ? e.touches[0].clientX : e.clientX) + this.scroll.x,
-                y: (touch ? e.touches[0].clientY : e.clientY) + this.scroll.y,
+                x: (touch ? e.touches[0].clientX : e.clientX) + this.scroll.x + w.pageXOffset,
+                y: (touch ? e.touches[0].clientY : e.clientY) + this.scroll.y + w.pageYOffset,
                 scroll: {
                     x: this.scroll.x,
                     y: this.scroll.y
@@ -626,13 +626,14 @@
             var that = this,
                 c,
                 tmp,
+                w = window,
                 t = e.type === "touchmove";
 
             this.current = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: e.clientX + this.scroll.x,
-                y2: e.clientY + this.scroll.y,
+                x2: e.clientX + this.scroll.x + w.pageXOffset,
+                y2: e.clientY + this.scroll.y + w.pageYOffset,
             };
 
             if (this.current.x1 > this.current.x2) {
