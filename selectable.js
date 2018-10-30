@@ -314,7 +314,7 @@
             tolerance: "touch",
 
             autoScroll: {
-                offset: 40,
+                threshold: 40,
                 increment: 20,
             },
 
@@ -515,9 +515,14 @@
          * @return {Void}
          */
         start: function(e) {
-            var target = e.target;
+            var that = this,
+                o = this.config,
+								target = e.target,
+								touch = e.type === "touchstart",
+                w = window,
+								originalEl;
 
-            if (!this.container.contains(e.target) || e.which === 3 || e.button > 0) return;
+            if (!this.container.contains(target) || e.which === 3 || e.button > 0) return;
 
             // check for ignored children
             if (this.config.ignore) {
@@ -526,25 +531,18 @@
                 }
             }
 
-            var that = this,
-                o = this.config,
-                originalEl;
-
             // selectable nodes may have child elements
             // so let's get the closest selectable node
-            var node = closest(e.target, function(el) {
+            var node = closest(target, function(el) {
                 return el === that.container || classList.contains(el, o.classes.selectable);
             });
 
             if (!node || o.disabled) return false;
 
             // allow form inputs to be receive focus
-            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
+            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(target.tagName) === -1) {
                 e.preventDefault();
             }
-
-            var touch = e.type === "touchstart",
-                w = window;
 
             this.dragging = true;
 
@@ -624,9 +622,7 @@
 
             if (o.disabled || !this.dragging || isShiftKey(e)) return;
 
-            var that = this,
-                c,
-                tmp,
+            var tmp,
                 w = window,
                 evt = (e.type === "touchmove" ? e.touches[0] : e);
 
@@ -637,11 +633,14 @@
                 y2: evt.pageY + this.scroll.y,
             };
 
+						// flip lasso x
             if (this.current.x1 > this.current.x2) {
                 tmp = this.current.x2;
                 this.current.x2 = this.current.x1;
                 this.current.x1 = tmp;
             }
+					
+						// flip lasso y
             if (this.current.y1 > this.current.y2) {
                 tmp = this.current.y2;
                 this.current.y2 = this.current.y1;
@@ -650,8 +649,8 @@
 
             /* highlight */
             each(this.items, function(item) {
-                that.highlight(item, isCmdKey(e));
-            });
+                this.highlight(item, isCmdKey(e));
+            }, this);
 
             this.coords = {
                 x1: this.current.x1,
@@ -659,46 +658,48 @@
                 y1: this.current.y1,
                 y2: (this.current.y2) - (this.current.y1),
             };
+					
+						if ( this.container !== document.body ) {
+							this.coords.x1 -= this.rect.x1;
+							this.coords.y1 -= this.rect.y1;
+						}
 
             // auto scroll
             if (this.autoscroll) {
                 const o = this.config.autoScroll;
-                let nx = 0;
-                let ny = 0;
+                var nx = 0;
+                var ny = 0;
 
                 // scroll y
-                if (evt.pageY >= this.rect.y2 - o.offset && this.scroll.y < this.scroll.max.y) {
+                if (evt.pageY >= this.rect.y2 - o.threshold && this.scroll.y < this.scroll.max.y) {
                     ny = o.increment;
-                } else if (evt.pageY <= this.rect.y1 + o.offset && this.scroll.y > 0) {
+                } else if (evt.pageY <= this.rect.y1 + o.threshold && this.scroll.y > 0) {
                     ny = -o.increment;
                 }
 
                 // scroll x
-                if (evt.pageX >= this.rect.x2 - o.offset && this.scroll.x < this.scroll.max.x) {
+                if (evt.pageX >= this.rect.x2 - o.threshold && this.scroll.x < this.scroll.max.x) {
                     nx = o.increment;
-                } else if (evt.pageX <= this.rect.x1 + o.offset && this.scroll.x > 0) {
+                } else if (evt.pageX <= this.rect.x1 + o.threshold && this.scroll.x > 0) {
                     nx = -o.increment;
                 }
 
-                if (ny > 0)
-                    this.container.scrollTop += ny;
-
-                if (nx > 0)
-                    this.container.scrollLeft += nx;
+                this.container.scrollTop += ny;
+                this.container.scrollLeft += nx;
             }
 
             if (this.lasso) {
                 // style the lasso
                 css(this.lasso, {
-                    left: this.coords.x1 - this.rect.x1,
-                    top: this.coords.y1 - this.rect.y1,
+                    left: this.coords.x1,
+                    top: this.coords.y1,
                     width: this.coords.x2,
                     height: this.coords.y2,
                     opacity: 1,
                 });
             }
 
-            this.emit('selectable.drag', e);
+            this.emit('selectable.drag', e, this.coords);
         },
 
         /**
@@ -823,48 +824,50 @@
          * @return {Void}
          */
         highlight: function(item, cmd) {
-            var offset = this.offset,
-                o = this.config,
+            var o = this.config,
                 cls = o.classes,
                 el = item.node,
                 r = item.rect,
+								c = this.current,
+								s = this.scroll,
+								cl = classList,
                 over = false;
 
             if (o.tolerance === "touch") {
-                over = !(r.x1 + this.scroll.x > this.current.x2 || (r.x2 + this.scroll.x < this.current.x1 ||
-                    (r.y1 + this.scroll.y > this.current.y2 || r.y2 + this.scroll.y < this.current.y1)));
+                over = !(r.x1 + s.x > c.x2 || (r.x2 + s.x < c.x1 ||
+                    (r.y1 + s.y > c.y2 || r.y2 + s.y < c.y1)));
             } else if (o.tolerance === "fit") {
-                over = r.x1 + this.scroll.x > this.current.x1 && (r.x2 + this.scroll.x < this.current.x2 &&
-                    (r.y1 + this.scroll.y > this.current.y1 && r.y2 + this.scroll.y < this.current.y2));
+                over = r.x1 + s.x > c.x1 && (r.x2 + s.x < c.x2 &&
+                    (r.y1 + s.y > c.y1 && r.y2 + s.y < c.y2));
             }
 
             if (over) {
                 if (item.selected && !o.toggle) {
-                    classList.remove(el, cls.selected);
+                    cl.remove(el, cls.selected);
                     item.selected = false;
                 }
                 if (item.unselecting && (!o.toggle || o.toggle && o.toggle !== "drag")) {
-                    classList.remove(el, cls.unselecting);
+                    cl.remove(el, cls.unselecting);
                     item.unselecting = false;
                 }
                 if (!item.selecting) {
-                    classList.add(el, cls.selecting);
+                    cl.add(el, cls.selecting);
                     item.selecting = true;
                 }
             } else {
                 if (item.selecting) {
                     if (cmd && item.startselected) {
-                        classList.remove(el, cls.selecting);
+                        cl.remove(el, cls.selecting);
                         item.selecting = false;
 
-                        classList.add(el, cls.selected);
+                        cl.add(el, cls.selected);
                         item.selected = true;
                     } else {
-                        classList.remove(el, cls.selecting);
+                        cl.remove(el, cls.selecting);
                         item.selecting = false;
 
                         if (item.startselected && !o.toggle) {
-                            classList.add(el, cls.unselecting);
+                            cl.add(el, cls.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -872,10 +875,10 @@
                 if (el.selected) {
                     if (!cmd) {
                         if (!item.startselected) {
-                            classList.remove(el, cls.selected);
+                            cl.remove(el, cls.selected);
                             item.selected = false;
 
-                            classList.add(el, cls.unselecting);
+                            cl.add(el, cls.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -921,7 +924,7 @@
             if (this.autoscroll) {
                 var style = css(this.container);
 
-                if (style.position === "static" || this.container !== document.body) {
+                if (style.position === "static" && this.container !== document.body) {
                     css(this.container, {
                         position: "relative"
                     });
