@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.12.2
+ * Version: 0.12.3
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.12.2";
+    var _version = "0.12.3";
 
     /**
      * Check for touch screen
@@ -659,10 +659,10 @@
                 y2: (this.current.y2) - (this.current.y1),
             };
 					
-						if ( this.container !== document.body ) {
-							this.coords.x1 -= this.rect.x1;
-							this.coords.y1 -= this.rect.y1;
-						}
+			if ( this.container !== document.body ) {
+				this.coords.x1 -= this.rect.x1;
+				this.coords.y1 -= this.rect.y1;
+			}
 
             // auto scroll
             if (this.autoscroll) {
