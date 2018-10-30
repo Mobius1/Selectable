@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.12.1
+ * Version: 0.12.2
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.12.1";
+    var _version = "0.12.2";
 
     /**
      * Check for touch screen
@@ -543,13 +543,14 @@
                 e.preventDefault();
             }
 
-            var touch = e.type === "touchstart", w = window;
+            var touch = e.type === "touchstart",
+                w = window;
 
             this.dragging = true;
 
             this.origin = {
-                x: (touch ? e.touches[0].clientX : e.clientX) + this.scroll.x + w.pageXOffset,
-                y: (touch ? e.touches[0].clientY : e.clientY) + this.scroll.y + w.pageYOffset,
+                x: (touch ? e.touches[0].pageX : e.pageX) + this.scroll.x,
+                y: (touch ? e.touches[0].pageY : e.pageY) + this.scroll.y,
                 scroll: {
                     x: this.scroll.x,
                     y: this.scroll.y
@@ -627,13 +628,13 @@
                 c,
                 tmp,
                 w = window,
-                t = e.type === "touchmove";
+                evt = (e.type === "touchmove" ? e.touches[0] : e);
 
             this.current = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: e.clientX + this.scroll.x + w.pageXOffset,
-                y2: e.clientY + this.scroll.y + w.pageYOffset,
+                x2: evt.pageX + this.scroll.x,
+                y2: evt.pageY + this.scroll.y,
             };
 
             if (this.current.x1 > this.current.x2) {
@@ -659,8 +660,31 @@
                 y2: (this.current.y2) - (this.current.y1),
             };
 
+            // auto scroll
             if (this.autoscroll) {
-                this.autoScroll(e);
+                const o = this.config.autoScroll;
+                let nx = 0;
+                let ny = 0;
+
+                // scroll y
+                if (evt.pageY >= this.rect.y2 - o.offset && this.scroll.y < this.scroll.max.y) {
+                    ny = o.increment;
+                } else if (evt.pageY <= this.rect.y1 + o.offset && this.scroll.y > 0) {
+                    ny = -o.increment;
+                }
+
+                // scroll x
+                if (evt.pageX >= this.rect.x2 - o.offset && this.scroll.x < this.scroll.max.x) {
+                    nx = o.increment;
+                } else if (evt.pageX <= this.rect.x1 + o.offset && this.scroll.x > 0) {
+                    nx = -o.increment;
+                }
+
+                if (ny > 0)
+                    this.container.scrollTop += ny;
+
+                if (nx > 0)
+                    this.container.scrollLeft += nx;
             }
 
             if (this.lasso) {
@@ -791,32 +815,6 @@
             each(this.items, function(item) {
                 item.rect = rect(item.node);
             });
-        },
-
-        /**
-         * Auto scroll
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        autoScroll: function(e) {
-            const o = this.config.autoScroll;
-            let nx = 0;
-            let ny = 0;
-
-            if (e.clientY >= this.rect.y2 - o.offset && this.scroll.y < this.scroll.max.y) {
-                ny = o.increment;
-            } else if (e.clientY <= this.rect.y1 + o.offset && this.scroll.y > 0) {
-                ny = -o.increment;
-            }
-
-            if (e.clientX >= this.rect.x2 - o.offset && this.scroll.x < this.scroll.max.x) {
-                nx = o.increment;
-            } else if (e.clientX <= this.rect.x1 + o.offset && this.scroll.x > 0) {
-                nx = -o.increment;
-            }
-
-            this.container.scrollTop += ny;
-            this.container.scrollLeft += nx;
         },
 
         /**
