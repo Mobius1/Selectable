@@ -700,6 +700,21 @@
             }
 
             if (this.lasso) {
+
+                // stop lasso causing overflow
+                if (!this.bodyContainer) {
+                    if (e.pageY >= this.rect.y2 && this.scroll.y >= this.scroll.max.y) {
+                        const off = this.origin.y - this.rect.y1 - this.scroll.y;
+                        this.coords.y1 = this.origin.y - this.rect.y1;
+                        this.coords.y2 = this.rect.y2 - off - this.rect.y1 - 2;
+                    }
+
+                    if (e.pageY <= this.rect.y1 && this.scroll.y <= 0) {
+                        this.coords.y1 = 0;
+                        this.coords.y2 = this.origin.y - this.rect.y1;
+                    }
+                }
+
                 // style the lasso
                 css(this.lasso, {
                     left: this.coords.x1,
