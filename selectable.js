@@ -402,8 +402,8 @@
         update: function() {
             var o = this.config.classes,
                 c = classList.contains,
-                x = this.container.scrollLeft,
-                y = this.container.scrollTop,
+                x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft,
+                y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop,
                 w = this.container.scrollWidth,
                 h = this.container.scrollHeight;
 
@@ -464,7 +464,7 @@
             }
 
             if (this.autoscroll) {
-                on(this.container, "scroll", e.scroll);
+                on(this.bodyContainer ? window : this.container, "scroll", e.scroll);
             }
 
             on(window, 'resize', e.recalculate);
@@ -485,7 +485,7 @@
             off(document, 'keyup', e.keyup);
 
             if (this.autoscroll) {
-                off(this.container, "scroll", e.scroll);
+                off(this.bodyContainer ? window : this.container, "scroll", e.scroll);
             }
 
             // Mobile
@@ -547,8 +547,8 @@
             this.dragging = true;
 
             this.origin = {
-                x: (touch ? e.touches[0].pageX : e.pageX) + this.scroll.x,
-                y: (touch ? e.touches[0].pageY : e.pageY) + this.scroll.y,
+                x: (touch ? e.touches[0].pageX : e.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
+                y: (touch ? e.touches[0].pageY : e.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
                 scroll: {
                     x: this.scroll.x,
                     y: this.scroll.y
@@ -629,8 +629,8 @@
             this.current = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: evt.pageX + this.scroll.x,
-                y2: evt.pageY + this.scroll.y,
+                x2: evt.pageX + (this.bodyContainer ? 0 : this.scroll.x),
+                y2: evt.pageY + (this.bodyContainer ? 0 : this.scroll.y),
             };
 
             // flip lasso x
@@ -666,26 +666,37 @@
 
             // auto scroll
             if (this.autoscroll) {
-                const o = this.config.autoScroll;
+                var o = this.config.autoScroll;
                 var nx = 0;
                 var ny = 0;
+                var mx = evt.pageX;
+                var my = evt.pageY;
+
+                if (this.bodyContainer) {
+                    mx -= this.scroll.x;
+                    my -= this.scroll.y;
+                }
 
                 // scroll y
-                if (evt.pageY >= this.rect.y2 - o.threshold && this.scroll.y < this.scroll.max.y) {
+                if (my >= this.rect.y2 - o.threshold && this.scroll.y < this.scroll.max.y) {
                     ny = o.increment;
-                } else if (evt.pageY <= this.rect.y1 + o.threshold && this.scroll.y > 0) {
+                } else if (my <= this.rect.y1 + o.threshold && this.scroll.y > 0) {
                     ny = -o.increment;
                 }
 
                 // scroll x
-                if (evt.pageX >= this.rect.x2 - o.threshold && this.scroll.x < this.scroll.max.x) {
+                if (mx >= this.rect.x2 - o.threshold && this.scroll.x < this.scroll.max.x) {
                     nx = o.increment;
-                } else if (evt.pageX <= this.rect.x1 + o.threshold && this.scroll.x > 0) {
+                } else if (mx <= this.rect.x1 + o.threshold && this.scroll.x > 0) {
                     nx = -o.increment;
                 }
 
-                this.container.scrollTop += ny;
-                this.container.scrollLeft += nx;
+                if (this.bodyContainer) {
+                    window.scrollBy(nx, ny);
+                } else {
+                    this.container.scrollTop += ny;
+                    this.container.scrollLeft += nx;
+                }
             }
 
             if (this.lasso) {
@@ -810,8 +821,8 @@
          * @return {Void}
          */
         onScroll: function(e) {
-            this.scroll.x = this.container.scrollLeft;
-            this.scroll.y = this.container.scrollTop;
+            this.scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
             each(this.items, function(item) {
                 item.rect = rect(item.node);
@@ -833,12 +844,20 @@
                 cl = classList,
                 over = false;
 
+            var x = s.x;
+            var y = s.y;
+
+            if (this.bodyContainer) {
+                x = 0;
+                y = 0;
+            }
+
             if (o.tolerance === "touch") {
-                over = !(r.x1 + s.x > c.x2 || (r.x2 + s.x < c.x1 ||
-                    (r.y1 + s.y > c.y2 || r.y2 + s.y < c.y1)));
+                over = !(r.x1 + x > c.x2 || (r.x2 + x < c.x1 ||
+                    (r.y1 + y > c.y2 || r.y2 + y < c.y1)));
             } else if (o.tolerance === "fit") {
-                over = r.x1 + s.x > c.x1 && (r.x2 + s.x < c.x2 &&
-                    (r.y1 + s.y > c.y1 && r.y2 + s.y < c.y2));
+                over = r.x1 + x > c.x1 && (r.x2 + x < c.x2 &&
+                    (r.y1 + y > c.y1 && r.y2 + y < c.y2));
             }
 
             if (over) {
@@ -930,6 +949,8 @@
                     });
                 }
             }
+
+            this.bodyContainer = this.container === document.body;
 
             this.bind();
         },
