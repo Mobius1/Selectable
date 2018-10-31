@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.12.3
+ * Version: 0.13.0
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.12.3";
+    var _version = "0.13.0";
 
     /**
      * Check for touch screen
@@ -107,28 +107,6 @@
     };
 
     /**
-     * Iterator helper
-     * @param  {(Array|Object)}   arr     Any object, array or array-like collection.
-     * @param  {Function}         fn      Callback
-     * @param  {Object}           scope   Change the value of this
-     * @return {Void}
-     */
-    var each = function(arr, fn, scope) {
-        var n;
-        if (isObject(arr)) {
-            for (n in arr) {
-                if (Object.prototype.hasOwnProperty.call(arr, n)) {
-                    fn.call(scope, arr[n], n);
-                }
-            }
-        } else {
-            for (n = 0; n < arr.length; n++) {
-                fn.call(scope, arr[n], n);
-            }
-        }
-    };
-
-    /**
      * Mass assign style properties
      * @param  {Object} t
      * @param  {(String|Object)} e
@@ -141,12 +119,12 @@
                 return window.getComputedStyle(el);
             } else {
                 if (isObject(obj)) {
-                    each(obj, function(val, prop) {
+                    for (var prop in obj) {
                         if (!(prop in style)) {
                             prop = "-webkit-" + prop;
                         }
-                        el.style[prop] = val + (typeof val === "string" ? "" : prop === "opacity" ? "" : "px");
-                    });
+                        el.style[prop] = obj[prop] + (typeof obj[prop] === "string" ? "" : prop === "opacity" ? "" : "px");
+                    }
                 }
             }
         }
@@ -296,7 +274,7 @@
     };
 
     /* SELECTABLE */
-    function Selectable(options) {
+    var Selectable = function(options) {
 
         /**
          * Default configuration properties
@@ -420,7 +398,8 @@
 
             this.items = [];
 
-            each(this.nodes, function(el, i) {
+            for (var i = 0; i < this.nodes.length; i++) {
+                var el = this.nodes[i];
                 classList.add(el, o.selectable);
 
                 this.items[i] = {
@@ -431,7 +410,7 @@
                     selecting: c(el, o.selecting),
                     unselecting: c(el, o.unselecting)
                 };
-            }, this);
+            }
 
             this.emit("selectable.update", this.items);
         },
@@ -579,8 +558,9 @@
                 }
             }
 
-            each(this.items, function(item) {
-                var el = item.node,
+            for (var i = 0; i < this.items.length; i++) {
+                var item = this.items[i],
+                    el = item.node,
                     isCurrentNode = el === node;
                 if (item.selected) {
 
@@ -605,7 +585,7 @@
                 if (isCurrentNode) {
                     originalEl = item;
                 }
-            });
+            }
 
             this.startEl = node;
 
@@ -648,9 +628,9 @@
             }
 
             /* highlight */
-            each(this.items, function(item) {
-                this.highlight(item, isCmdKey(e));
-            }, this);
+            for (var i = 0; i < this.items.length; i++) {
+                this.highlight(this.items[i], isCmdKey(e));
+            };
 
             this.coords = {
                 x1: this.current.x1,
@@ -773,7 +753,8 @@
             });
 
             // loop over items and check their state
-            each(this.items, function(item) {
+            for (var i = 0; i < this.items.length; i++) {
+                var item = this.items[i];
 
                 // If we've mousedown'd and mouseup'd on the same selected item
                 // toggling it's state to unselected won't work if we've dragged even
@@ -797,7 +778,7 @@
                     selected.push(item);
                     this.select(item);
                 }
-            }, this);
+            }
 
             this.emit('selectable.end', e, selected, unselected);
         },
@@ -839,9 +820,9 @@
             this.scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
             this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
-            each(this.items, function(item) {
-                item.rect = rect(item.node);
-            });
+            for (var i = 0; i < this.items.length; i++) {
+                this.items[i].rect = rect(this.items[i].node);
+            }
         },
 
         /**
@@ -978,9 +959,9 @@
         select: function(item, all) {
 
             if (isCollection(item)) {
-                each(item, function(itm) {
-                    this.select(itm);
-                }, this);
+                for (var i = 0; i < item; i++) {
+                    this.select(item[i]);
+                }
 
                 return this.getSelectedItems();
             }
@@ -1019,9 +1000,9 @@
         unselect: function(item) {
 
             if (isCollection(item)) {
-                each(item, function(itm) {
-                    this.unselect(itm);
-                }, this);
+                for (var i = 0; i < item; i++) {
+                    this.unselect(item[i]);
+                }
 
                 return this.getSelectedItems();
             }
@@ -1056,11 +1037,11 @@
          */
         add: function(node) {
             if (isCollection(node)) {
-                each(node, function(el) {
-                    if (this.nodes.indexOf(el) < 0 && el instanceof Element) {
-                        this.nodes.push(el);
+                for (var i = 0; i < node; i++) {
+                    if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
+                        this.nodes.push(node[i]);
                     }
-                }, this);
+                }
             } else {
                 if (this.nodes.indexOf(node) < 0 && node instanceof Element) {
                     this.nodes.push(node);
@@ -1111,9 +1092,9 @@
          * @return {Void}
          */
         recalculate: function() {
-            each(this.nodes, function(el, i) {
-                this.items[i].rect = rect(el);
-            }, this);
+            for (var i = 0; i < this.nodes; i++) {
+                this.items[i].rect = rect(this.nodes[i]);
+            }
             this.emit('selectable.recalculate');
         },
 
@@ -1122,9 +1103,9 @@
          * @return {Void}
          */
         selectAll: function() {
-            each(this.items, function(item) {
-                this.select(item, true);
-            }, this);
+            for (var i = 0; i < this.items; i++) {
+                this.select(this.items[i], true);
+            }
         },
 
         /**
@@ -1134,13 +1115,14 @@
         invert: function() {
             const items = this.getItems();
 
-            items.forEach(item => {
+            for (var i = 0; i < this.items; i++) {
+                var item = this.items[i];
                 if (item.selected) {
                     this.unselect(item);
                 } else {
                     this.select(item);
                 }
-            });
+            }
         },
 
         /**
@@ -1162,12 +1144,13 @@
 
             if (isCollection(item)) {
                 found = [];
-                each(item, function(i) {
+
+                for (var i = 0; i < item; i++) {
                     i = this.get(i);
 
                     if (i)
                         found.push(i);
-                }, this);
+                }
             } else {
                 // item is an index
                 if (!isNaN(item)) {
