@@ -517,10 +517,10 @@
         start: function(e) {
             var that = this,
                 o = this.config,
-								target = e.target,
-								touch = e.type === "touchstart",
+                target = e.target,
+                touch = e.type === "touchstart",
                 w = window,
-								originalEl;
+                originalEl;
 
             if (!this.container.contains(target) || e.which === 3 || e.button > 0) return;
 
@@ -633,14 +633,14 @@
                 y2: evt.pageY + this.scroll.y,
             };
 
-						// flip lasso x
+            // flip lasso x
             if (this.current.x1 > this.current.x2) {
                 tmp = this.current.x2;
                 this.current.x2 = this.current.x1;
                 this.current.x1 = tmp;
             }
-					
-						// flip lasso y
+
+            // flip lasso y
             if (this.current.y1 > this.current.y2) {
                 tmp = this.current.y2;
                 this.current.y2 = this.current.y1;
@@ -658,11 +658,11 @@
                 y1: this.current.y1,
                 y2: (this.current.y2) - (this.current.y1),
             };
-					
-			if ( this.container !== document.body ) {
-				this.coords.x1 -= this.rect.x1;
-				this.coords.y1 -= this.rect.y1;
-			}
+
+            if (this.container !== document.body) {
+                this.coords.x1 -= this.rect.x1;
+                this.coords.y1 -= this.rect.y1;
+            }
 
             // auto scroll
             if (this.autoscroll) {
@@ -828,9 +828,9 @@
                 cls = o.classes,
                 el = item.node,
                 r = item.rect,
-								c = this.current,
-								s = this.scroll,
-								cl = classList,
+                c = this.current,
+                s = this.scroll,
+                cl = classList,
                 over = false;
 
             if (o.tolerance === "touch") {
@@ -1092,6 +1092,22 @@
         },
 
         /**
+         * Select all items
+         * @return {Void}
+         */
+        invert: function() {
+            const items = this.getItems();
+
+            items.forEach(item => {
+                if (item.selected) {
+                    this.unselect(item);
+                } else {
+                    this.select(item);
+                }
+            });
+        },
+
+        /**
          * Unselect all items
          * @return {Void}
          */
@@ -1155,9 +1171,9 @@
          * Get all selected items
          * @return {Array}
          */
-        getSelectedItems: function() {
+        getSelectedItems: function(invert) {
             return this.getItems().filter(function(item) {
-                return item.selected;
+                return invert ? !item.selected : item.selected;
             });
         },
 
