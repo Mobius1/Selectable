@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.13.0
+ * Version: 0.13.1
  *
  */
 (function(root, factory) {
@@ -21,7 +21,7 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.13.0";
+    var _version = "0.13.1";
 
     /**
      * Check for touch screen
@@ -959,7 +959,7 @@
         select: function(item, all) {
 
             if (isCollection(item)) {
-                for (var i = 0; i < item; i++) {
+                for (var i = 0; i < item.length; i++) {
                     this.select(item[i]);
                 }
 
@@ -1000,7 +1000,7 @@
         unselect: function(item) {
 
             if (isCollection(item)) {
-                for (var i = 0; i < item; i++) {
+                for (var i = 0; i < item.length; i++) {
                     this.unselect(item[i]);
                 }
 
@@ -1037,7 +1037,7 @@
          */
         add: function(node) {
             if (isCollection(node)) {
-                for (var i = 0; i < node; i++) {
+                for (var i = 0; i < node.length; i++) {
                     if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
                         this.nodes.push(node[i]);
                     }
@@ -1092,7 +1092,7 @@
          * @return {Void}
          */
         recalculate: function() {
-            for (var i = 0; i < this.nodes; i++) {
+            for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
             }
             this.emit('selectable.recalculate');
@@ -1103,7 +1103,7 @@
          * @return {Void}
          */
         selectAll: function() {
-            for (var i = 0; i < this.items; i++) {
+            for (var i = 0; i < this.items.length; i++) {
                 this.select(this.items[i], true);
             }
         },
@@ -1115,7 +1115,7 @@
         invert: function() {
             const items = this.getItems();
 
-            for (var i = 0; i < this.items; i++) {
+            for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
                 if (item.selected) {
                     this.unselect(item);
@@ -1145,7 +1145,7 @@
             if (isCollection(item)) {
                 found = [];
 
-                for (var i = 0; i < item; i++) {
+                for (var i = 0; i < item.length; i++) {
                     i = this.get(i);
 
                     if (i)
