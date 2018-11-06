@@ -1,4 +1,4 @@
-![Selectable](selectable.svg?raw=true "Selectable")
+![Selectable](selectable.png?raw=true "Selectable")
 
 [![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg)](https://www.npmjs.com/package/selectable%2Ejs)
 [![npm version](https://badge.fury.io/js/selectable%2Ejs.svg)](https://badge.fury.io/js/selectable%2Ejs)
