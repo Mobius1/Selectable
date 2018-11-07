@@ -1132,10 +1132,10 @@
                 found = [];
 
                 for (var i = 0; i < item.length; i++) {
-                    i = this.get(i);
+                    var itm = this.get(item[i]);
 
-                    if (i)
-                        found.push(i);
+                    if (itm)
+                        found.push(itm);
                 }
             } else {
                 // item is an index
