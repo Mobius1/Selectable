@@ -83,8 +83,8 @@ function init() {
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
 
-    menuOverview.innerHTML = `<li><a href="https://github.com/Mobius1/Selectable/api/index.html">Introduction</a></li>
-                            <li><a href="https://github.com/Mobius1/Selectable/api/getting-started.html">Getting Started</a></li>`;
+    menuOverview.innerHTML = `<li><a href="https://github.com/Mobius1/Selectable/index.html">Introduction</a></li>
+                            <li><a href="https://github.com/Mobius1/Selectable/getting-started.html">Getting Started</a></li>`;
 
     menuOptions.innerHTML = `<li><a href="https://github.com/Mobius1/Selectable/api/options/filter.html">filter</a></li>
                             <li><a href="https://github.com/Mobius1/Selectable/api/options/appendTo.html">appendTo</a></li>
