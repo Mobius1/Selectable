@@ -79,9 +79,24 @@ function init() {
     // initSidebar()
 
 
+    const versions = document.querySelector(".sidebar-header").children[1].lastElementChild;
     const menuOverview = sidebarMenu.children[1].lastElementChild;
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
+
+    versions.innerHTML = `  <div>Versions</div>
+                            <a class="dropdown-item active" href="#">latest</a>
+                            <a class="dropdown-item" href="#">stable</a>
+                            <a class="dropdown-item" href="#">v0.13.2</a>
+                            <a class="dropdown-item" href="#">v0.13.1</a>
+                            <a class="dropdown-item" href="#">v0.13.0</a>
+                            <a class="dropdown-item" href="#">v0.12.3</a>
+                            <a class="dropdown-item" href="#">v0.12.2</a>
+                            <a class="dropdown-item" href="#">v0.12.1</a>
+                            <a class="dropdown-item" href="#">v0.12.0</a>
+                            <a class="dropdown-item" href="#">v0.11.0</a>
+                            <a class="dropdown-item" href="#">v0.10.9</a>
+                            <a class="dropdown-item" href="#">master</a>`;
 
     menuOverview.innerHTML = `<li><a href="https://github.com/Mobius1/Selectable/index.html">Introduction</a></li>
                             <li><a href="https://github.com/Mobius1/Selectable/getting-started.html">Getting Started</a></li>`;
