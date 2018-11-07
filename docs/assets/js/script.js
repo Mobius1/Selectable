@@ -84,6 +84,8 @@ function init() {
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
 
+    versions.previousElementSibling.textContent = "v0.13.3";
+
     versions.innerHTML = `  <div>Versions</div>
                             <a class="dropdown-item active" href="#">latest</a>
                             <a class="dropdown-item" href="#">stable</a>
