@@ -155,11 +155,11 @@
     /**
      * Returns a function, that, as long as it continues to be invoked, will not be triggered.
      * @param  {Function} fn
-     * @param  {Number} wait
+     * @param  {Number} lim
      * @param  {Boolean} now
      * @return {Function}
      */
-    var throttle = function(fn, limit, context) {
+    var throttle = function(fn, lim, context) {
         var wait;
         return function() {
             context = context || this;
@@ -168,7 +168,7 @@
                 wait = true;
                 return setTimeout(function() {
                     wait = false;
-                }, limit);
+                }, lim);
             }
         };
     };
@@ -251,15 +251,15 @@
          * @type {Object}
          */
         var defaultConfig = {
+            filter: ".ui-selectable",
+            tolerance: "touch",
+
+            appendTo: document.body,
+
             toggle: false,
             autoRefresh: true,
 
             throttle: 50,
-
-            appendTo: document.body,
-
-            filter: ".ui-selectable",
-            tolerance: "touch",
 
             autoScroll: {
                 threshold: 0,
@@ -627,7 +627,7 @@
                 y2: (this.current.y2) - (this.current.y1),
             };
 
-            if (this.container !== document.body) {
+            if (!this.bodyContainer) {
                 this.coords.x1 -= this.rect.x1;
                 this.coords.y1 -= this.rect.y1;
             }
@@ -639,26 +639,28 @@
                 var ny = 0;
                 var mx = evt.pageX;
                 var my = evt.pageY;
+                var inc = o.increment;
 
                 if (this.bodyContainer) {
                     mx -= this.scroll.x;
                     my -= this.scroll.y;
                 }
 
-                // scroll y
+                // check if we need to scroll y
                 if (my >= this.rect.y2 - o.threshold && this.scroll.y < this.scroll.max.y) {
-                    ny = o.increment;
+                    ny = inc;
                 } else if (my <= this.rect.y1 + o.threshold && this.scroll.y > 0) {
-                    ny = -o.increment;
+                    ny = -inc;
                 }
 
-                // scroll x
+                // check if we need to scroll x
                 if (mx >= this.rect.x2 - o.threshold && this.scroll.x < this.scroll.max.x) {
-                    nx = o.increment;
+                    nx = inc;
                 } else if (mx <= this.rect.x1 + o.threshold && this.scroll.x > 0) {
-                    nx = -o.increment;
+                    nx = -inc;
                 }
 
+                // scroll the container
                 if (this.bodyContainer) {
                     window.scrollBy(nx, ny);
                 } else {
@@ -779,7 +781,6 @@
         keydown: function(e) {
             var o = this.config.keys;
             this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            this.shiftDown = isShiftKey(e) && this.canShift;
 
             if (this.cmdDown) {
                 var code = e.code || e.keyCode;
@@ -798,7 +799,6 @@
         keyup: function(e) {
             var o = this.config.keys;
             this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            this.shiftDown = isShiftKey(e) && this.canShift;
         },
 
         /**
@@ -914,10 +914,10 @@
                 this.container = container;
             }
 
-            classList.add(this.container, this.config.classes.container);
+            classList.add(this.container, o.classes.container);
 
             if (old) {
-                classList.remove(old, this.config.classes.container);
+                classList.remove(old, o.classes.container);
             }
 
             this.bodyContainer = this.container === document.body;
@@ -1024,15 +1024,16 @@
          * * @return {Void}
          */
         add: function(node) {
+            var els = this.nodes;
             if (isCollection(node)) {
                 for (var i = 0; i < node.length; i++) {
-                    if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
-                        this.nodes.push(node[i]);
+                    if (els.indexOf(node[i]) < 0 && node[i] instanceof Element) {
+                        els.push(node[i]);
                     }
                 }
             } else {
-                if (this.nodes.indexOf(node) < 0 && node instanceof Element) {
-                    this.nodes.push(node);
+                if (els.indexOf(node) < 0 && node instanceof Element) {
+                    els.push(node);
                 }
             }
 
@@ -1136,8 +1137,9 @@
                 for (var i = 0; i < item.length; i++) {
                     var itm = this.get(item[i]);
 
-                    if (itm)
+                    if (itm) {
                         found.push(itm);
+                    }
                 }
             } else {
                 // item is an index
