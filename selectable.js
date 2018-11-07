@@ -273,6 +273,8 @@
                 backgroundColor: 'rgba(52, 152, 219, 0.2)',
             },
 
+            keys: ['shiftKey', 'ctrlKey', 'metaKey'],
+
             classes: {
                 lasso: "ui-lasso",
                 selected: "ui-selected",
@@ -532,7 +534,7 @@
                 this.update();
             }
 
-            if (isShiftKey(e) && this.startEl) {
+            if ((this.canShift && isShiftKey(e)) && this.startEl) {
 
                 var items = this.items,
                     currentIndex = this.getNodes().indexOf(node),
@@ -554,10 +556,10 @@
 
                     var unselect = false;
 
-                    if (touch || o.toggle || isCmdKey(e)) {
+                    if (touch || o.toggle || isCmdKey(e) && (this.canCtrl || this.canMeta)) {
                         unselect = isCurrentNode;
                     } else {
-                        unselect = !isCurrentNode && !isShiftKey(e);
+                        unselect = !isCurrentNode && !(isShiftKey(e) && this.canShift);
                     }
 
                     if (unselect) {
@@ -586,7 +588,7 @@
         drag: function(e) {
             var o = this.config;
 
-            if (o.disabled || !this.dragging || isShiftKey(e)) return;
+            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
 
             var tmp,
                 w = window,
@@ -615,7 +617,7 @@
 
             /* highlight */
             for (var i = 0; i < this.items.length; i++) {
-                this.highlight(this.items[i], isCmdKey(e));
+                this.highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
             };
 
             this.coords = {
@@ -775,8 +777,9 @@
          * @return {Void}
          */
         keydown: function(e) {
-            this.cmdDown = isCmdKey(e);
-            this.shiftDown = isShiftKey(e);
+            var o = this.config.keys;
+            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            this.shiftDown = isShiftKey(e) && this.canShift;
 
             if (this.cmdDown) {
                 var code = e.code || e.keyCode;
@@ -793,8 +796,9 @@
          * @return {Void}
          */
         keyup: function(e) {
-            this.cmdDown = isCmdKey(e);
-            this.shiftDown = isShiftKey(e);
+            var o = this.config.keys;
+            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            this.shiftDown = isShiftKey(e) && this.canShift;
         },
 
         /**
@@ -916,6 +920,8 @@
                 classList.remove(old, this.config.classes.container);
             }
 
+            this.bodyContainer = this.container === document.body;
+
             if (isCollection(o.filter)) {
                 this.nodes = [].slice.call(o.filter);
             } else if (typeof o.filter === "string") {
@@ -925,14 +931,10 @@
             if (this.autoscroll) {
                 var style = css(this.container);
 
-                if (style.position === "static" && this.container !== document.body) {
-                    css(this.container, {
-                        position: "relative"
-                    });
+                if (style.position === "static" && !this.bodyContainer) {
+                    this.container.style.position = "relative"
                 }
             }
-
-            this.bodyContainer = this.container === document.body;
 
             this.bind();
         },
@@ -1235,7 +1237,11 @@
          */
         enable: function() {
             if (!this.enabled) {
+                var keys = this.config.keys;
                 this.enabled = true;
+                this.canShift = keys.indexOf("shiftKey") >= 0;
+                this.canCtrl = keys.indexOf("ctrlKey") >= 0;
+                this.canMeta = keys.indexOf("metaKey") >= 0;
 
                 this.bind();
 
@@ -1253,7 +1259,11 @@
          */
         disable: function() {
             if (this.enabled) {
+                var keys = this.config.keys;
                 this.enabled = false;
+                this.canShift = false;
+                this.canCtrl = false;
+                this.canMeta = false;
 
                 this.unbind();
 
