@@ -82,39 +82,39 @@ function init() {
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
 
-    menuOptions.innerHTML = `<li><a href="/api/api/options/filter.html">filter</a></li>
-                            <li><a href="/api/api/options/appendTo.html">appendTo</a></li>
-                            <li><a href="/api/api/options/tolerance.html">tolerance</a></li>
-                            <li><a href="/api/api/options/ignore.html">ignore</a></li>
-                            <li><a href="/api/api/options/toggle.html">toggle</a></li>
-                            <li><a href="/api/api/options/throttle.html">throttle</a></li>
-                            <li><a href="/api/api/options/autoScroll.html">autoScroll</a></li>
-                            <li><a href="/api/api/options/autoRefresh.html">autoRefresh</a></li>
-                            <li><a href="/api/api/options/lasso.html">lasso</a></li>
-                            <li><a href="/api/api/options/classes.html">classes</a></li>`;
+    menuOptions.innerHTML = `<li><a href="/api/options/filter.html">filter</a></li>
+                            <li><a href="/api/options/appendTo.html">appendTo</a></li>
+                            <li><a href="/api/options/tolerance.html">tolerance</a></li>
+                            <li><a href="/api/options/ignore.html">ignore</a></li>
+                            <li><a href="/api/options/toggle.html">toggle</a></li>
+                            <li><a href="/api/options/throttle.html">throttle</a></li>
+                            <li><a href="/api/options/autoScroll.html">autoScroll</a></li>
+                            <li><a href="/api/options/autoRefresh.html">autoRefresh</a></li>
+                            <li><a href="/api/options/lasso.html">lasso</a></li>
+                            <li><a href="/api/options/classes.html">classes</a></li>`;
 
 
-    menuMethods.innerHTML = `<li><a href="/api/api/methods/destroy.html">destroy()</a></li>
-                            <li><a href="/api/api/methods/init.html">init()</a></li>
-                            <li><a href="/api/api/methods/disable.html">disable()</a></li>
-                            <li><a href="/api/api/methods/enable.html">enable()</a></li>
-                            <li><a href="/api/api/methods/select.html">select()</a></li>
-                            <li><a href="/api/api/methods/unselect.html">unselect()</a></li>
-                            <li><a href="/api/api/methods/selectAll.html">selectAll()</a></li>
-                            <li><a href="/api/api/methods/invert.html">invert()</a></li>
-                            <li><a href="/api/api/methods/clear.html">clear()</a></li>
-                            <li><a href="/api/api/methods/add.html">add()</a></li>
-                            <li><a href="/api/api/methods/remove.html">remove()</a></li> 
-                            <li><a href="/api/api/methods/update.html">update()</a></li>
-                            <li><a href="/api/api/methods/recalculate.html">recalculate()</a></li>
-                            <li><a href="/api/api/methods/on.html">on()</a></li>
-                            <li><a href="/api/api/methods/off.html">off()</a></li>
-                            <li><a href="/api/api/methods/get.html">get()</a></li>
-                            <li><a href="/api/api/methods/getItems.html">getItems()</a></li>
-                            <li><a href="/api/api/methods/getNodes.html">getNodes()</a></li>
-                            <li><a href="/api/api/methods/getSelectedItems.html">getSelectedItems()</a></li>
-                            <li><a href="/api/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
-                            <li><a href="/api/api/methods/setContainer.html">setContainer()</a></li>`;
+    menuMethods.innerHTML = `<li><a href="/api/methods/destroy.html">destroy()</a></li>
+                            <li><a href="/api/methods/init.html">init()</a></li>
+                            <li><a href="/api/methods/disable.html">disable()</a></li>
+                            <li><a href="/api/methods/enable.html">enable()</a></li>
+                            <li><a href="/api/methods/select.html">select()</a></li>
+                            <li><a href="/api/methods/unselect.html">unselect()</a></li>
+                            <li><a href="/api/methods/selectAll.html">selectAll()</a></li>
+                            <li><a href="/api/methods/invert.html">invert()</a></li>
+                            <li><a href="/api/methods/clear.html">clear()</a></li>
+                            <li><a href="/api/methods/add.html">add()</a></li>
+                            <li><a href="/api/methods/remove.html">remove()</a></li> 
+                            <li><a href="/api/methods/update.html">update()</a></li>
+                            <li><a href="/api/methods/recalculate.html">recalculate()</a></li>
+                            <li><a href="/api/methods/on.html">on()</a></li>
+                            <li><a href="/api/methods/off.html">off()</a></li>
+                            <li><a href="/api/methods/get.html">get()</a></li>
+                            <li><a href="/api/methods/getItems.html">getItems()</a></li>
+                            <li><a href="/api/methods/getNodes.html">getNodes()</a></li>
+                            <li><a href="/api/methods/getSelectedItems.html">getSelectedItems()</a></li>
+                            <li><a href="/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
+                            <li><a href="/api/methods/setContainer.html">setContainer()</a></li>`;
 
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
 
