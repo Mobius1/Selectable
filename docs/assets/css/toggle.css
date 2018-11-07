@@ -1,0 +1,25 @@
+#container-demo {
+	width: 50vh;
+}
+
+#container-demo ul {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#container-demo li {
+	width: 50px;
+	height: 50px;
+	list-style: none;
+	background-color: #999;
+	margin: 0 5px 5px 0;
+	cursor: pointer;
+}
+
+#container-demo li.ui-selected, #container-demo li.ui-selecting {
+	border-color: #0054D1;
+	background-color:  #0054D1;
+	color: #fff;	
+}

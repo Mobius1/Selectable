@@ -1,0 +1,30 @@
+#container-demo {
+	width: 50vh;
+}
+
+#container-demo ul {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#container-demo li {
+	width: 50px;
+	height: 50px;
+	list-style: none;
+	margin: 0 5px 5px 0;
+	cursor: pointer;
+	border: 2px solid #999;
+}
+
+#container-demo li.ui-selected {
+	border-color: rgba(219, 10, 91, 1);
+	background-color:  rgba(219, 10, 91, 1);
+	color: #fff;	
+}
+
+#container-demo li.ui-selecting {
+	border-color: rgba(219, 10, 91, 1);
+	color: #fff;	
+}

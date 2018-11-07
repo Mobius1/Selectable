@@ -1,0 +1,47 @@
+#container-demo {
+	width: 100%;
+}
+
+#container-demo ul {
+	padding: 0;
+	margin: 0 0 20px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#container-demo li {
+	width: 250px;
+	height: 40px;
+	list-style: none;
+	background-color: #fff;
+	margin: 0 5px 5px 0;
+	cursor: not-allowed;
+	border: 2px solid #999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+}
+
+#container-demo li::after {
+    position: absolute;
+    content: "unselectable";
+}
+
+#container-demo li.ui-selectable {
+	background-color: #0054D1;
+	border-color: #0054D1;
+	cursor: pointer;
+	color: #fff;
+}
+
+#container-demo li.ui-selectable::after {
+    content: "selectable";
+}
+
+
+#container-demo li.ui-selected, #container-demo li.ui-selecting {
+	border-color: #28a745;
+	background-color:  #28a745;
+	color: #fff;	
+}

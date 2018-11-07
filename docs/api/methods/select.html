@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="api/assets/css/pace.min.css" rel="stylesheet">
+        <link href="api/assets/fontawesome/css/all.css" rel="stylesheet">
+        <link rel="stylesheet" href="//cdn.materialdesignicons.com/3.0.39/css/materialdesignicons.min.css">
+        <link href="api/assets/themify-icons/themify-icons.min.css" rel="stylesheet">
+        <link href="api/assets/css/metisMenu.min.css" rel="stylesheet">
+        <link href="api/assets/css/github.min.css" rel="stylesheet">
+        <link href="api/assets/css/prism.css" rel="stylesheet">
+        <link href="api/assets/css/style.css" rel="stylesheet">
+        <link href="api/assets/css/select.css" rel="stylesheet">
+        <title>Selectable - DOCS</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="api/assets/img/favicon.png" />
+    </head>
+    <body class="sidebar-layout">
+
+            <nav class="navbar navbar-top">
+                <a class="navbar-brand" href="index-2.html">
+                    <img src="api/assets/img/logo.png" alt="">
+                </a>
+                <button class="navbar-toggler" type="button"  id="sidebarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="mdi mdi-select-drag"></i><span>Select</span>able</h3>
+                    <div class="dropdown version">
+                        <a class="ver-drop dropdown-toggle" href="#" role="button" id="versionDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            v0.13.1
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="versionDropdownMenu">
+                            <div>Versions</div>
+                            <a class="dropdown-item active" href="#">latest</a>
+                            <a class="dropdown-item" href="#">stable</a>
+                            <a class="dropdown-item" href="#">v1.7.1</a>
+                            <a class="dropdown-item" href="#">v1.7.0</a>
+                            <a class="dropdown-item" href="#">v1.6.4</a>
+                            <a class="dropdown-item" href="#">v1.6.1</a>
+                            <a class="dropdown-item" href="#"> v1.6.0</a>
+                            <a class="dropdown-item" href="#">v1.5.1</a>
+                            <a class="dropdown-item" href="#">v1.5.0</a>
+                            <a class="dropdown-item" href="#">v1.4.1</a>
+                            <a class="dropdown-item" href="#">v1.4.0</a>
+                            <a class="dropdown-item" href="#">1.3.1</a>
+                            <a class="dropdown-item" href="#">1.3.0</a>
+                            <a class="dropdown-item" href="#">master</a>
+                        </div>
+                    </div>
+                    <div class="form-group has-search">
+                        <span class="ti-search form-control-feedback"></span>
+                        <input type="text" class="form-control" placeholder="Search docs ...">
+                    </div>
+                    <!-- /.Actual search box -->
+                </div>
+                <ul class="metismenu sidebarMenu list-unstyled" id="sidebarMenu">
+                    <li><a href="layout-general.html">Menu</a></li>
+                    <li>
+                        <a class="has-arrow" href="#" aria-expanded="false">Overview</a>
+                        <ul aria-expanded="false">
+                            <li><a href="api/index.html">Introduction</a></li>
+                            <li><a href="api/getting-started.html">Getting Started</a></li>
+                        </ul>
+                    </li>
+                    <li class="active">
+                        <a class="has-arrow" href="api/#" aria-expanded="true">API</a>
+                        <ul aria-expanded="true">
+                            <li>
+                                <a class="has-arrow" href="api/options.html">Options</a>
+                                <ul aria-expanded="true">
+                                    <li><a href="api/api/options/filter.html">filter</a></li>
+                                    <li class="active"><a href="api/api/options/appendTo.html">appendTo</a></li>
+                                    <li><a href="api/api/options/tolerance.html">tolerance</a></li>
+                                    <li><a href="api/api/options/ignore.html">ignore</a></li>
+                                    <li><a href="api/api/options/toggle.html">toggle</a></li>
+                                    <li><a href="api/api/options/throttle.html">throttle</a></li>
+                                    <li><a href="api/api/options/autoScroll.html">autoScroll</a></li>
+                                    <li><a href="api/api/options/autorefresh.html">autoRefresh</a></li>
+                                    <li><a href="api/api/options/lasso.html">lasso</a></li>
+                                    <li><a href="api/api/options/classes.html">classes</a></li>
+                                </ul>                                
+                            </li>
+                            <li>
+                                <a href="api/public-methods.html">Public Methods</a>
+                                <ul aria-expanded="true">
+
+                                </ul>                                  
+                            </li>
+                            <li><a href="api/events.html">Events</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.End of Sidebar Holder -->
+            <div class="page-content">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-9 content">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="#">API</a></li>
+                                    <li class="breadcrumb-item"><a href="#">Public Methods</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">select()</a></li>
+                                </ol>
+                            </nav>
+                            <!-- /.End of breadcrumb -->
+                            <div class="doc-content">
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> select()</h1>
+                                <hr />
+<p>Selects an item or a collection of items.</p>
+
+<p>The method accepts a single argument in the following forms:</p>
+
+<ul>
+<li><code>HTMLElement</code> - the selectable element you want to select.</li>
+
+<li><code>Number</code> - the index of the selectable element (not it's index in the <code>parentNode</code>). </li>
+
+<li><code>Object</code> - a reference to the <code>item</code> stored in the <code>items</code> array.</li>
+
+<li><code>Array</code> - an array of nodes, indexes or objects. You may also pass instances of <code>HTMLCollection</code> or <code>NodeList</code>.</li>
+</ul>
+
+<hr />
+
+<h4 id="selectingsingleitems" class="scroll-title">Selecting single items</h4>
+
+<h6>Markup</h6>
+<pre><code class="html language-html">&lt;ul&gt;
+    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
+    ...
+&lt;/ul&gt;
+</code></pre>
+
+<h6>Javascript</h6>
+<p></p>
+<pre><code class="javascript language-javascript">// All three of these methods will select the first item
+
+// as a node
+var item = document.querySelectorAll("li")[0];
+selectable.select(item);
+
+// as an index
+selectable.select(0);
+
+// as a reference to the item
+var item = selectable.items[0];
+selectable.select(item);
+</code></pre>
+
+<hr />
+
+<h4 id="selectingmultipleitems" class="scroll-title">Selecting multiple items</h4>
+
+<h6>Markup</h6>
+<pre><code class="html language-html">&lt;ul&gt;
+    &lt;li class="ul-selectable"&gt;1&lt;/li&gt;
+    &lt;li class="ul-selectable alt"&gt;2&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;3&lt;/li&gt;
+    &lt;li class="ul-selectable alt"&gt;4&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;5&lt;/li&gt;
+    &lt;li class="ul-selectable alt"&gt;6&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;7&lt;/li&gt;
+    &lt;li class="ul-selectable alt"&gt;8&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<h6>Javascript</h6>
+<pre><code class="javascript language-javascript">// Select the first 3 items via their indexes
+var items = [0,1,2];
+selectable.select(items);
+
+// select all items with className "alt"
+var items = document.querySelectorAll(".alt");
+selectable.select(items);
+
+// select all list items
+var items = document.querySelectorAll("li");
+selectable.select(items);
+</code></pre>
+<h6>Result</h6>
+<div id="container-demo">
+    <ul></ul>
+    <div class="form-group row">
+        <div class="col-sm-12">
+            <button class="btn btn-sm btn-danger" onclick="selectable.clear()" type="button">Clear</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable.clear(); selectable.select([0,1,2])" type="button">Select indexes [0,1,2]</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable.clear(); selectable.select(document.querySelectorAll('.alt'))" type="button">Select items with '.alt' class</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable.clear(); selectable.select(document.querySelectorAll('li'))" type="button">Select 'li' items </button>
+        </div>
+    </div>    
+</div>
+<hr />
+
+<h3 id="usingindexes" class="scroll-title">Using indexes</h3>
+
+<p>
+    <div class="alert alert-warning" role="alert">
+        <strong>NOTE:</strong> If selecting an item via an index, you must pass the index as the node would appear in the collection of selectable items, NOT the node's position relative to it's sibling elements.
+    </div>    
+</p>
+<pre><code class="html language-html">&lt;ul&gt;
+    &lt;li class="ul-selectable"&gt;1&lt;/li&gt; // index 0
+    &lt;/li&gt;&lt;/li&gt;
+    &lt;/li&gt;&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;2&lt;/li&gt; // index 1
+    &lt;li class="ul-selectable"&gt;3&lt;/li&gt; // index 2
+    &lt;li class="ul-selectable"&gt;4&lt;/li&gt; // index 3
+    &lt;/li&gt;&lt;/li&gt;
+    &lt;li class="ul-selectable"&gt;5&lt;/li&gt; // index 4
+&lt;/ul&gt;
+</code></pre>
+
+<h4 id="selectthefirstandseconditems">Select the first, second and third items</h4>
+
+<pre><code class="javascript language-javascript">// incorrect
+selectable.select([0,3,4]);
+
+// correct
+selectable.select([0,1,2]);
+</code></pre>
+
+<div id="container-demo2">
+    <ul></ul>
+    <div class="form-group row">
+        <div class="col-sm-12">
+            <button class="btn btn-sm btn-danger" onclick="selectable2.clear()" type="button">Clear</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable2.clear(); selectable2.select([0,3,4]);" type="button">Incorrect: [0,3,4]</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable2.clear(); selectable2.select([0,1,2]);" type="button">Correct: [0,1,2]</button>
+        </div>
+    </div>    
+</div>         
+<hr />
+
+                            </div>
+                            <!--  /.End of documentation text content -->
+                            <div class="footer-btn d-flex justify-content-between">
+                                <a href="enable.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="unselect.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                            <!-- /.End of footer button -->
+                        </div>
+                        <div class="col-md-3 d-none d-sm-none d-md-block rightSidebar">
+                            <ul class="section-nav" id="section-nav">
+
+                            </ul>
+                            <!-- /.End of section nav -->
+                        </div>
+                    </div>
+                </div>
+                <footer class="site-footer">
+                    <div class="row align-items-center ">
+                        <div class="col-md-7 order-md-first order-last">
+                            <div class="Copyright-text">
+                                <p class="m-0">Copyright © 2018 <a href="#" target="_blank">Karl Saunders</a>. All rights reserved. </p>
+                                <p class="m-0 d-none d-sm-block">Built with <a href="#" target="_blank">bdtask </a> using a <a href="#" target="_blank">theme</a> provided by <a href="#" target="_blank">docBanao.</a></p>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <ul class="footer-menu">
+                                <li><a href="#">Terms of use </a></li>
+                                <li><a href="changelog.html">Changelog</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </footer><!-- /.End of site footer --> 
+            </div><!-- /.Page Content Holder -->
+
+        <!-- Optional JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="api/assets/js/pace.min.js"></script>
+        <script src="api/assets/js/jquery.dd.min.js"></script>
+        <script src="api/assets/js/metisMenu.min.js"></script>
+        <script src="api/assets/js/ResizeSensor.min.js"></script>
+        <script src="api/assets/js/theia-sticky-sidebar.min.js"></script>
+        <script type="text/javascript" src="api/assets/js/prism.min.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/selectable.js@latest/selectable.min.js"></script>
+        <script src="api/assets/js/script.js"></script>
+        <script src="api/assets/js/select.js"></script>
+    </body>
+</html>

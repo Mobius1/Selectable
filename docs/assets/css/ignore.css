@@ -1,0 +1,46 @@
+#demo-ignore ul {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	cursor: crosshair;
+	border: 2px dashed #aaa;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+#demo-ignore li {
+	list-style: none;
+	width: 250px;
+	padding: 40px 20px;
+	border: 2px solid #aaa;
+	border-radius: 5px;
+	margin: 0 5px 5px 0;
+	flex-grow: 1;
+}
+
+#demo-ignore .ui-selected {
+	border-color: #0054D1;
+	background-color:  #0054D1;
+	color: #fff;
+}
+
+#demo-ignore .ui-unselecting {
+	border-color: #dc3545;
+	background-color:  #dc3545;
+	color: #fff;	
+}
+
+#demo-ignore .ui-selecting {
+	border-color: #28a745;
+	background-color:  #28a745;
+	color: #fff;	
+}
+
+#demo-ignore div {
+	padding: 10px;
+}
+
+#demo-ignore select, #demo-ignore input[type="text"], #demo-ignore input[type="range"] {
+	margin-bottom: 10px;
+}
