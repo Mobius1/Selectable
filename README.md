@@ -18,7 +18,7 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 **Selectable is still in active development and therefore the API is in constant flux until `v1.0.0`. Check back regularly for any changes and make sure you have the latest version installed.**
 
-## [Demo](http://codepen.io/Mobius1/pen/qRxaqQ/) | [Documentation](https://github.com/Mobius1/Selectable/wiki) | [Changelog](https://github.com/Mobius1/Selectable/releases) | [Table Plugin](https://github.com/Mobius1/Selectable-Table-Plugin)
+## [Demo](http://codepen.io/Mobius1/pen/qRxaqQ/) | [Documentation](https://mobius1.github.io/Selectable) | [Changelog](https://github.com/Mobius1/Selectable/releases) | [Table Plugin](https://github.com/Mobius1/Selectable-Table-Plugin)
 
 ---
 
@@ -101,19 +101,19 @@ selectable.add(items);
 
 ## Options
 
-[See Options](https://github.com/Mobius1/Selectable/wiki/Options)
+[See Options](https://mobius1.github.io/Selectable/options.html)
 
 ---
 
 ## Public Methods
 
-[See Public Methods](https://github.com/Mobius1/Selectable/wiki/Public-Methods)
+[See Public Methods](https://mobius1.github.io/Selectable/public-methods.html)
 
 ---
 
 ## Events
 
-[See Events](https://github.com/Mobius1/Selectable/wiki/events)
+[See Events](https://mobius1.github.io/Selectable/events.html)
 
 ---
 
