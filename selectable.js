@@ -262,7 +262,7 @@
             tolerance: "touch",
 
             autoScroll: {
-                threshold: 40,
+                threshold: 0,
                 increment: 20,
             },
 
