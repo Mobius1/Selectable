@@ -1202,10 +1202,10 @@
          * @param  {Function} callback
          * @return {Void}
          */
-        on: function(listener, callback) {
+        on: function(listener, fn) {
             this.listeners = this.listeners || {};
             this.listeners[listener] = this.listeners[listener] || [];
-            this.listeners[listener].push(callback);
+            this.listeners[listener].push(fn);
         },
 
         /**
@@ -1214,10 +1214,10 @@
          * @param  {Function} callback
          * @return {Void}
          */
-        off: function(listener, callback) {
+        off: function(listener, fn) {
             this.listeners = this.listeners || {};
             if (listener in this.listeners === false) return;
-            this.listeners[listener].splice(this.listeners[listener].indexOf(callback), 1);
+            this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
         },
 
         /**
@@ -1263,9 +1263,6 @@
             if (this.enabled) {
                 var keys = this.config.keys;
                 this.enabled = false;
-                this.canShift = false;
-                this.canCtrl = false;
-                this.canMeta = false;
 
                 this.unbind();
 
