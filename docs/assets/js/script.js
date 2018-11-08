@@ -83,6 +83,7 @@ function init() {
     const menuOverview = sidebarMenu.children[1].lastElementChild;
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
+    const menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2].lastElementChild;
 
     versions.previousElementSibling.textContent = "v0.13.3";
 
@@ -136,6 +137,15 @@ function init() {
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedItems.html">getSelectedItems()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/setContainer.html">setContainer()</a></li>`;
+
+    menuEvents.innerHTML = `<li><a href="api/events/selectable.init.html">selectable.init</a></li>
+                            <li><a href="api/events/selectable.start.html">selectable.start</a></li>
+                            <li><a href="api/events/selectable.drag.html">selectable.drag</a></li>
+                            <li><a href="api/events/selectable.end.html">selectable.end</a></li>
+                            <li><a href="api/events/selectable.select.html">selectable.select</a></li>
+                            <li><a href="api/events/selectable.unselect.html">selectable.unselect</a></li>
+                            <li><a href="api/events/selectable.update.html">selectable.update</a></li>
+                            <li><a href="api/events/selectable.recalculate.html">selectable.recalculate</a></li>`;
 
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
 
