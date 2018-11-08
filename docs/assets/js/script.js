@@ -138,14 +138,14 @@ function init() {
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/setContainer.html">setContainer()</a></li>`;
 
-    menuEvents.innerHTML = `<li><a href="api/events/selectable.init.html">selectable.init</a></li>
-                            <li><a href="api/events/selectable.start.html">selectable.start</a></li>
-                            <li><a href="api/events/selectable.drag.html">selectable.drag</a></li>
-                            <li><a href="api/events/selectable.end.html">selectable.end</a></li>
-                            <li><a href="api/events/selectable.select.html">selectable.select</a></li>
-                            <li><a href="api/events/selectable.unselect.html">selectable.unselect</a></li>
-                            <li><a href="api/events/selectable.update.html">selectable.update</a></li>
-                            <li><a href="api/events/selectable.recalculate.html">selectable.recalculate</a></li>`;
+    menuEvents.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/selectable.init.html">selectable.init</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.start.html">selectable.start</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.drag.html">selectable.drag</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.end.html">selectable.end</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.select.html">selectable.select</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.unselect.html">selectable.unselect</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.update.html">selectable.update</a></li>
+                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.recalculate.html">selectable.recalculate</a></li>`;
 
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
 
