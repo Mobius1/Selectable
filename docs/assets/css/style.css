@@ -3079,3 +3079,12 @@ b.highlight {
     line-height: 1.5;
     border-radius: .2rem;
 }
+.mb-track-y {
+    width: 6px;
+}
+.mb-bar {
+    /*background-color: rgb(0, 84, 209);*/
+}
+.mb-track-y .mb-bar {
+    border-radius: 3px;
+}

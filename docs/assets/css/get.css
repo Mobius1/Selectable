@@ -67,12 +67,40 @@
 	color: #fff;	
 }
 
-#output {
-	height: 350px;
-	overflow: auto;
+.output {
 	font-size: 13px;
 	margin: 0 0 10px 0;
 	background-color: #333;
+	padding: 0;
+	height: 350px;
+}
+
+.mb-track-y {
+	/*background-color: #999;*/
+	right: 5px;
+	top: 5px;
+	height: calc(100% - 10px);	
+}
+
+.mb-track-y .mb-bar {
+	border-radius: 3px;
+}
+
+.output .mb-bar {
+	background-color: rgba(204, 204, 204, 0.6);
+	transition-property: background-color, height;
+	transition-duration: 400ms, 250ms;
+	transition-timing-function: ease;
+}
+
+.output.mb-hover-y .mb-bar, .output:hover .mb-bar  {
+	background-color: rgba(204, 204, 204, 1);
+}
+
+
+#output {
+	padding: 10px;
+	/*min-height: 350px;*/
 }
 
 #output code[class*="language-"], #output pre[class*="language-"] {

@@ -70,7 +70,7 @@ $(document).ready(function () {
 });
 
 const sidebarMenu = document.getElementById("sidebarMenu");
-
+let bar = false;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -202,6 +202,34 @@ function init() {
 
 function initSidebar() {
     sidebarMenu.addEventListener("click", toggleMenu, false);
+    initBar();
+}
+
+function initBar() {
+    const link = document.createElement("link");
+    link.href = "https://unpkg.com/minibarjs@latest/dist/minibar.min.css";
+    link.rel = "stylesheet";
+    link.type = "text/css";
+
+    document.head.appendChild(link);
+    document.head.insertBefore(link, document.head.querySelector("link"));
+
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/minibarjs@latest/dist/minibar.min.js";
+    script.type ="text/javascript";
+
+    document.body.insertBefore(script, document.body.querySelector("script"));
+
+    script.async = true;
+    script.onload = function(){
+        bar = new MiniBar(sidebarMenu);
+
+        document.querySelectorAll(".output").forEach(el => {
+            new MiniBar(el, {
+                alwaysShowBars: true
+            });
+        });
+    };    
 }
 
 function toggleMenu(e) {
