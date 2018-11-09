@@ -887,9 +887,7 @@ code {
 }
 .sidebarMenu {
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-top: 18px;
+    margin-top: 18px;
     font-family: 'Raleway', sans-serif;
 }
 @media (max-width: 991px) {
