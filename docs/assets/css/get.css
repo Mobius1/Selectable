@@ -55,6 +55,9 @@
 #demo-items li.ui-selected::after {
     content: "selected";
 }
+#demo-items li.ui-unselecting::after {
+    content: "unselecting";
+}
 
 #demo-items li.ui-selecting {
 	border-color: rgb(40, 167, 69);
@@ -66,6 +69,12 @@
 	background-color:  #0054D1;
 	color: #fff;	
 }
+#demo-items li.ui-unselecting {
+	border-color: rgb(220, 53, 69);
+	background-color:  rgb(220, 53, 69);
+	color: #fff;	
+}
+
 
 .output {
 	font-size: 13px;
