@@ -83,11 +83,12 @@ function init() {
     const menuOverview = sidebarMenu.children[1].lastElementChild;
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
-    const menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2].lastElementChild;
-    
+    let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2].lastElementChild;
+
     if ( !menuEvents ) {
         const ul = document.createElement("ul");
         sidebarMenu.lastElementChild.lastElementChild.children[2].appendChild(ul);
+        menuEvents = ul;
     }
 
     versions.previousElementSibling.textContent = "v0.13.3";
