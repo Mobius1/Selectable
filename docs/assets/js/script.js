@@ -85,6 +85,15 @@ function init() {
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1];
     let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2];
 
+    if ( menuOverview.lastElementChild.nodeName !== "UL" ) {
+        const ul = document.createElement("ul");
+        menuOverview.appendChild(ul);
+    }    
+    
+    if ( menuOptions.lastElementChild.nodeName !== "UL" ) {
+        const ul = document.createElement("ul");
+        menuOptions.appendChild(ul);
+    }
 
     if ( menuEvents.lastElementChild.nodeName !== "UL" ) {
         const ul = document.createElement("ul");
