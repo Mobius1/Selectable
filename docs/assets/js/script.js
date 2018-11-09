@@ -203,6 +203,7 @@ function init() {
 function initSidebar() {
     sidebarMenu.addEventListener("click", toggleMenu, false);
     initBar();
+    initSearch();
 }
 
 function initBar() {
@@ -335,4 +336,16 @@ if ( window.Selectable && typeof Selectable === "function" ) {
             });
         }    
     }
+}
+
+function initSearch() {
+    const old = document.querySelector(".has-search");
+    const template = `<form class="form-group has-search" action="https://bcbwoodshop.co.uk/api/search.html">
+                        <span class="ti-search form-control-feedback"></span>
+                        <input type="text" class="form-control" placeholder="Search docs ..." name="q">
+                     </form>`;
+    const div = document.createElement("div");
+    div.innerHTML = template;
+
+    old.parentNode.replaceChild(div.firstElementChild, old);
 }
