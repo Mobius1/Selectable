@@ -85,7 +85,7 @@ function init() {
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
     let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2].lastElementChild;
 
-    if ( !menuEvents ) {
+    if ( menuEvents.nodeName !== "UL" ) {
         const ul = document.createElement("ul");
         sidebarMenu.lastElementChild.lastElementChild.children[2].appendChild(ul);
         menuEvents = ul;
