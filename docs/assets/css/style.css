@@ -865,6 +865,9 @@ code {
     -webkit-transform: rotate(-135deg) translateY(-50%);
     transform: rotate(-135deg) translateY(-50%);
 }
+#sidebarMenu li.open > a.has-arrow {
+    color: rgb(88, 96, 105) !important;
+}
 /*[Page Content]
 --------------------------*/
 .page-content {
