@@ -340,7 +340,7 @@ if ( window.Selectable && typeof Selectable === "function" ) {
 
 function initSearch() {
     const old = document.querySelector(".has-search");
-    const template = `<form class="form-group has-search" action="https://bcbwoodshop.co.uk/api/search.html">
+    const template = `<form class="form-group has-search" action="https://mobius1.github.io/Selectable/search.html">
                         <span class="ti-search form-control-feedback"></span>
                         <input type="text" class="form-control" placeholder="Search docs ..." name="q">
                      </form>`;
