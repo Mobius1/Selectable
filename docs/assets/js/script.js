@@ -88,7 +88,7 @@ function init() {
 
     if ( menuEvents.lastElementChild.nodeName !== "UL" ) {
         const ul = document.createElement("ul");
-        menuEvents.lastElementChild.appendChild(ul);
+        menuEvents.appendChild(ul);
     }
 
     versions.previousElementSibling.textContent = "v0.13.3";
