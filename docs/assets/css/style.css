@@ -3125,3 +3125,11 @@ b.highlight {
 :not(pre) > code[class*="language-"], pre[class*="language-"] {
 	background-color: rgba(237, 237, 237, 0.5);
 }
+
+.scroll-title {
+    position: relative;
+    border-bottom: 3px solid rgb(0, 84, 209);
+    display: inline-block;
+    padding-bottom: 5px;
+    margin: 20px 0 20px;
+}
