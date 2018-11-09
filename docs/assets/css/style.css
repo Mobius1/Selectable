@@ -838,6 +838,34 @@ code {
 .metismenu .has-arrow::after {
     right: 20px;
 }
+#sidebarMenu li ul {
+    display: none;
+}
+
+#sidebarMenu li.open > ul {
+    display: block;
+}
+
+#sidebarMenu .has-arrow::after {
+    -webkit-transform: rotate(-45deg) translateY(-50%);
+    -webkit-transform-origin: top;
+    border-color: initial;
+    border-style: solid;
+    border-width: 1px 0 0 1px;
+    content: "";
+    height: .5em;
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    transform: rotate(-45deg) translateY(-50%);
+    transform-origin: top;
+    transition: all .3s ease-out;
+    width: .5em;
+}
+#sidebarMenu .open > .has-arrow::after, #sidebarMenu .has-arrow[aria-expanded="true"]::after {
+    -webkit-transform: rotate(-135deg) translateY(-50%);
+    transform: rotate(-135deg) translateY(-50%);
+}
 /*[Page Content]
 --------------------------*/
 .page-content {

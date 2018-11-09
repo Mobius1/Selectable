@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", init);
 
 function init() {
     createNavLinks();
-    // initSidebar()
+    initSidebar();
 
 
     const versions = document.querySelector(".sidebar-header").children[1].lastElementChild;
@@ -157,6 +157,10 @@ function init() {
             const match = link.textContent === activeBreadcrumb.textContent;
             if (match) {
                 document.head.getElementsByTagName("title")[0].textContent = `Selectable - ${link.textContent}`;
+
+                items.forEach(el => {
+                    el.classList.toggle("open", el.contains(link));
+                });
             }
             item.classList.toggle("active", match);
         });
@@ -166,6 +170,20 @@ function init() {
         demo1();
         demo2();
         demo3();
+    }
+}
+
+function initSidebar() {
+    sidebarMenu.addEventListener("click", toggleMenu, false);
+}
+
+function toggleMenu(e) {
+    const a = e.target.closest(".has-arrow");
+
+    if ( a ) {
+        e.preventDefault();
+        const li = e.target.closest("li");
+        li.classList.toggle("open");
     }
 }
 
