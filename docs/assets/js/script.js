@@ -239,6 +239,10 @@ function toggleMenu(e) {
         e.preventDefault();
         const li = e.target.closest("li");
         li.classList.toggle("open");
+
+        if ( bar ) {
+            bar.update();
+        }        
     }
 }
 
