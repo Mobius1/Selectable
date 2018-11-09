@@ -31,7 +31,6 @@ selectable.add(ul.children);
 selectable.select([0,1,2,3]);
 
 function setOutput(obj, clear) {
-	console.log(obj)
 	const tmp = document.createElement("div");
 	tmp.appendChild(obj.node.cloneNode());
 
