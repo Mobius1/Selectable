@@ -80,7 +80,7 @@ function init() {
 
 
     const versions = document.querySelector(".sidebar-header").children[1].lastElementChild;
-    const menuOverview = sidebarMenu.children[1].lastElementChild;
+    const menuOverview = sidebarMenu.children[1];
     const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0];
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1];
     let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2];
