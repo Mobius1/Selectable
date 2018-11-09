@@ -139,3 +139,124 @@ pre[class*="language-"] {
 	cursor: help;
 }
 
+/* prism-json-fold */
+code .block {
+ position: relative;
+}
+
+code i.caret {
+  position: absolute;
+  font-style: normal;
+  cursor: pointer;
+
+  /** You may have to change this */
+  width: 10px;
+  height: 10px;
+  top: -3px;
+  left: -12px;
+  color: #ccc;
+}
+
+code i.caret:before {
+  /** You may have to change this: It only works when using font awesome */
+  position: absolute;
+  content: '\25B8';
+}
+
+code .block-wrapper {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  
+  /** You may have to modify this */
+  max-height: 24px;
+  max-width: 45px;
+  color: #ccc;
+}
+
+code .block-wrapper > * {
+  opacity: 0;
+}
+
+code .block-wrapper:before {
+  content: '...';
+  top: -2px;
+  position: absolute;
+  left: 3px;
+}
+
+code .block-wrapper:after {
+  top: 0px;
+  position: absolute;
+  right: 0;
+}
+
+code .block-keyed-object > .block-wrapper:after,
+code .block-object > .block-wrapper:after {
+  content: '}';
+}
+
+code .block-keyed-array > .block-wrapper:after,
+code .block-array > .block-wrapper:after {
+  content: ']';
+}
+
+code .block.open > .block-wrapper {
+  display: initial;
+}
+
+code .block.open > .block-wrapper > * {
+  opacity: 1;
+}
+
+code .block.open > .block-wrapper:before,
+code .block.open > .block-wrapper:after {
+  display: none;
+}
+
+code .block.open > i.caret:before {
+  transform: rotate(90deg);
+}
+
+pre[class*="language-"].line-numbers {
+	position: relative;
+	padding-left: 3.8em;
+	counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+	position: relative;
+	white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+	font-size: 100%;
+	left: -3.8em;
+	width: 3em; /* works for line-numbers below 1000 lines */
+	letter-spacing: -1px;
+	border-right: 1px solid #999;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+}
+
+	.line-numbers-rows > span {
+		pointer-events: none;
+		display: block;
+		counter-increment: linenumber;
+	}
+
+		.line-numbers-rows > span:before {
+			content: counter(linenumber);
+			color: #999;
+			display: block;
+			padding-right: 0.8em;
+			text-align: right;
+		}
