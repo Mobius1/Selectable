@@ -859,7 +859,6 @@ code {
     top: 50%;
     transform: rotate(-45deg) translateY(-50%);
     transform-origin: top;
-    transition: all .3s ease-out;
     width: .5em;
 }
 #sidebarMenu .open > .has-arrow::after, #sidebarMenu .has-arrow[aria-expanded="true"]::after {
