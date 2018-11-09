@@ -3118,6 +3118,10 @@ b.highlight {
     margin: 0;
     padding-bottom: 0;
 }
+.buttons code {
+    width: 100%;
+    padding: 10px !important;
+}
 :not(pre) > code[class*="language-"], pre[class*="language-"] {
 	background-color: rgba(237, 237, 237, 0.5);
 }
