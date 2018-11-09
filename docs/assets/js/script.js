@@ -81,14 +81,25 @@ function init() {
 
     const versions = document.querySelector(".sidebar-header").children[1].lastElementChild;
     const menuOverview = sidebarMenu.children[1].lastElementChild;
-    const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0].lastElementChild;
-    const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1].lastElementChild;
-    let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2].lastElementChild;
+    const menuOptions = sidebarMenu.lastElementChild.lastElementChild.children[0];
+    const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1];
+    let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2];
 
-    if ( menuEvents.nodeName !== "UL" ) {
+    if ( !menuOptions.classList.contains("has-arrow") ) {
+        menuOptions.classList.add("has-arrow");
+    }
+
+    if ( !menuMethods.classList.contains("has-arrow") ) {
+        menuMethods.classList.add("has-arrow");
+    }
+
+    if ( !menuEvents.classList.contains("has-arrow") ) {
+        menuEvents.classList.add("has-arrow");
+    }
+
+    if ( menuEvents.lastElementChild.nodeName !== "UL" ) {
         const ul = document.createElement("ul");
-        sidebarMenu.lastElementChild.lastElementChild.children[2].appendChild(ul);
-        menuEvents = ul;
+        menuEvents.lastElementChild.appendChild(ul);
     }
 
     versions.previousElementSibling.textContent = "v0.13.3";
@@ -107,10 +118,10 @@ function init() {
                             <a class="dropdown-item" href="#">v0.10.9</a>
                             <a class="dropdown-item" href="#">master</a>`;
 
-    menuOverview.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/index.html">Introduction</a></li>
+    menuOverview.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/index.html">Introduction</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/getting-started.html">Getting Started</a></li>`;
 
-    menuOptions.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/options/filter.html">filter</a></li>
+    menuOptions.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/options/filter.html">filter</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/options/appendTo.html">appendTo</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/options/tolerance.html">tolerance</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/options/ignore.html">ignore</a></li>
@@ -122,7 +133,7 @@ function init() {
                             <li><a href="https://mobius1.github.io/Selectable/api/options/classes.html">classes</a></li>`;
 
 
-    menuMethods.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/methods/destroy.html">destroy()</a></li>
+    menuMethods.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/methods/destroy.html">destroy()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/init.html">init()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/disable.html">disable()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/enable.html">enable()</a></li>
@@ -144,7 +155,7 @@ function init() {
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/methods/setContainer.html">setContainer()</a></li>`;
 
-    menuEvents.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/selectable.init.html">selectable.init</a></li>
+    menuEvents.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/selectable.init.html">selectable.init</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.start.html">selectable.start</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.drag.html">selectable.drag</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.end.html">selectable.end</a></li>
