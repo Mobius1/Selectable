@@ -85,17 +85,6 @@ function init() {
     const menuMethods = sidebarMenu.lastElementChild.lastElementChild.children[1];
     let menuEvents = sidebarMenu.lastElementChild.lastElementChild.children[2];
 
-    if ( !menuOptions.classList.contains("has-arrow") ) {
-        menuOptions.classList.add("has-arrow");
-    }
-
-    if ( !menuMethods.classList.contains("has-arrow") ) {
-        menuMethods.classList.add("has-arrow");
-    }
-
-    if ( !menuEvents.classList.contains("has-arrow") ) {
-        menuEvents.classList.add("has-arrow");
-    }
 
     if ( menuEvents.lastElementChild.nodeName !== "UL" ) {
         const ul = document.createElement("ul");
@@ -163,6 +152,18 @@ function init() {
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.unselect.html">selectable.unselect</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.update.html">selectable.update</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.recalculate.html">selectable.recalculate</a></li>`;
+
+    if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {
+        menuOptions.firstElementChild.classList.add("has-arrow");
+    }
+
+    if ( !menuMethods.firstElementChild.classList.contains("has-arrow") ) {
+        menuMethods.firstElementChild.classList.add("has-arrow");
+    }
+
+    if ( !menuEvents.firstElementChild.classList.contains("has-arrow") ) {
+        menuEvents.firstElementChild.classList.add("has-arrow");
+    }
 
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
 
