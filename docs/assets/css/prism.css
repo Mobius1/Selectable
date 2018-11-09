@@ -221,7 +221,7 @@ code .block.open > i.caret:before {
 
 pre[class*="language-"].line-numbers {
 	position: relative;
-	padding-left: 3.8em;
+	padding-left: 3em;
 	counter-reset: linenumber;
 }
 
@@ -235,7 +235,7 @@ pre[class*="language-"].line-numbers > code {
 	pointer-events: none;
 	top: 0;
 	font-size: 100%;
-	left: -3.8em;
+	left: -3em;
 	width: 3em; /* works for line-numbers below 1000 lines */
 	letter-spacing: -1px;
 	border-right: 1px solid #999;
