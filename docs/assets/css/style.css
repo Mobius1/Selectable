@@ -3118,6 +3118,6 @@ b.highlight {
     margin: 0;
     padding-bottom: 0;
 }
-.code-tab :not(pre) > code[class*="language-"], .code-tab pre[class*="language-"] {
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
 	background-color: rgba(237, 237, 237, 0.5);
 }
