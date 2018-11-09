@@ -1,5 +1,5 @@
 const container = document.getElementById("container-demo");
-const ul = container.querySelector("ul");
+const ul = document.getElementById("demo-items");
 const output = document.getElementById("output");
 
 const selectable = new Selectable({

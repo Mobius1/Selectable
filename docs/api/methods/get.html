@@ -125,10 +125,24 @@
 
 <h5 id="demo" class="scroll-title">Demo</h5>
 <div id="container-demo">
+    
     <div class="form-group row">
         <div class="col-sm-6">
-<h5>Markup</h5>
-<pre><code class="html language-html">&lt;ul&gt;
+            <div class="code-tabs">
+               <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link" id="markup-tab" data-toggle="tab" href="#markup" role="tab" aria-controls="markup" aria-selected="false">HTML</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="js-tab" data-toggle="tab" href="#js" role="tab" aria-controls="js" aria-selected="true">Javascript</a>
+                  </li>                  
+                  <li class="nav-item">
+                    <a class="nav-link active" id="results-tab" data-toggle="tab" href="#results" role="tab" aria-controls="results" aria-selected="true">Result</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane" id="markup" role="tabpanel" aria-labelledby="markup-tab">
+<pre><code class="html language-html line-numbers">&lt;ul&gt;
     &lt;li class="odd"&gt;&lt;/li&gt;
     &lt;li class="even"&gt;&lt;/li&gt;
     &lt;li class="odd"&gt;&lt;/li&gt;
@@ -138,14 +152,34 @@
     &lt;li class="odd"&gt;&lt;/li&gt;
     &lt;li class="even"&gt;&lt;/li&gt;
 &lt;/ul&gt;
+</code></pre>                  
+                  </div>
+                  <div class="tab-pane fade show" id="js" role="tabpanel" aria-labelledby="js-tab">
+<pre><code class="javascript language-javascript line-numbers">const selectable = new Selectable({ filter: "li" });
+
+// select the first four items
+selectable.select([0,1,2,3]);
+
+// each of these are called when clicking the buttons
+
+// get the first item via index
+selectable.get(0);
+
+// get items 1, 3 and 8 via their indexes
+selectable.get([0,2,7]);
+
+// get all items with className "odd"
+selectable.get(document.querySelectorAll(".odd"));
+
+// get all items with className "even"
+selectable.get(document.querySelectorAll(".even"));
 </code></pre>
+                  </div>
+                  <div class="tab-pane fade show active" id="results" role="tabpanel" aria-labelledby="results-tab"><ul id="demo-items"></ul></div>
+                </div>
+            </div>
         </div>
-    </div>    
-    <div class="form-group row">
-        <div class="col-sm-4">    
-            <ul></ul>
-        </div>
-        <div class="col-sm-8">
+        <div class="col-sm-6">
             <div class="form-control output"><div id="output"></div></div>
             <div class="buttons">
                 <div><code>selectable.get(0)</code><button class="btn btn-sm btn-primary" id="getIndex" type="button">Run</button></div>

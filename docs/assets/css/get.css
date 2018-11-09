@@ -2,14 +2,14 @@
 	width: 100%;
 }
 
-#container-demo ul {
+#demo-items {
 	padding: 0;
 	margin: 0 0 20px 0;
 	display: flex;
 	flex-direction: column;
 }
 
-#container-demo li {
+#demo-items li.ui-selectable {
 	width: 250px;
 	height: 30px;
 	list-style: none;
@@ -25,7 +25,7 @@
 }
 
 
-#container-demo li.highlight::before {
+#demo-items li.highlight::before {
     position: absolute;
     right: -30px;
     font-size: 21px;
@@ -34,34 +34,34 @@
     content: "\F730";
 }
 
-#container-demo li::after {
+#demo-items li::after {
     position: absolute;
     content: "unselectable";
 }
 
-#container-demo li.ui-selectable {
+#demo-items li.ui-selectable {
 /*	background-color: #0054D1;
 	border-color: #0054D1;*/
 	cursor: pointer;
 	/*color: #fff;*/
 }
 
-#container-demo li.ui-selectable::after {
+#demo-items li.ui-selectable::after {
     content: "selectable";
 }
-#container-demo li.ui-selecting::after {
+#demo-items li.ui-selecting::after {
     content: "selecting";
 }
-#container-demo li.ui-selected::after {
+#demo-items li.ui-selected::after {
     content: "selected";
 }
 
-#container-demo li.ui-selecting {
+#demo-items li.ui-selecting {
 	border-color: rgb(40, 167, 69);
 	background-color:  rgb(40, 167, 69);
 	color: #fff;	
 }
-#container-demo li.ui-selected {
+#demo-items li.ui-selected {
 	border-color: #0054D1;
 	background-color:  #0054D1;
 	color: #fff;	

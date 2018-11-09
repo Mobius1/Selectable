@@ -3086,3 +3086,35 @@ b.highlight {
 .mb-track-y .mb-bar {
     border-radius: 3px;
 }
+
+/* code tabs */
+.code-tabs {
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.2);
+    border-radius: 5px;
+}
+.code-tabs .nav-tabs {
+    border-bottom: 1px solid rgba(222, 226, 230, 0);
+    margin: 0;    
+}
+.code-tabs .nav-link {
+    border-width: 0 0 2px 0;
+    border-style: solid;
+    color: rgb(73, 80, 87);
+    font-size: 13px;
+    font-family: Consolas, "Inconsolata", Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.code-tabs .nav-link.active {
+    border-color: rgba(0, 84, 209, 1);
+    color: rgba(0, 84, 209, 1);
+}
+.code-tabs .tab-content {
+    background-color: rgba(237, 237, 237, 0.5);
+    padding: 10px;
+}
+.code-tabs .tab-pane {
+    padding: 10px;
+}
+.code-tabs pre {
+    margin: 0;
+    padding-bottom: 0;
+}
