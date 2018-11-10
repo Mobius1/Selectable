@@ -94,21 +94,27 @@ function init() {
         menuEvents.appendChild(ul);
     }
 
-    versions.previousElementSibling.textContent = "v0.13.3";
+    fetch("https://api.github.com/repos/Mobius1/Selectable/releases").then(resp => resp.json()).then(json => {
 
-    versions.innerHTML = `  <div>Versions</div>
-                            <a class="dropdown-item active" href="#">latest</a>
-                            <a class="dropdown-item" href="#">stable</a>
-                            <a class="dropdown-item" href="#">v0.13.2</a>
-                            <a class="dropdown-item" href="#">v0.13.1</a>
-                            <a class="dropdown-item" href="#">v0.13.0</a>
-                            <a class="dropdown-item" href="#">v0.12.3</a>
-                            <a class="dropdown-item" href="#">v0.12.2</a>
-                            <a class="dropdown-item" href="#">v0.12.1</a>
-                            <a class="dropdown-item" href="#">v0.12.0</a>
-                            <a class="dropdown-item" href="#">v0.11.0</a>
-                            <a class="dropdown-item" href="#">v0.10.9</a>
-                            <a class="dropdown-item" href="#">master</a>`;
+        versions.previousElementSibling.textContent = json[0].name;
+
+        const frag = document.createDocumentFragment();
+        json.slice(0,10).forEach((item,i) => {
+            const a = document.createElement("a");
+            a.className = "dropdown-item";
+            a.href = item.html_url;
+            a.textContent = i < 1 ? "latest" : item.name;
+
+            if ( i < 1 ) {
+                a.classList.add("active");
+            }
+
+            frag.appendChild(a);
+        });
+        versions.innerHTML = "";
+        versions.appendChild(frag);
+    });
+
 
     menuOverview.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/index.html">Introduction</a></li>
                             <li><a href="https://mobius1.github.io/Selectable/getting-started.html">Getting Started</a></li>`;
