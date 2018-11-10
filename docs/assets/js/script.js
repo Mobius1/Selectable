@@ -257,11 +257,7 @@ function createNavLinks() {
         li.innerHTML = `<a class="js-scroll-trigger" href="#${title.id}">${title.textContent}</a>`;
 
         if ( !title.querySelector(".header-link") ) {
-            const a = document.createElement("a");
-            a.href = "#${title.id}";
-            a.innerHTML = `<i class="ti-link"></i>`;
-
-            title.appendChild(a);
+            title.innerHTML = `<span>${title.textContent} <a class="header-link" href="#${title.id}"><i class="ti-link"></i></a></span>`;
         }
 
         frag.appendChild(li);
