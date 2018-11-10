@@ -255,6 +255,7 @@ function createNavLinks() {
         const li = document.createElement("li");
         li.className = "toc-entry";
         li.innerHTML = `<a class="js-scroll-trigger" href="#${title.id}">${title.textContent}</a>`;
+        title.insertAdjacentHTML("beforeend", `<a class="header-link" href="#${title.id}"><i class="ti-link"></i></a>`);
 
         frag.appendChild(li);
     });
