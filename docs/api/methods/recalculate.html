@@ -92,8 +92,8 @@
                                 <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> recalculate()</h1>
                                 <hr />
 <p>Recalculates the coords for all selectable items.</p>
-<h5>Syntax</h5>                             
-<h4><i><pre><code class="js language-js">Selectable.recalculate()</code></pre></i></h4>
+<h5 id="syntax" class="scroll-title">Syntax</h5>                             
+<div class="syntax"><i><pre><code class="js language-js">Selectable.recalculate()</code></pre></i></div>
 <p>To negate the need to calculate when the lasso is in contact with an item during <code>mousemove</code> / <code>touchmove</code> (a performance hindering task) the dimensions of the items are cached. If the dimensions of any item or items changes then recaching is needed. Simply call this method at anytime to recache the dimensions.</p>
 
 <p>Note that if you have the <a href="#"><code>autoRefresh</code></a> option set to true, this method is called on every <code>mousedown</code> / <code>touchstart</code> event.</p>
