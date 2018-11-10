@@ -935,19 +935,47 @@ code {
     font-size: 14px;
     color: #586069;
 }
+.toc-entry .is-active-li {
+    font-weight: bold;
+}
 .toc-entry a:hover{
     color: #0054D1
 }
-.section-nav ul {
+#section-nav {
+    top: 40px;
+    position: fixed;
+    height: 100vh;
+}
+ #section-nav.docked {
+    height: calc(100vh - 150px);
+}
+.section-nav ol {
     padding-left: 1rem;
     list-style-type: none;
 }
-.toc-entry ul li a {
+.toc-entry ol li a {
     font-size: 13px;
     color: #aaa;
 }
-.toc-entry ul li a:hover{
+.toc-entry ol li a:hover{
     color: #0054D1;
+}
+.toc-link {
+    position: relative;
+}
+.toc-entry::before {
+    background-color: #EEE;
+    content: ' ';
+    display: inline-block;
+    height: inherit;
+    left: 0;
+    margin-top: -1px;
+    position: absolute;
+    width: 0px;
+    height: 100%;
+}
+.is-active-li::before {
+    background-color: #54BC4B
 }
 @media (min-width: 992px){
 
@@ -3132,4 +3160,8 @@ b.highlight {
     display: inline-block;
     padding-bottom: 5px;
     margin: 20px 0 20px;
+}
+
+.syntax code[class*="language-"], .syntax pre[class*="language-"] {
+    font-size: 20px;
 }

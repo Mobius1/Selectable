@@ -42,12 +42,6 @@ $(document).ready(function () {
         return false;
     });
 
-    //Sticky sidebar
-    $('.leftSidebar, .content, .rightSidebar')
-            .theiaStickySidebar({
-                additionalMarginTop: 111
-            });
-
     $('.faqLeftSidebar, .faqContent').theiaStickySidebar();
 
     //Language dropdown
@@ -248,22 +242,47 @@ function toggleMenu(e) {
 }
 
 function createNavLinks() {
-    const titles = document.querySelectorAll(".scroll-title");
-    const frag = document.createDocumentFragment();
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js";
+    script.type ="text/javascript";
 
-    titles.forEach(title => {
-        const li = document.createElement("li");
-        li.className = "toc-entry";
-        li.innerHTML = `<a class="js-scroll-trigger" href="#${title.id}">${title.textContent}</a>`;
+    document.body.insertBefore(script, document.body.querySelector("script"));
 
-        if ( !title.querySelector(".header-link") ) {
-            title.innerHTML = `<span>${title.textContent} <a class="header-link" href="#${title.id}"><i class="ti-link"></i></a></span>`;
+    script.async = true;
+    script.onload = function(){
+        tocbot.init({
+          // Where to render the table of contents.
+          tocSelector: '#section-nav',
+          // Where to grab the headings to build the table of contents.
+          contentSelector: '.content-wrapper',
+          // Which headings to grab inside of the contentSelector element.
+          headingSelector: 'h3, h4, h5, h6',
+          // listClass: '',
+          listItemClass: 'toc-entry',
+        });
+    };  
+
+    let ticking = false;
+    const stickyNav = document.getElementById("section-nav");
+    window.addEventListener('scroll', function(e) {
+        scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                dockHeader();
+                ticking = false;
+            });
         }
-
-        frag.appendChild(li);
+        ticking = true;
     });
 
-    document.getElementById("section-nav").appendChild(frag);    
+    function dockHeader() {
+        var scrollY = window.scrollY;
+        if ( scrollY > 0 ) {
+            stickyNav.classList.add('docked');
+        } else {
+            stickyNav.classList.remove('docked');
+        }
+    }
 }
 
 
