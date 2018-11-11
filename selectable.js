@@ -36,29 +36,6 @@
     var _supports = 'classList' in document.documentElement;
 
     /**
-     * Attach removable event listener
-     * @param  {Object}   el       HTMLElement
-     * @param  {String}   type     Event type
-     * @param  {Function} callback Event callback
-     * @param  {Object}   scope    Function scope
-     * @return {Void}
-     */
-    var on = function(el, type, callback, scope) {
-        el.addEventListener(type, callback, false);
-    };
-
-    /**
-     * Remove event listener
-     * @param  {Object}   el       HTMLElement
-     * @param  {String}   type     Event type
-     * @param  {Function} callback Event callback
-     * @return {Void}
-     */
-    var off = function(el, type, callback) {
-        el.removeEventListener(type, callback);
-    };
-
-    /**
      * Find the closest matching ancestor to a node
      * @param  {Object}   el HTMLElement
      * @param  {Function} fn Callback
@@ -388,38 +365,85 @@
         },
 
         /**
+         * Add custom event listener
+         * @param  {String} event
+         * @param  {Function} callback
+         * @return {Void}
+         */
+        on: function(listener, fn, capture) {
+            if (typeof listener === "string") {
+                this.listeners = this.listeners || {};
+                this.listeners[listener] = this.listeners[listener] || [];
+                this.listeners[listener].push(fn);
+            } else {
+                arguments[0].addEventListener(arguments[1], arguments[2], false);
+            }
+        },
+
+        /**
+         * Remove custom listener listener
+         * @param  {String} listener
+         * @param  {Function} callback
+         * @return {Void}
+         */
+        off: function(listener, fn) {
+            if (typeof listener === "string") {
+                this.listeners = this.listeners || {};
+                if (listener in this.listeners === false) return;
+                this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
+            } else {
+                arguments[0].removeEventListener(arguments[1], arguments[2]);
+            }
+        },
+
+        /**
+         * Fire custom listener
+         * @param  {String} listener
+         * @return {Void}
+         */
+        emit: function(listener) {
+            this.listeners = this.listeners || {};
+            if (listener in this.listeners === false) return;
+            for (var i = 0; i < this.listeners[listener].length; i++) {
+                this.listeners[listener][i].apply(this, Array.prototype.slice.call(arguments, 1));
+            }
+        },
+
+        /**
          * Add instance event listeners
          * @return {Void}
          */
         bind: function() {
             var e = this.events;
 
+            this.unbind();
+
             if (_touch) {
-                on(this.container, "touchstart", e.touchstart);
-                on(document, "touchend", e.end);
-                on(document, "touchcancel", e.end);
+                this.on(this.container, "touchstart", e.touchstart);
+                this.on(document, "touchend", e.end);
+                this.on(document, "touchcancel", e.end);
 
                 if (this.lasso !== false) {
-                    on(document, "touchmove", e.drag);
+                    this.on(document, "touchmove", e.drag);
                 }
             } else {
-                on(this.container, 'mousedown', e.start);
+                this.on(this.container, 'mousedown', e.start);
 
-                on(document, 'mouseup', e.end);
-                on(document, 'keydown', e.keydown);
-                on(document, 'keyup', e.keyup);
+                this.on(document, 'mouseup', e.end);
+                this.on(document, 'keydown', e.keydown);
+                this.on(document, 'keyup', e.keyup);
 
                 if (this.lasso !== false) {
-                    on(document, 'mousemove', e.drag);
+                    this.on(document, 'mousemove', e.drag);
                 }
             }
 
             if (this.autoscroll) {
-                on(this.bodyContainer ? window : this.container, "scroll", e.scroll);
+                this.on(this.bodyContainer ? window : this.container, "scroll", e.scroll);
             }
 
-            on(window, 'resize', e.recalculate);
-            on(window, 'scroll', e.recalculate);
+            this.on(window, 'resize', e.recalculate);
+            this.on(window, 'scroll', e.recalculate);
         },
 
         /**
@@ -429,24 +453,24 @@
         unbind: function() {
             var e = this.events;
 
-            off(this.container, 'mousedown', e.start);
-            off(document, 'mousemove', e.drag);
-            off(document, 'mouseup', e.end);
-            off(document, 'keydown', e.keydown);
-            off(document, 'keyup', e.keyup);
+            this.off(this.container, 'mousedown', e.start);
+            this.off(document, 'mousemove', e.drag);
+            this.off(document, 'mouseup', e.end);
+            this.off(document, 'keydown', e.keydown);
+            this.off(document, 'keyup', e.keyup);
 
             if (this.autoscroll) {
-                off(this.bodyContainer ? window : this.container, "scroll", e.scroll);
+                this.off(this.bodyContainer ? window : this.container, "scroll", e.scroll);
             }
 
             // Mobile
-            off(this.container, "touchstart", e.start);
-            off(document, "touchend", e.end);
-            off(document, "touchcancel", e.end);
-            off(document, "touchmove", e.drag);
+            this.off(this.container, "touchstart", e.start);
+            this.off(document, "touchend", e.end);
+            this.off(document, "touchcancel", e.end);
+            this.off(document, "touchmove", e.drag);
 
-            off(window, 'resize', e.recalculate);
-            off(window, 'scroll', e.recalculate);
+            this.off(window, 'resize', e.recalculate);
+            this.off(window, 'scroll', e.recalculate);
         },
 
         /**
@@ -455,7 +479,7 @@
          * @return {Void}
          */
         touchstart: function(e) {
-            off(this.container, "mousedown", this.events.start);
+            this.off(this.container, "mousedown", this.events.start);
 
             this.start(e);
         },
@@ -1194,43 +1218,6 @@
             return this.getSelectedItems().map(function(item) {
                 return item.node;
             });
-        },
-
-        /**
-         * Add custom event listener
-         * @param  {String} event
-         * @param  {Function} callback
-         * @return {Void}
-         */
-        on: function(listener, fn) {
-            this.listeners = this.listeners || {};
-            this.listeners[listener] = this.listeners[listener] || [];
-            this.listeners[listener].push(fn);
-        },
-
-        /**
-         * Remove custom listener listener
-         * @param  {String} listener
-         * @param  {Function} callback
-         * @return {Void}
-         */
-        off: function(listener, fn) {
-            this.listeners = this.listeners || {};
-            if (listener in this.listeners === false) return;
-            this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
-        },
-
-        /**
-         * Fire custom listener
-         * @param  {String} listener
-         * @return {Void}
-         */
-        emit: function(listener) {
-            this.listeners = this.listeners || {};
-            if (listener in this.listeners === false) return;
-            for (var i = 0; i < this.listeners[listener].length; i++) {
-                this.listeners[listener][i].apply(this, Array.prototype.slice.call(arguments, 1));
-            }
         },
 
         /**
