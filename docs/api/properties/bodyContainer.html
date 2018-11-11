@@ -74,16 +74,7 @@
                             <li>
                                 <a class="has-arrow" href="api/options.html">Options</a>
                                 <ul aria-expanded="true">
-                                    <li><a href="api/options/filter.html">filter</a></li>
-                                    <li class="active"><a href="api/options/appendTo.html">appendTo</a></li>
-                                    <li><a href="api/options/tolerance.html">tolerance</a></li>
-                                    <li><a href="api/options/ignore.html">ignore</a></li>
-                                    <li><a href="api/options/toggle.html">toggle</a></li>
-                                    <li><a href="api/options/throttle.html">throttle</a></li>
-                                    <li><a href="api/options/autoScroll.html">autoScroll</a></li>
-                                    <li><a href="api/options/autorefresh.html">autoRefresh</a></li>
-                                    <li><a href="api/options/lasso.html">lasso</a></li>
-                                    <li><a href="api/options/classes.html">classes</a></li>
+
                                 </ul>                                
                             </li>
                             <li>
@@ -107,55 +98,21 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Properties</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">config</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">bodyContainer</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> config</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> bodyContainer</h1>
                                 <hr />
-                                <h5 id="typeboolean">Type <code>Object</code></h5>
+                                <h5 id="typeboolean">Type <code>Boolean</code></h5>
 
-<p>Returns the current instance configuration options.</p>
+<h5 id="defaulttrue">Default <code>true</code></h5>
+<p>Returns a <code>Boolean</code> denoting whether the current container is the <code>document.body</code>.</p>
 <h5 id="syntax" class="scroll-title">Syntax</h5>                             
-<div class="syntax"><i><pre><code class="js language-js">instance.config</code></pre></i></div>
+<div class="syntax"><i><pre><code class="js language-js">instance.bodyContainer</code></pre></i></div>
 <hr />
-<h5 class="scroll-title" id="default-value">Default value</h5>
-<pre><code class="js language-js">{
-    filter: ".ui-selectable",
-    tolerance: "touch",
 
-    appendTo: document.body,
-
-    toggle: false,
-    autoRefresh: true,
-
-    throttle: 50,
-
-    autoScroll: {
-        threshold: 0,
-        increment: 20,
-    },
-
-    ignore: false,
-
-    lasso: {
-        border: '1px dotted #000',
-        backgroundColor: 'rgba(52, 152, 219, 0.2)',
-    },
-
-    keys: ['shiftKey', 'ctrlKey', 'metaKey'],
-
-    classes: {
-        lasso: "ui-lasso",
-        selected: "ui-selected",
-        container: "ui-container",
-        selecting: "ui-selecting",
-        selectable: "ui-selectable",
-        unselecting: "ui-unselecting"
-    }
-}</code></pre>
-<hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
