@@ -123,7 +123,11 @@ function init() {
 
 
     menuOverview.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/index.html">Introduction</a></li>
-                                              <li><a href="https://mobius1.github.io/Selectable/getting-started.html">Getting Started</a></li>`;
+                                              <li><a href="https://mobius1.github.io/Selectable/getting-started.html">Getting Started</a></li>
+                                              <li><a href="https://mobius1.github.io/Selectable/options.html">Options</a></li>
+                                              <li><a href="https://mobius1.github.io/Selectable/public-methods.html">Public Methods</a></li>
+                                              <li><a href="https://mobius1.github.io/Selectable/events.html">Events</a></li>#
+                                              <li><a href="https://mobius1.github.io/Selectable/changelog.html">Changelog</a></li>`;
 
     menuOptions.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/options/appendTo.html">appendTo</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/autoRefresh.html">autoRefresh</a></li>
