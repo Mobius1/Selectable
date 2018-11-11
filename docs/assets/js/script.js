@@ -136,21 +136,21 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/lasso.html">lasso</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/classes.html">classes</a></li>`;
 
-    propsMenu.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/properties/autoscroll.html>autoscroll</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/bodyContainer.html>bodyContainer</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/cmdDown.html>cmdDown</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/config.html>config</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/container.html>container</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/enabled.html>enabled</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/events.html>events</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/items.html>items</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/lasso.html>lasso</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/listeners.html>listeners</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/nodes.html>nodes</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/rect.html>rect</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/scroll.html>scroll</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/shiftDown.html>shiftDown</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/version.html>version</a></li>`;
+    propsMenu.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/properties/autoscroll.html">autoscroll</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/bodyContainer.html">bodyContainer</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/cmdDown.html">cmdDown</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/config.html">config</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/container.html">container</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/enabled.html">enabled</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/events.html">events</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/items.html">items</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/lasso.html">lasso</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/listeners.html">listeners</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/nodes.html">nodes</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/rect.html">rect</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/scroll.html">scroll</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/shiftDown.html">shiftDown</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/version.html">version</a></li>`;
 
 
     menuMethods.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/methods/destroy.html">destroy()</a></li>
