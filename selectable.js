@@ -273,9 +273,7 @@
          * @return {void}
          */
         init: function() {
-            var that = this,
-                o = this.config;
-
+            var that = this, o = this.config;
 
             // Is auto-scroll enabled?
             this.autoscroll = isObject(o.autoScroll);
@@ -301,15 +299,13 @@
                 o.toggle = false;
             }
 
-            this.events = {
-                start: this.start.bind(this),
-                touchstart: this.touchstart.bind(this),
-                drag: this.drag.bind(this),
-                end: this.end.bind(this),
-                keyup: this.keyup.bind(this),
-                keydown: this.keydown.bind(this),
-                recalculate: throttle(this.recalculate, o.throttle, this)
-            };
+            this.events = {};
+
+            ["start","touchstart","drag","end","keyup","keydown"].forEach(event => {
+                this.events[event] = this[event].bind(this);
+            });
+
+            this.events.recalculate = throttle(this.recalculate, o.throttle, this);
 
             if (this.autoscroll) {
                 this.events.scroll = this.onScroll.bind(this);
@@ -321,9 +317,7 @@
 
             this.enable();
 
-            setTimeout(function() {
-                that.emit("selectable.init");
-            }, 10);
+            setTimeout(function() { that.emit("selectable.init"); }, 10);
         },
 
         /**
