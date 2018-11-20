@@ -262,6 +262,10 @@
             }
         };
 
+        this.axes = ["x", "y"];
+        this.axes1 = {x: "x1", y: "y1"};
+        this.axes2 = {x: "x2", y: "y2"};        
+
         this.version = _version;
         this.config = extend(defaultConfig, options);
         this.init();
@@ -300,14 +304,14 @@
             this.events = {};
 
             ["start", "touchstart", "drag", "end", "keyup", "keydown", "recalculate", "scroll"].forEach(event => {
-                if ( event === "recalculate" ) {
-                    this.events[event] = throttle(this.recalculate, o.throttle, this)
-                } else if ( event === "scroll" && this.autoscroll ) {
-                    this.events.scroll = this.onScroll.bind(this);
-                } else {
-                     this.events[event] = this[event].bind(this);
-                }
+                this.events[event] = this[event].bind(this);
             });
+
+            this.events.recalculate = throttle(this.recalculate, o.throttle, this);
+
+            if (this.autoscroll) {
+                this.events.scroll = this.onScroll.bind(this);
+            }
 
             this.setContainer();
             this.update();
@@ -605,7 +609,6 @@
          */
         drag: function(e) {
             var o = this.config;
-            var axes = ["x", "y"];
             var mouse = { x: evt.pageX, y: evt.pageY };
 
             if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
@@ -620,6 +623,15 @@
                 x2: mouse.x + (this.bodyContainer ? 0 : this.scroll.x),
                 y2: mouse.y + (this.bodyContainer ? 0 : this.scroll.y),
             };
+
+            // flip lasso
+            for ( var axis of this.axes ) {
+                if (this.current[this.axes1[axis]] > this.current[this.axes2[axis]]) {
+                    tmp = this.current[this.axes2[axis]];
+                    this.current[this.axes2[axis]] = this.current[this.axes1[axis]];
+                    this.current[this.axes1[axis]] = tmp;
+                }
+            }
 
             // flip lasso x
             if (this.current.x1 > this.current.x2) {
@@ -636,8 +648,8 @@
             }
 
             /* highlight */
-            for (var i = 0; i < this.items.length; i++) {
-                this.highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+            for (var item in this.items) {
+                this.highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
             };
 
             this.coords = {
@@ -665,10 +677,10 @@
                 }
 
                 // check if we need to scroll
-                for ( const axis of axes ) {
-                    if (mouse[axis] >= this.rect[`${axis}2`] - t && this.scroll[axis] < this.scroll.max[axis]) {
+                for ( var axis of this.axes ) {
+                    if (mouse[axis] >= this.rect[this.axes2[axis]] - t && this.scroll[axis] < this.scroll.max[axis]) {
                         inc[axis] = i;
-                    } else if (mouse[axis] <= this.rect[`${axis}1`] + t && this.scroll[axis] > 0) {
+                    } else if (mouse[axis] <= this.rect[this.axes1[axis]] + t && this.scroll[axis] > 0) {
                         inc[axis] = -i;
                     }
                 }
@@ -685,17 +697,17 @@
             if (this.lasso) {
                 // stop lasso causing overflow
                 if (!this.bodyContainer && !this.config.autoScroll.lassoOverflow) {
-                    for ( const axis of axes ) {
-                        var max = this.rect[`${axis}1`] + this.scroll.size[axis];
+                    for ( var axis of this.axes ) {
+                        var max = this.rect[this.axes1[axis]] + this.scroll.size[axis];
                         if (mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
-                            var off = this.origin[axis] - this.rect[`${axis}1`] - this.scroll[axis];
-                            this.coords[`${axis}1`] = this.origin[axis] - this.rect[`${axis}1`];
-                            this.coords[`${axis}2`] = max - off - this.rect[`${axis}1`];
+                            var off = this.origin[axis] - this.rect[this.axes1[axis]] - this.scroll[axis];
+                            this.coords[this.axes1[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
+                            this.coords[this.axes2[axis]] = max - off - this.rect[this.axes1[axis]];
                         }
         
-                        if (mouse[axis] <= this.rect[`${axis}1`] && this.scroll[axis] <= 0) {
-                            this.coords[`${axis}1`] = 0;
-                            this.coords[`${axis}2`] = this.origin[axis] - this.rect[`${axis}1`];
+                        if (mouse[axis] <= this.rect[this.axes1[axis]] && this.scroll[axis] <= 0) {
+                            this.coords[this.axes1[axis]] = 0;
+                            this.coords[this.axes2[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
                         }
                     }
                 }
@@ -1117,7 +1129,7 @@
          * @return {Void}
          */
         invert: function() {
-            const items = this.getItems();
+            var items = this.getItems();
 
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
