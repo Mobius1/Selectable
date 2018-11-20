@@ -106,21 +106,17 @@ export default class Selectable extends Emitter {
             o.toggle = false;
         }
 
-        this.events = {
-            mouseenter: this.mouseenter.bind(this),
-            mouseleave: this.mouseleave.bind(this),
-            start: this.start.bind(this),
-            touchstart: this.touchstart.bind(this),
-            drag: this.drag.bind(this),
-            end: this.end.bind(this),
-            keyup: this.keyup.bind(this),
-            keydown: this.keydown.bind(this),
-            refresh: throttle(this.refresh, o.throttle, this)
-        };
+		this.events = {};
 
-        if (this.autoscroll) {
-            this.events.scroll = this.onScroll.bind(this);
-        }
+		["start", "touchstart", "drag", "end", "keyup", "keydown"].forEach(event => {
+			this.events[event] = this[event].bind(this);
+		});
+
+		this.events.refresh = throttle(this.refresh, o.throttle, this);
+
+		if (this.autoscroll) {
+			this.events.scroll = this.onScroll.bind(this);
+		}
 
         // set the parent container
         this.setContainer();
@@ -187,36 +183,6 @@ export default class Selectable extends Emitter {
      * @return {Void}
      */
     update() {
-        const c = this.config.classes;
-        // create the items
-        this.items = [];
-
-        for (let i = 0; i < this.nodes.length; i++) {
-            const el = this.nodes[i];
-            el.classList.add(c.selectable);
-            el.tabIndex = i;
-
-            this.items[i] = {
-                node: el,
-                rect: rect(el),
-                startselected: false,
-                selected: el.classList.contains(c.selected),
-                selecting: el.classList.contains(c.selecting),
-                deselecting: el.classList.contains(c.deselecting)
-            };
-        }
-
-        this.refresh(true);
-
-        // emit the "update" event
-        this.emit("selectable.update", this.items);
-    }
-
-    /**
-     * Update item coords
-     * @return {Object} instance
-     */
-    refresh(skip = false) {
         const x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
         const y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
@@ -246,11 +212,20 @@ export default class Selectable extends Emitter {
             }
         };
 
-        if (!skip) {
-            for (const item of this.items) {
-                item.rect = rect(item.node);
-            }
-        }
+        // emit the "update" event
+		this.emit("selectable.update", this.items);
+		
+		return this;
+    }
+
+    /**
+     * Update item coords
+     * @return {Object} instance
+     */
+    refresh() {
+		for (const item of this.items) {
+			item.rect = rect(item.node);
+		}
 
         this.emit('selectable.refresh');
 
@@ -314,10 +289,8 @@ export default class Selectable extends Emitter {
                 ignore = [ignore];
             }
 
-            for (var i = 0; i < ignore.length; i++) {
-                const ancestor = target.closest(ignore[i]);
-
-                if (ancestor) {
+            for ( item of ignore ) {
+                if ( target.closest(item) ) {
                     stop = true;
                     break;
                 }
@@ -364,7 +337,7 @@ export default class Selectable extends Emitter {
         }
 
         if (o.autoRefresh) {
-            this.refresh();
+            this.update();
         }
 
         const items = this.items;

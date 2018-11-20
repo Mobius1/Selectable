@@ -300,7 +300,7 @@
                 this.events[event] = this[event].bind(this);
             });
 
-            this.events.recalculate = throttle(this.recalculate, o.throttle, this);
+            this.events.refresh = throttle(this.refresh, o.throttle, this);
 
             if (this.autoscroll) {
                 this.events.scroll = this.onScroll.bind(this);
@@ -426,8 +426,8 @@
                 this.on(this.bodyContainer ? window : this.container, "scroll", e.scroll);
             }
 
-            this.on(window, 'resize', e.recalculate);
-            this.on(window, 'scroll', e.recalculate);
+            this.on(window, 'resize', e.refresh);
+            this.on(window, 'scroll', e.refresh);
         },
 
         /**
@@ -453,8 +453,8 @@
             this.off(document, "touchcancel", e.end);
             this.off(document, "touchmove", e.drag);
 
-            this.off(window, 'resize', e.recalculate);
-            this.off(window, 'scroll', e.recalculate);
+            this.off(window, 'resize', e.refresh);
+            this.off(window, 'scroll', e.refresh);
         },
 
         /**
@@ -476,14 +476,12 @@
         start: function(e) {
             var that = this,
                 o = this.config,
-                target = e.target,
                 touch = e.type === "touchstart",
-                w = window,
                 originalEl,
                 cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
-                sft = (this.canShift && isShiftKey(e));
+                shift = (this.canShift && isShiftKey(e));
 
-            if (!this.container.contains(target) || e.which === 3 || e.button > 0) return;
+            if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
 
             // check for ignored descendants
             if (this.config.ignore) {
@@ -495,7 +493,7 @@
                 }
 
                 for (var i = 0; i < ignore.length; i++) {
-                    var ancestor = target.closest(ignore[i]);
+                    var ancestor = e.target.closest(ignore[i]);
 
                     if (ancestor) {
                         stop = true;
@@ -510,14 +508,14 @@
 
             // selectable nodes may have child elements
             // so let's get the closest selectable node
-            var node = closest(target, function(el) {
+            var node = closest(e.target, function(el) {
                 return el === that.container || classList.contains(el, o.classes.selectable);
             });
 
-            if (!node || o.disabled) return false;
+            if (!node) return false;
 
             // allow form inputs to be receive focus
-            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(target.tagName) === -1) {
+            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
                 e.preventDefault();
             }
 
@@ -544,7 +542,7 @@
                 this.update();
             }
 
-            if (sft && this.startEl) {
+            if (shift && this.startEl) {
 
                 var items = this.items,
                     currentIndex = this.getNodes().indexOf(node),
@@ -564,7 +562,7 @@
 
                     item.startselected = true;
 
-                    var unselect = (touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !sft;
+                    var unselect = (touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
 
                     if (unselect) {
                         classList.remove(el, o.classes.selected);
@@ -774,7 +772,6 @@
          * @return {Void}
          */
         keydown: function(e) {
-            var o = this.config.keys;
             this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
 
             if (this.cmdDown) {
@@ -792,7 +789,6 @@
          * @return {Void}
          */
         keyup: function(e) {
-            var o = this.config.keys;
             this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
         },
 
@@ -817,57 +813,43 @@
          */
         highlight: function(item, cmd) {
             var o = this.config,
-                cls = o.classes,
                 el = item.node,
-                r = item.rect,
-                c = this.current,
-                s = this.scroll,
-                cl = classList,
                 over = false;
 
-            var x = s.x;
-            var y = s.y;
-
-            if (this.bodyContainer) {
-                x = 0;
-                y = 0;
-            }
+            var x = this.bodyContainer ? 0 : this.scroll.x;
+            var y = this.bodyContainer ? 0 : this.scroll.y;
 
             if (o.tolerance === "touch") {
-                over = !(r.x1 + x > c.x2 || (r.x2 + x < c.x1 ||
-                    (r.y1 + y > c.y2 || r.y2 + y < c.y1)));
+                over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
+                    (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
             } else if (o.tolerance === "fit") {
-                over = r.x1 + x > c.x1 && (r.x2 + x < c.x2 &&
-                    (r.y1 + y > c.y1 && r.y2 + y < c.y2));
+                over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
+                    (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
             }
 
             if (over) {
                 if (item.selected && !o.toggle) {
-                    cl.remove(el, cls.selected);
+                    classList.remove(el, o.classes.selected);
                     item.selected = false;
                 }
                 if (item.unselecting && (!o.toggle || o.toggle && o.toggle !== "drag")) {
-                    cl.remove(el, cls.unselecting);
+                    classList.remove(el, o.classes.unselecting);
                     item.unselecting = false;
                 }
                 if (!item.selecting) {
-                    cl.add(el, cls.selecting);
+                    classList.add(el, o.classes.selecting);
                     item.selecting = true;
                 }
             } else {
                 if (item.selecting) {
+                    classList.remove(el, o.classes.selecting);
+                    item.selecting = false;
                     if (cmd && item.startselected) {
-                        cl.remove(el, cls.selecting);
-                        item.selecting = false;
-
-                        cl.add(el, cls.selected);
+                        classList.add(el, o.classes.selected);
                         item.selected = true;
                     } else {
-                        cl.remove(el, cls.selecting);
-                        item.selecting = false;
-
                         if (item.startselected && !o.toggle) {
-                            cl.add(el, cls.unselecting);
+                            classList.add(el, o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -875,10 +857,10 @@
                 if (el.selected) {
                     if (!cmd) {
                         if (!item.startselected) {
-                            cl.remove(el, cls.selected);
+                            classList.remove(el, o.classes.selected);
                             item.selected = false;
 
-                            cl.add(el, cls.unselecting);
+                            classList.add(el, o.classes.unselecting);
                             item.unselecting = true;
                         }
                     }
@@ -1073,11 +1055,11 @@
          * Update item coords
          * @return {Void}
          */
-        recalculate: function() {
+        refresh: function() {
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
             }
-            this.emit('selectable.recalculate');
+            this.emit('selectable.refresh');
         },
 
         /**
