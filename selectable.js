@@ -349,6 +349,17 @@
         },
 
         /**
+         * Update item coords
+         * @return {Void}
+         */
+        refresh: function() {
+            for (var i = 0; i < this.nodes.length; i++) {
+                this.items[i].rect = rect(this.nodes[i]);
+            }
+            this.emit('selectable.refresh');
+        },
+
+        /**
          * Add custom event listener
          * @param  {String} event
          * @param  {Function} callback
@@ -476,12 +487,19 @@
         start: function(e) {
             var that = this,
                 o = this.config,
-                touch = e.type === "touchstart",
+                const touch = e.type === "touchstart",
+                evt = touch ? e.touches[0] : e,
                 originalEl,
                 cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
                 shift = (this.canShift && isShiftKey(e));
 
             if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
+
+            // check if the parent container is scrollable and 
+            // prevent deselection when clicking on the scrollbars
+            if (this.scroll.scrollable.y && evt.pageX > this.rect.x1 + this.scroll.size.x || this.scroll.scrollable.x && evt.pageY > this.rect.y1 + this.scroll.size.y) {
+                return false;
+            }
 
             // check for ignored descendants
             if (this.config.ignore) {
@@ -522,8 +540,8 @@
             this.dragging = true;
 
             this.origin = {
-                x: (touch ? e.touches[0].pageX : e.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
-                y: (touch ? e.touches[0].pageY : e.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
+                x: (evt.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
+                y: (evt.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
                 scroll: {
                     x: this.scroll.x,
                     y: this.scroll.y
@@ -1049,17 +1067,6 @@
             }
 
             return false;
-        },
-
-        /**
-         * Update item coords
-         * @return {Void}
-         */
-        refresh: function() {
-            for (var i = 0; i < this.nodes.length; i++) {
-                this.items[i].rect = rect(this.nodes[i]);
-            }
-            this.emit('selectable.refresh');
         },
 
         /**

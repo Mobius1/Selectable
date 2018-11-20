@@ -211,7 +211,21 @@ export default class Selectable extends Emitter {
                 y: this.scrollHeight > this.offsetHeight
             }
         };
+		this.items = [];
 
+		for (var el of this.nodes) {
+			classList.add(el, o.selectable);
+
+			this.items.push({
+				node: el,
+				rect: rect(el),
+				startselected: false,
+				selected: classList.contains(el, o.selected),
+				selecting: classList.contains(el, o.selecting),
+				unselecting: classList.contains(el, o.unselecting)
+			});
+		}
+		
         // emit the "update" event
 		this.emit("selectable.update", this.items);
 		
