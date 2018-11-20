@@ -52,7 +52,7 @@ export default class Selectable extends Emitter {
             }
         };
 
-        this.version = "0.13.3";
+        this.version = "1.0.0-beta";
 
         // check if we're on a mobile device
         this.touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
