@@ -290,12 +290,9 @@
 
                 css(this.lasso, extend({
                     position: "absolute",
+                    boxSizing: "border-box",
                     opacity: 0, // border will show even at zero width / height
                 }, o.lasso));
-
-                if ( css(this.lasso).boxSizing !== "border-box" ) {
-                    this.lasso.style.boxSizing = "border-box";
-                }
             }
 
             if (_touch) { o.toggle = false; }
