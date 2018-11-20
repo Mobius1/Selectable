@@ -621,20 +621,6 @@
                 }
             }
 
-            // flip lasso x
-            if (this.current.x1 > this.current.x2) {
-                tmp = this.current.x2;
-                this.current.x2 = this.current.x1;
-                this.current.x1 = tmp;
-            }
-
-            // flip lasso y
-            if (this.current.y1 > this.current.y2) {
-                tmp = this.current.y2;
-                this.current.y2 = this.current.y1;
-                this.current.y1 = tmp;
-            }
-
             /* highlight */
             for (var item in this.items) {
                 this.highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
