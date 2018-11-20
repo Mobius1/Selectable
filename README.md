@@ -1,5 +1,4 @@
 ![Selectable](selectable.png?raw=true "Selectable")
-[![Maintainability](https://api.codeclimate.com/v1/badges/6c209a529f5dfe59bd6f/maintainability)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2018.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/)
 [![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
@@ -8,6 +7,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?style=for-the-badge) 
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=for-the-badge)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6c209a529f5dfe59bd6f/maintainability)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
 
 Inspired by the jQuery UI Selectable plugin. Functionality and options are identical to the jQuery UI version with some additions and performance enhancements.
 
