@@ -568,13 +568,7 @@
 
                     item.startselected = true;
 
-                    var unselect = false;
-
-                    if (touch || o.toggle || isCmdKey(e) && (this.canCtrl || this.canMeta)) {
-                        unselect = isCurrentNode;
-                    } else {
-                        unselect = !isCurrentNode && !(isShiftKey(e) && this.canShift);
-                    }
+                    var unselect = (touch || o.toggle || isCmdKey(e) && (this.canCtrl || this.canMeta)) ? isCurrentNode : !isCurrentNode && !(isShiftKey(e) && this.canShift);
 
                     if (unselect) {
                         classList.remove(el, o.classes.selected);
