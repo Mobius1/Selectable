@@ -1,13 +1,15 @@
 ![Selectable](selectable.png?raw=true "Selectable")
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2018.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/)
-[![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
-[![npm](https://img.shields.io/npm/v/selectable.js.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
-[![GitHub issues](https://img.shields.io/github/issues/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/Mobius1/Selectable.svg?style=for-the-badge)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?style=for-the-badge) 
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=for-the-badge)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6c209a529f5dfe59bd6f/maintainability)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
+[![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/releases)
+[![npm](https://img.shields.io/npm/v/selectable.js.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
+[![GitHub issues](https://img.shields.io/github/issues-raw/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
+[![GitHub issues](https://img.shields.io/github/issues-closed-raw/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
 
 Inspired by the jQuery UI Selectable plugin. Functionality and options are identical to the jQuery UI version with some additions and performance enhancements.
 
