@@ -1,5 +1,6 @@
 ![Selectable](selectable.png?raw=true "Selectable")
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/6c209a529f5dfe59bd6f/maintainability)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
 [![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg)](https://www.npmjs.com/package/selectable%2Ejs)
 [![npm version](https://badge.fury.io/js/selectable%2Ejs.svg)](https://badge.fury.io/js/selectable%2Ejs)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
