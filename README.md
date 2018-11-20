@@ -7,7 +7,8 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/Mobius1/Selectable.svg)](http://isitmaintained.com/project/Mobius1/Selectable "Percentage of issues still open")
-[![GitHub repo size in bytes](https://img.shields.io/github/size/Mobius1/Selectable/selectable.min.js.svg?style=flat-square)](https://github.com/Mobius1/Selectable/)(http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=flat-square)
+[![GitHub repo size in bytes](https://img.shields.io/github/size/Mobius1/Selectable/selectable.min.js.svg?style=flat-square)](https://github.com/Mobius1/Selectable/)
+![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js) ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=flat-square)
 
 Inspired by the jQuery UI Selectable plugin. Functionality and options are identical to the jQuery UI version with some additions and performance enhancements.
 
