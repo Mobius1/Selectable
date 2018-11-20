@@ -285,7 +285,6 @@
             this.lasso = false;
 
             if (o.lasso && isObject(o.lasso)) {
-                /* lasso */
                 this.lasso = document.createElement('div');
                 this.lasso.className = o.classes.lasso;
 
@@ -303,7 +302,7 @@
 
             this.events = {};
 
-            ["start", "touchstart", "drag", "end", "keyup", "keydown", "recalculate", "scroll"].forEach(event => {
+            ["start", "touchstart", "drag", "end", "keyup", "keydown"].forEach(event => {
                 this.events[event] = this[event].bind(this);
             });
 
@@ -339,17 +338,17 @@
 
             this.items = [];
 
-            for (var el in this nodes) {
+            for (var el of this.nodes) {
                 classList.add(el, o.selectable);
 
-                this.items[i] = {
+                this.items.push({
                     node: el,
                     rect: rect(el),
                     startselected: false,
                     selected: classList.contains(el, o.selected),
                     selecting: classList.contains(el, o.selecting),
                     unselecting: classList.contains(el, o.unselecting)
-                };
+                });
             }
 
             this.emit("selectable.update", this.items);
