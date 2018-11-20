@@ -21,7 +21,44 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
-    var _version = "0.13.3";
+    /**
+     * Default configuration properties
+     * @type {Object}
+     */
+    var selectableConfig = {
+        filter: ".ui-selectable",
+        tolerance: "touch",
+
+        appendTo: document.body,
+
+        toggle: false,
+        autoRefresh: true,
+
+        throttle: 50,
+
+        autoScroll: {
+            threshold: 0,
+            increment: 20,
+        },
+
+        ignore: false,
+
+        lasso: {
+            border: '1px dotted #000',
+            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+        },
+
+        keys: ['shiftKey', 'ctrlKey', 'metaKey'],
+
+        classes: {
+            lasso: "ui-lasso",
+            selected: "ui-selected",
+            container: "ui-container",
+            selecting: "ui-selecting",
+            selectable: "ui-selectable",
+            unselecting: "ui-unselecting"
+        }
+    };
 
     /**
      * Check for touch screen
@@ -222,52 +259,12 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-
-        /**
-         * Default configuration properties
-         * @type {Object}
-         */
-        var defaultConfig = {
-            filter: ".ui-selectable",
-            tolerance: "touch",
-
-            appendTo: document.body,
-
-            toggle: false,
-            autoRefresh: true,
-
-            throttle: 50,
-
-            autoScroll: {
-                threshold: 0,
-                increment: 20,
-            },
-
-            ignore: false,
-
-            lasso: {
-                border: '1px dotted #000',
-                backgroundColor: 'rgba(52, 152, 219, 0.2)',
-            },
-
-            keys: ['shiftKey', 'ctrlKey', 'metaKey'],
-
-            classes: {
-                lasso: "ui-lasso",
-                selected: "ui-selected",
-                container: "ui-container",
-                selecting: "ui-selecting",
-                selectable: "ui-selectable",
-                unselecting: "ui-unselecting"
-            }
-        };
-
         this.axes = ["x", "y"];
         this.axes1 = {x: "x1", y: "y1"};
         this.axes2 = {x: "x2", y: "y2"};        
 
-        this.version = _version;
-        this.config = extend(defaultConfig, options);
+        this.version = "0.13.3";
+        this.config = extend(selectableConfig, options);
         this.init();
     }
 
@@ -895,12 +892,10 @@
          */
         setContainer: function(container) {
 
-            var o = this.config,
-                old;
+            var o = this.config, old;
 
             if (this.container) {
                 old = this.container;
-
                 this.unbind();
             }
 
