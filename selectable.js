@@ -295,26 +295,22 @@
                 }
             }
 
-            if (_touch) {
-                o.toggle = false;
-            }
+            if (_touch) { o.toggle = false; }
 
             this.events = {};
 
-            ["start","touchstart","drag","end","keyup","keydown"].forEach(event => {
-                this.events[event] = this[event].bind(this);
+            ["start", "touchstart", "drag", "end", "keyup", "keydown", "recalculate", "scroll"].forEach(event => {
+                if ( event === "recalculate" ) {
+                    this.events[event] = throttle(this.recalculate, o.throttle, this)
+                } else if ( event === "scroll" && this.autoscroll ) {
+                    this.events.scroll = this.onScroll.bind(this);
+                } else {
+                     this.events[event] = this[event].bind(this);
+                }
             });
 
-            this.events.recalculate = throttle(this.recalculate, o.throttle, this);
-
-            if (this.autoscroll) {
-                this.events.scroll = this.onScroll.bind(this);
-            }
-
             this.setContainer();
-
             this.update();
-
             this.enable();
 
             setTimeout(function() { that.emit("selectable.init"); }, 10);
