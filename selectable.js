@@ -291,6 +291,10 @@
                     position: "absolute",
                     opacity: 0, // border will show even at zero width / height
                 }, o.lasso));
+
+                if ( css(this.lasso).boxSizing !== "border-box" ) {
+                    this.lasso.style.boxSizing = "border-box";
+                }
             }
 
             if (_touch) {
@@ -611,6 +615,8 @@
          */
         drag: function(e) {
             var o = this.config;
+            var axes = ["x", "y"];
+            var mouse = { x: evt.pageX, y: evt.pageY };
 
             if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
 
@@ -621,8 +627,8 @@
             this.current = {
                 x1: this.origin.x,
                 y1: this.origin.y,
-                x2: evt.pageX + (this.bodyContainer ? 0 : this.scroll.x),
-                y2: evt.pageY + (this.bodyContainer ? 0 : this.scroll.y),
+                x2: mouse.x + (this.bodyContainer ? 0 : this.scroll.x),
+                y2: mouse.y + (this.bodyContainer ? 0 : this.scroll.y),
             };
 
             // flip lasso x
@@ -658,57 +664,52 @@
 
             // auto scroll
             if (this.autoscroll) {
-                var o = this.config.autoScroll;
-                var nx = 0;
-                var ny = 0;
-                var mx = evt.pageX;
-                var my = evt.pageY;
-                var inc = o.increment;
+                var as = this.config.autoScroll;
+                var i = as.increment;
+                var t = as.threshold;
+                var inc = { x: 0, y: 0 };
 
                 if (this.bodyContainer) {
-                    mx -= this.scroll.x;
-                    my -= this.scroll.y;
+                    mouse.x -= this.scroll.x;
+                    mouse.y -= this.scroll.y;
                 }
 
-                // check if we need to scroll y
-                if (my >= this.rect.y2 - o.threshold && this.scroll.y < this.scroll.max.y) {
-                    ny = inc;
-                } else if (my <= this.rect.y1 + o.threshold && this.scroll.y > 0) {
-                    ny = -inc;
-                }
-
-                // check if we need to scroll x
-                if (mx >= this.rect.x2 - o.threshold && this.scroll.x < this.scroll.max.x) {
-                    nx = inc;
-                } else if (mx <= this.rect.x1 + o.threshold && this.scroll.x > 0) {
-                    nx = -inc;
+                // check if we need to scroll
+                for ( const axis of axes ) {
+                    if (mouse[axis] >= this.rect[`${axis}2`] - t && this.scroll[axis] < this.scroll.max[axis]) {
+                        inc[axis] = i;
+                    } else if (mouse[axis] <= this.rect[`${axis}1`] + t && this.scroll[axis] > 0) {
+                        inc[axis] = -i;
+                    }
                 }
 
                 // scroll the container
                 if (this.bodyContainer) {
-                    window.scrollBy(nx, ny);
+                    window.scrollBy(inc.x, inc.y);
                 } else {
-                    this.container.scrollTop += ny;
-                    this.container.scrollLeft += nx;
+                    this.container.scrollTop += inc.y;
+                    this.container.scrollLeft += inc.x;
                 }
             }
 
             if (this.lasso) {
-
                 // stop lasso causing overflow
-                if (!this.bodyContainer) {
-                    if (e.pageY >= this.rect.y2 && this.scroll.y >= this.scroll.max.y) {
-                        const off = this.origin.y - this.rect.y1 - this.scroll.y;
-                        this.coords.y1 = this.origin.y - this.rect.y1;
-                        this.coords.y2 = this.rect.y2 - off - this.rect.y1 - 2;
-                    }
-
-                    if (e.pageY <= this.rect.y1 && this.scroll.y <= 0) {
-                        this.coords.y1 = 0;
-                        this.coords.y2 = this.origin.y - this.rect.y1;
+                if (!this.bodyContainer && !this.config.autoScroll.lassoOverflow) {
+                    for ( const axis of axes ) {
+                        var max = this.rect[`${axis}1`] + this.scroll.size[axis];
+                        if (mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
+                            var off = this.origin[axis] - this.rect[`${axis}1`] - this.scroll[axis];
+                            this.coords[`${axis}1`] = this.origin[axis] - this.rect[`${axis}1`];
+                            this.coords[`${axis}2`] = max - off - this.rect[`${axis}1`];
+                        }
+        
+                        if (mouse[axis] <= this.rect[`${axis}1`] && this.scroll[axis] <= 0) {
+                            this.coords[`${axis}1`] = 0;
+                            this.coords[`${axis}2`] = this.origin[axis] - this.rect[`${axis}1`];
+                        }
                     }
                 }
-
+    
                 // style the lasso
                 css(this.lasso, {
                     left: this.coords.x1,
