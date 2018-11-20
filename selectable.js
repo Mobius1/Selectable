@@ -485,7 +485,9 @@
                 target = e.target,
                 touch = e.type === "touchstart",
                 w = window,
-                originalEl;
+                originalEl,
+                cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
+                sft = (this.canShift && isShiftKey(e));
 
             if (!this.container.contains(target) || e.which === 3 || e.button > 0) return;
 
@@ -548,7 +550,7 @@
                 this.update();
             }
 
-            if ((this.canShift && isShiftKey(e)) && this.startEl) {
+            if (sft && this.startEl) {
 
                 var items = this.items,
                     currentIndex = this.getNodes().indexOf(node),
@@ -568,7 +570,7 @@
 
                     item.startselected = true;
 
-                    var unselect = (touch || o.toggle || isCmdKey(e) && (this.canCtrl || this.canMeta)) ? isCurrentNode : !isCurrentNode && !(isShiftKey(e) && this.canShift);
+                    var unselect = (touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !sft;
 
                     if (unselect) {
                         classList.remove(el, o.classes.selected);
