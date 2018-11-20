@@ -326,7 +326,6 @@
          */
         update: function() {
             var o = this.config.classes,
-                c = classList.contains,
                 x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft,
                 y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop,
                 w = this.container.scrollWidth,
@@ -334,28 +333,22 @@
 
             this.rect = rect(this.container);
 
-            this.scroll = {
-                x: x,
-                y: y,
-                max: {
-                    x: w - this.container.clientWidth,
-                    y: h - this.container.clientHeight
-                }
+            this.scroll = { x, y,
+                max: { x: w - this.container.clientWidth, y: h - this.container.clientHeight }
             };
 
             this.items = [];
 
-            for (var i = 0; i < this.nodes.length; i++) {
-                var el = this.nodes[i];
+            for (var el in this nodes) {
                 classList.add(el, o.selectable);
 
                 this.items[i] = {
                     node: el,
                     rect: rect(el),
                     startselected: false,
-                    selected: c(el, o.selected),
-                    selecting: c(el, o.selecting),
-                    unselecting: c(el, o.unselecting)
+                    selected: classList.contains(el, o.selected),
+                    selecting: classList.contains(el, o.selecting),
+                    unselecting: classList.contains(el, o.unselecting)
                 };
             }
 
