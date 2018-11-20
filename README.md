@@ -3,7 +3,7 @@
 [![Maintenance](https://img.shields.io/maintenance/yes/2018.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/)
 [![npm](https://img.shields.io/npm/dt/selectable%2Ejs.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable/blob/master/LICENSE)
-[![npm](https://img.shields.io/npm/v/selectable.js.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
+[![npm](https://img.shields.io/npm/v/selectable.js.svg?style=for-the-badge)](https://www.npmjs.com/package/selectable%2Ejs)
 [![GitHub issues](https://img.shields.io/github/issues/Mobius1/Selectable.svg?style=for-the-badge)](https://github.com/Mobius1/Selectable)
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?style=for-the-badge) 
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=for-the-badge)
