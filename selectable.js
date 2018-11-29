@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.13.3
+ * Version: 0.13.4
  *
  */
 (function(root, factory) {
@@ -20,51 +20,6 @@
     }
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
-
-    /**
-     * Default configuration properties
-     * @type {Object}
-     */
-    var selectableConfig = {
-        filter: ".ui-selectable",
-        tolerance: "touch",
-
-        appendTo: document.body,
-
-        toggle: false,
-        autoRefresh: true,
-
-        throttle: 50,
-
-        autoScroll: {
-            threshold: 0,
-            increment: 20,
-        },
-
-        ignore: false,
-
-        lasso: {
-            border: '1px dotted #000',
-            backgroundColor: 'rgba(52, 152, 219, 0.2)',
-        },
-
-        keys: ['shiftKey', 'ctrlKey', 'metaKey'],
-
-        classes: {
-            lasso: "ui-lasso",
-            selected: "ui-selected",
-            container: "ui-container",
-            selecting: "ui-selecting",
-            selectable: "ui-selectable",
-            unselecting: "ui-unselecting"
-        }
-    };
-
-    /**
-     * Check for touch screen
-     * @type {Boolean}
-     */
-    var _touch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
     /**
      * Check for classList support
@@ -260,12 +215,20 @@
     /* SELECTABLE */
     var Selectable = function(options) {
         this.axes = ["x", "y"];
-        this.axes1 = {x: "x1", y: "y1"};
-        this.axes2 = {x: "x2", y: "y2"};        
+        this.axes1 = {
+            x: "x1",
+            y: "y1"
+        };
+        this.axes2 = {
+            x: "x2",
+            y: "y2"
+        };
 
-        this.version = "0.13.3";
-        this.config = extend(selectableConfig, options);
-        this.init();
+        this.version = "0.13.4";
+        this.touch =
+            "ontouchstart" in window ||
+            (window.DocumentTouch && document instanceof DocumentTouch);
+        this.init(options);
     }
 
     Selectable.prototype = {
@@ -273,8 +236,51 @@
          * Init instance
          * @return {void}
          */
-        init: function() {
-            var that = this, o = this.config;
+        init: function(options) {
+            var that = this;
+
+            /**
+             * Default configuration properties
+             * @type {Object}
+             */
+            var selectableConfig = {
+                filter: ".ui-selectable",
+                tolerance: "touch",
+
+                appendTo: document.body,
+
+                toggle: false,
+                autoRefresh: true,
+
+                throttle: 50,
+
+                autoScroll: {
+                    threshold: 0,
+                    increment: 20,
+                },
+
+                ignore: false,
+
+                lasso: {
+                    border: '1px dotted #000',
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                },
+
+                keys: ['shiftKey', 'ctrlKey', 'metaKey'],
+
+                classes: {
+                    lasso: "ui-lasso",
+                    selected: "ui-selected",
+                    container: "ui-container",
+                    selecting: "ui-selecting",
+                    selectable: "ui-selectable",
+                    unselecting: "ui-unselecting"
+                }
+            };
+
+            this.config = extend(selectableConfig, options);
+
+            var o = this.config;
 
             // Is auto-scroll enabled?
             this.autoscroll = isObject(o.autoScroll);
@@ -292,7 +298,9 @@
                 }, o.lasso));
             }
 
-            if (_touch) { o.toggle = false; }
+            if (this.touch) {
+                o.toggle = false;
+            }
 
             this.events = {};
 
@@ -310,7 +318,9 @@
             this.update();
             this.enable();
 
-            setTimeout(function() { that.emit("selectable.init"); }, 10);
+            setTimeout(function() {
+                that.emit("selectable.init");
+            }, 10);
         },
 
         /**
@@ -318,21 +328,42 @@
          * @return {Void}
          */
         update: function() {
-            var o = this.config.classes,
-                x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft,
-                y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop,
-                w = this.container.scrollWidth,
-                h = this.container.scrollHeight;
+            var o = this.config.classes;
+            var x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            var y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
+            var _arr = ["scroll", "offset", "client"];
+            for (var _i = 0; _i < _arr.length; _i++) {
+                var size = _arr[_i];
+                this[size + "Width"] = this.container[size + "Width"];
+                this[size + "Height"] = this.container[size + "Height"];
+            }
+
+            // get the parent container DOMRect
             this.rect = rect(this.container);
 
-            this.scroll = { x, y,
-                max: { x: w - this.container.clientWidth, y: h - this.container.clientHeight }
+            // get the parent container scroll dimensions
+            this.scroll = {
+                x: x,
+                y: y,
+                max: {
+                    x: this.scrollWidth - this.clientWidth,
+                    y: this.scrollHeight - this.clientHeight
+                },
+                size: {
+                    x: this.clientWidth,
+                    y: this.clientHeight
+                },
+                scrollable: {
+                    x: this.scrollWidth > this.offsetWidth,
+                    y: this.scrollHeight > this.offsetHeight
+                }
             };
 
             this.items = [];
 
-            for (var el of this.nodes) {
+            for (var i = 0; i < this.nodes.length; i++) {
+                var el = this.nodes[i];
                 classList.add(el, o.selectable);
 
                 this.items.push({
@@ -413,7 +444,7 @@
 
             this.unbind();
 
-            if (_touch) {
+            if (this.touch) {
                 this.on(this.container, "touchstart", e.touchstart);
                 this.on(document, "touchend", e.end);
                 this.on(document, "touchcancel", e.end);
@@ -486,9 +517,8 @@
          */
         start: function(e) {
             var that = this,
+                evt = this._getEvent(e),
                 o = this.config,
-                const touch = e.type === "touchstart",
-                evt = touch ? e.touches[0] : e,
                 originalEl,
                 cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
                 shift = (this.canShift && isShiftKey(e));
@@ -580,7 +610,7 @@
 
                     item.startselected = true;
 
-                    var unselect = (touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
+                    var unselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
 
                     if (unselect) {
                         classList.remove(el, o.classes.selected);
@@ -606,14 +636,17 @@
          * @return {Void}
          */
         drag: function(e) {
+            var evt = this._getEvent(e);
             var o = this.config;
-            var mouse = { x: evt.pageX, y: evt.pageY };
+            var mouse = {
+                x: evt.pageX,
+                y: evt.pageY
+            };
 
             if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
 
             var tmp,
-                w = window,
-                evt = (e.type === "touchmove" ? e.touches[0] : e);
+                w = window;
 
             this.current = {
                 x1: this.origin.x,
@@ -623,7 +656,8 @@
             };
 
             // flip lasso
-            for ( var axis of this.axes ) {
+            for (var i = 0; i < this.axes.length; i++ ) {
+                var axis = this.axes[i];
                 if (this.current[this.axes1[axis]] > this.current[this.axes2[axis]]) {
                     tmp = this.current[this.axes2[axis]];
                     this.current[this.axes2[axis]] = this.current[this.axes1[axis]];
@@ -632,8 +666,8 @@
             }
 
             /* highlight */
-            for (var item in this.items) {
-                this.highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
+            for (var i = 0; i < this.items.length; i++) {
+                this.highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
             };
 
             this.coords = {
@@ -653,7 +687,10 @@
                 var as = this.config.autoScroll;
                 var i = as.increment;
                 var t = as.threshold;
-                var inc = { x: 0, y: 0 };
+                var inc = {
+                    x: 0,
+                    y: 0
+                };
 
                 if (this.bodyContainer) {
                     mouse.x -= this.scroll.x;
@@ -661,7 +698,8 @@
                 }
 
                 // check if we need to scroll
-                for ( var axis of this.axes ) {
+                for (var i = 0; i < this.axes.length; i++ ) {
+                    var axis = this.axes[i];
                     if (mouse[axis] >= this.rect[this.axes2[axis]] - t && this.scroll[axis] < this.scroll.max[axis]) {
                         inc[axis] = i;
                     } else if (mouse[axis] <= this.rect[this.axes1[axis]] + t && this.scroll[axis] > 0) {
@@ -671,7 +709,7 @@
 
                 // scroll the container
                 if (this.bodyContainer) {
-                    window.scrollBy(inc.x, inc.y);
+                    w.scrollBy(inc.x, inc.y);
                 } else {
                     this.container.scrollTop += inc.y;
                     this.container.scrollLeft += inc.x;
@@ -681,21 +719,22 @@
             if (this.lasso) {
                 // stop lasso causing overflow
                 if (!this.bodyContainer && !this.config.autoScroll.lassoOverflow) {
-                    for ( var axis of this.axes ) {
+                    for (var i = 0; i < this.axes.length; i++ ) {
+                        var axis = this.axes[i];
                         var max = this.rect[this.axes1[axis]] + this.scroll.size[axis];
                         if (mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
                             var off = this.origin[axis] - this.rect[this.axes1[axis]] - this.scroll[axis];
                             this.coords[this.axes1[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
                             this.coords[this.axes2[axis]] = max - off - this.rect[this.axes1[axis]];
                         }
-        
+
                         if (mouse[axis] <= this.rect[this.axes1[axis]] && this.scroll[axis] <= 0) {
                             this.coords[this.axes1[axis]] = 0;
                             this.coords[this.axes2[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
                         }
                     }
                 }
-    
+
                 // style the lasso
                 css(this.lasso, {
                     left: this.coords.x1,
@@ -723,10 +762,10 @@
             var that = this,
                 o = that.config,
                 node = e.target,
+                evt = this._getEvent(e),
                 endEl,
                 selected = [],
-                unselected = [],
-                evt = e.type === "touchend" ? e.touches[0] || e.changedTouches[0] : e;
+                unselected = [];
 
             // remove the lasso
             if (this.lasso && this.container.contains(this.lasso)) {
@@ -892,7 +931,8 @@
          */
         setContainer: function(container) {
 
-            var o = this.config, old;
+            var o = this.config,
+                old;
 
             if (this.container) {
                 old = this.container;
@@ -1227,6 +1267,20 @@
             this.disable();
             this.listeners = false;
             this.remove(this.items);
+        },
+
+        /**
+         * Get event
+         * @return {Object}
+         */
+        _getEvent: function(e) {
+            if (this.touch) {
+                if (e.type === "touchend") {
+                    return e.changedTouches[0];
+                }
+                return e.touches[0];
+            }
+            return e;
         }
     };
 
