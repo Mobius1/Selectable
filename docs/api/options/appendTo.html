@@ -122,7 +122,7 @@
 <hr />
 <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">Heads Up!</h4>
-    <p>If you have multiple instances and don't define a container with the <code>appendTo</code> option, the event will fire for all instances as they all share the same container (document.body). This can lead to other unwanted effects like deselection of all other instances items when clicking / tapping on the one instance.</p>
+    <p>If you have multiple instances and don't define a container with the <code>appendTo</code> option, any events you have attached to them will fire at the same time as they all share the same container (document.body). This can lead to other unwanted effects like deselection of all other instances items when clicking / tapping on the one instance.</p>
 </div>
 <hr />
 <p>The container can be updated dynamically with the <a href="https://github.com/Mobius1/Selectable/wiki/setContainer()"><code>setContainer()</code></a> method.</p>
