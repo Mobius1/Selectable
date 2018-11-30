@@ -124,7 +124,7 @@
 
 <p>You can replace latest with the required release number if needed.</p>
 
-                                <h2 class="scroll-title" id="initialise"><span>Initialise</h2>
+ <h2 class="scroll-title" id="initialise"><span>Initialise</h2>
 
 <p>This will create a new instance and add any element found in the DOM with the <code>ui-selectable</code> class name and make them selectable.</p>
 
@@ -150,6 +150,43 @@ const selectable = new Selectable({
 
 // then...
 selectable.add(items);</code></pre></p>
+
+<h2 class="scroll-title" id="multiple-instances"><span>Multiple Instances</h2>
+<p>It's important to note that multiple instances of `Selectable` on one page can conflict with each other if no container is defined with the `appendTo` option.</p>
+<p>The problem is that the event listeners for an instance (<code>mousedown</code> / <code>touchstart</code> and <code>mouseup</code> / <code>touchend</code>) are attached to the <code>appendTo</code> element. If you have more than one instance and don't define a container, it defaults to <code>document.body</code> so for example you'll have multiple <code>mousedown</code> event listeners attached to <code>document.body</code> and they'll all fire at the same time and hence all <code>selectable.start</code> and <code>selectable.end</code>events for each instance defined with <code>on()</code> will fire at same time.</p>
+
+<p>By defining a unique container for each instance with <code>appendTo</code>, the event listeners are instead attached to that container and will prevent conflicting with other instances.</p>
+
+
+<pre><code class="html language-html">&lt;ul id="items1"&gt;
+    &lt;li class="item"&gt;1&lt;/li&gt;
+    &lt;li class="item"&gt;2&lt;/li&gt;
+    &lt;li class="item"&gt;3&lt;/li&gt;
+    &lt;li class="item"&gt;4&lt;/li&gt;
+    ...
+&lt;/ul&gt;
+&lt;ul id="items2"&gt;
+    &lt;li class="item"&gt;1&lt;/li&gt;
+    &lt;li class="item"&gt;2&lt;/li&gt;
+    &lt;li class="item"&gt;3&lt;/li&gt;
+    &lt;li class="item"&gt;4&lt;/li&gt;
+    ...
+&lt;/ul&gt;    
+</code></pre>
+
+<pre><code class="javascript language-javascript">const list1 = document.getElementById("items1");
+const list2 = document.getElementById("items2");
+
+const selectable1 = new Selectable({
+    filter: list1.children,
+    appendTo: list1
+});
+
+const selectable2 = new Selectable({
+    filter: list2.children,
+    appendTo: list2
+});
+</code></pre>
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
