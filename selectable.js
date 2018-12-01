@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.13.4
+ * Version: 0.14.0
  *
  */
 (function(root, factory) {
@@ -46,12 +46,24 @@
     };
 
     /**
-     * Check is item array or array-like
+     * Check item is iterable
      * @param  {Mixed} arr
      * @return {Boolean}
      */
     var isCollection = function(arr) {
         return Array.isArray(arr) || arr instanceof HTMLCollection || arr instanceof NodeList;
+    };
+
+    /**
+     * Check var is a number
+     * @param  {Mixed} n
+     * @return {Boolean}
+     */
+    var isNumber = function(n) {
+        if ("isInteger" in Number) {
+            return Number.isInteger(n);
+        }
+        return !isNaN(n);
     };
 
     /**
@@ -224,7 +236,7 @@
             y: "y2"
         };
 
-        this.version = "0.13.4";
+        this.version = "0.14.0";
         this.touch =
             "ontouchstart" in window ||
             (window.DocumentTouch && document instanceof DocumentTouch);
@@ -256,8 +268,10 @@
 
                 autoScroll: {
                     threshold: 0,
-                    increment: 20,
+                    increment: 10,
                 },
+
+                saveState: false,
 
                 ignore: false,
 
@@ -274,7 +288,7 @@
                     container: "ui-container",
                     selecting: "ui-selecting",
                     selectable: "ui-selectable",
-                    unselecting: "ui-unselecting"
+                    deselecting: "ui-deselecting"
                 }
             };
 
@@ -304,7 +318,8 @@
 
             this.events = {};
 
-            ["start", "touchstart", "drag", "end", "keyup", "keydown"].forEach(event => {
+            // bind events
+            ["start", "touchstart", "drag", "end", "keyup", "keydown", "blur", "focus"].forEach(event => {
                 this.events[event] = this[event].bind(this);
             });
 
@@ -319,6 +334,9 @@
             this.enable();
 
             setTimeout(function() {
+                if (o.saveState) {
+                    that.state("save");
+                }
                 that.emit("selectable.init");
             }, 10);
         },
@@ -372,7 +390,7 @@
                     startselected: false,
                     selected: classList.contains(el, o.selected),
                     selecting: classList.contains(el, o.selecting),
-                    unselecting: classList.contains(el, o.unselecting)
+                    deselecting: classList.contains(el, o.deselecting)
                 });
             }
 
@@ -459,6 +477,9 @@
                 this.on(document, 'keydown', e.keydown);
                 this.on(document, 'keyup', e.keyup);
 
+                this.on(this.container, "mouseenter", e.focus);
+                this.on(this.container, "mouseleave", e.blur);
+
                 if (this.lasso !== false) {
                     this.on(document, 'mousemove', e.drag);
                 }
@@ -484,6 +505,9 @@
             this.off(document, 'mouseup', e.end);
             this.off(document, 'keydown', e.keydown);
             this.off(document, 'keyup', e.keyup);
+
+            this.off(this.container, "mouseenter", e.focus);
+            this.off(this.container, "mouseleave", e.blur);
 
             if (this.autoscroll) {
                 this.off(this.bodyContainer ? window : this.container, "scroll", e.scroll);
@@ -610,14 +634,14 @@
 
                     item.startselected = true;
 
-                    var unselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
+                    var deselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
 
-                    if (unselect) {
+                    if (deselect) {
                         classList.remove(el, o.classes.selected);
                         item.selected = false;
 
-                        classList.add(el, o.classes.unselecting);
-                        item.unselecting = true;
+                        classList.add(el, o.classes.deselecting);
+                        item.deselecting = true;
                     }
                 }
                 if (isCurrentNode) {
@@ -636,47 +660,53 @@
          * @return {Void}
          */
         drag: function(e) {
-            var evt = this._getEvent(e);
             var o = this.config;
-            var mouse = {
+            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
+
+            let tmp;
+            var evt = this._getEvent(e);
+            var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            var scroll = this.scroll;
+            var origin = this.origin;
+
+            this.mouse = {
                 x: evt.pageX,
                 y: evt.pageY
             };
 
-            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
-
-            var tmp,
-                w = window;
-
             this.current = {
-                x1: this.origin.x,
-                y1: this.origin.y,
-                x2: mouse.x + (this.bodyContainer ? 0 : this.scroll.x),
-                y2: mouse.y + (this.bodyContainer ? 0 : this.scroll.y),
+                x1: origin.x,
+                y1: origin.y,
+                x2: this.mouse.x + (this.bodyContainer ? 0 : scroll.x),
+                y2: this.mouse.y + (this.bodyContainer ? 0 : scroll.y)
             };
 
+            var current = this.current;
+
             // flip lasso
-            for (var i = 0; i < this.axes.length; i++ ) {
+            for (var i = 0; i < this.axes.length; i++) {
                 var axis = this.axes[i];
-                if (this.current[this.axes1[axis]] > this.current[this.axes2[axis]]) {
-                    tmp = this.current[this.axes2[axis]];
-                    this.current[this.axes2[axis]] = this.current[this.axes1[axis]];
-                    this.current[this.axes1[axis]] = tmp;
+                if (current[this.axes1[axis]] > current[this.axes2[axis]]) {
+                    tmp = current[this.axes2[axis]];
+                    current[this.axes2[axis]] = current[this.axes1[axis]];
+                    current[this.axes1[axis]] = tmp;
                 }
             }
 
             /* highlight */
             for (var i = 0; i < this.items.length; i++) {
-                this.highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
-            };
+                this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+            }
 
+            // lasso coordinates
             this.coords = {
-                x1: this.current.x1,
-                x2: (this.current.x2) - (this.current.x1),
-                y1: this.current.y1,
-                y2: (this.current.y2) - (this.current.y1),
+                x1: current.x1,
+                x2: current.x2 - current.x1,
+                y1: current.y1,
+                y2: current.y2 - current.y1
             };
 
+            // subtract the parent container's position
             if (!this.bodyContainer) {
                 this.coords.x1 -= this.rect.x1;
                 this.coords.y1 -= this.rect.y1;
@@ -684,55 +714,14 @@
 
             // auto scroll
             if (this.autoscroll) {
-                var as = this.config.autoScroll;
-                var i = as.increment;
-                var t = as.threshold;
-                var inc = {
-                    x: 0,
-                    y: 0
-                };
-
-                if (this.bodyContainer) {
-                    mouse.x -= this.scroll.x;
-                    mouse.y -= this.scroll.y;
-                }
-
-                // check if we need to scroll
-                for (var i = 0; i < this.axes.length; i++ ) {
-                    var axis = this.axes[i];
-                    if (mouse[axis] >= this.rect[this.axes2[axis]] - t && this.scroll[axis] < this.scroll.max[axis]) {
-                        inc[axis] = i;
-                    } else if (mouse[axis] <= this.rect[this.axes1[axis]] + t && this.scroll[axis] > 0) {
-                        inc[axis] = -i;
-                    }
-                }
-
-                // scroll the container
-                if (this.bodyContainer) {
-                    w.scrollBy(inc.x, inc.y);
-                } else {
-                    this.container.scrollTop += inc.y;
-                    this.container.scrollLeft += inc.x;
-                }
+                this._autoScroll();
             }
 
+            // lasso
             if (this.lasso) {
                 // stop lasso causing overflow
                 if (!this.bodyContainer && !this.config.autoScroll.lassoOverflow) {
-                    for (var i = 0; i < this.axes.length; i++ ) {
-                        var axis = this.axes[i];
-                        var max = this.rect[this.axes1[axis]] + this.scroll.size[axis];
-                        if (mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
-                            var off = this.origin[axis] - this.rect[this.axes1[axis]] - this.scroll[axis];
-                            this.coords[this.axes1[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
-                            this.coords[this.axes2[axis]] = max - off - this.rect[this.axes1[axis]];
-                        }
-
-                        if (mouse[axis] <= this.rect[this.axes1[axis]] && this.scroll[axis] <= 0) {
-                            this.coords[this.axes1[axis]] = 0;
-                            this.coords[this.axes2[axis]] = this.origin[axis] - this.rect[this.axes1[axis]];
-                        }
-                    }
+                    this._limitLasso();
                 }
 
                 // style the lasso
@@ -741,11 +730,12 @@
                     top: this.coords.y1,
                     width: this.coords.x2,
                     height: this.coords.y2,
-                    opacity: 1,
+                    opacity: 1
                 });
             }
 
-            this.emit('selectable.drag', e, this.coords);
+            // emit the "drag" event
+            this.emit("selectable.drag", e, this.coords);
         },
 
         /**
@@ -757,7 +747,6 @@
             if (!this.dragging) return;
 
             this.dragging = false;
-            this.stopY = false;
 
             var that = this,
                 o = that.config,
@@ -765,7 +754,7 @@
                 evt = this._getEvent(e),
                 endEl,
                 selected = [],
-                unselected = [];
+                deselected = [];
 
             // remove the lasso
             if (this.lasso && this.container.contains(this.lasso)) {
@@ -785,6 +774,10 @@
                 // the lasso was the event.target so let's get the actual
                 // node below the pointer
                 node = document.elementFromPoint(evt.pageX, evt.pageY);
+
+                if (!node) {
+                    node = this.container;
+                }
             }
 
             // now let's get the closest valid selectable node
@@ -797,20 +790,20 @@
                 var item = this.items[i];
 
                 // If we've mousedown'd and mouseup'd on the same selected item
-                // toggling it's state to unselected won't work if we've dragged even
+                // toggling it's state to deselected won't work if we've dragged even
                 // a small amount. This can happen if we're moving between items quickly
                 // while the mouse button is down. We can fix that here.
                 if (o.toggle && item.node === endEl && item.node === that.startEl) {
                     if (item.selecting && item.startselected) {
-                        item.unselecting = true;
+                        item.deselecting = true;
                         item.selecting = false;
                     }
                 }
 
-                // item was marked for unselect
-                if (item.unselecting) {
-                    unselected.push(item);
-                    this.unselect(item);
+                // item was marked for deselect
+                if (item.deselecting) {
+                    deselected.push(item);
+                    this.deselect(item);
                 }
 
                 // item was marked for select
@@ -820,7 +813,11 @@
                 }
             }
 
-            this.emit('selectable.end', e, selected, unselected);
+            if (o.saveState) {
+                this.state("save");
+            }
+
+            this.emit('selectable.end', e, selected, deselected);
         },
 
         /**
@@ -831,11 +828,27 @@
         keydown: function(e) {
             this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
 
-            if (this.cmdDown) {
-                var code = e.code || e.keyCode;
-                if (code == 65 || code == 97) {
+            var code = false;
+            if (e.key !== undefined) {
+                code = e.key;
+            } else if (e.keyCode !== undefined) {
+                code = e.keyCode;
+            }
+
+            if (code) {
+                if (this.cmdDown && this.focused) {
                     e.preventDefault();
-                    this.selectAll();
+                    switch (code) {
+                        case 65: case "a": case "A":
+                            this.selectAll();
+                            break;
+                        case 89: case "y": case "Y":
+                            this.state("redo");
+                            break;
+                        case 90: case "z": case "Z":
+                            this.state("undo");
+                            break;
+                    }
                 }
             }
         },
@@ -860,68 +873,6 @@
 
             for (var i = 0; i < this.items.length; i++) {
                 this.items[i].rect = rect(this.items[i].node);
-            }
-        },
-
-        /**
-         * Highlight an item
-         * @param  {Object} item   The item
-         * @return {Void}
-         */
-        highlight: function(item, cmd) {
-            var o = this.config,
-                el = item.node,
-                over = false;
-
-            var x = this.bodyContainer ? 0 : this.scroll.x;
-            var y = this.bodyContainer ? 0 : this.scroll.y;
-
-            if (o.tolerance === "touch") {
-                over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
-                    (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
-            } else if (o.tolerance === "fit") {
-                over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
-                    (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
-            }
-
-            if (over) {
-                if (item.selected && !o.toggle) {
-                    classList.remove(el, o.classes.selected);
-                    item.selected = false;
-                }
-                if (item.unselecting && (!o.toggle || o.toggle && o.toggle !== "drag")) {
-                    classList.remove(el, o.classes.unselecting);
-                    item.unselecting = false;
-                }
-                if (!item.selecting) {
-                    classList.add(el, o.classes.selecting);
-                    item.selecting = true;
-                }
-            } else {
-                if (item.selecting) {
-                    classList.remove(el, o.classes.selecting);
-                    item.selecting = false;
-                    if (cmd && item.startselected) {
-                        classList.add(el, o.classes.selected);
-                        item.selected = true;
-                    } else {
-                        if (item.startselected && !o.toggle) {
-                            classList.add(el, o.classes.unselecting);
-                            item.unselecting = true;
-                        }
-                    }
-                }
-                if (el.selected) {
-                    if (!cmd) {
-                        if (!item.startselected) {
-                            classList.remove(el, o.classes.selected);
-                            item.selected = false;
-
-                            classList.add(el, o.classes.unselecting);
-                            item.unselecting = true;
-                        }
-                    }
-                }
             }
         },
 
@@ -992,7 +943,7 @@
             if (item) {
                 // toggle item if already selected
                 if (this.config.toggle && this.config.toggle === "drag" && !all && item.selected && !this.cmdDown) {
-                    return this.unselect(item);
+                    return this.deselect(item);
                 }
 
                 var el = item.node,
@@ -1018,11 +969,11 @@
          * @param  {Object} item
          * @return {Boolean}
          */
-        unselect: function(item) {
+        deselect: function(item) {
 
             if (isCollection(item)) {
                 for (var i = 0; i < item.length; i++) {
-                    this.unselect(item[i]);
+                    this.deselect(item[i]);
                 }
 
                 return this.getSelectedItems();
@@ -1036,14 +987,14 @@
 
                 item.selecting = false;
                 item.selected = false;
-                item.unselecting = false;
+                item.deselecting = false;
                 item.startselected = false;
 
-                classList.remove(el, o.unselecting);
+                classList.remove(el, o.deselecting);
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
 
-                this.emit('selectable.unselect', item);
+                this.emit('selectable.deselect', item);
 
                 return item;
             }
@@ -1058,15 +1009,14 @@
          */
         add: function(node) {
             var els = this.nodes;
-            if (isCollection(node)) {
-                for (var i = 0; i < node.length; i++) {
-                    if (els.indexOf(node[i]) < 0 && node[i] instanceof Element) {
-                        els.push(node[i]);
-                    }
-                }
-            } else {
-                if (els.indexOf(node) < 0 && node instanceof Element) {
-                    els.push(node);
+
+            if (!isCollection(node)) {
+                node = [node];
+            }
+
+            for (var i = 0; i < node.length; i++) {
+                if (els.indexOf(node[i]) < 0 && node[i] instanceof Element) {
+                    els.push(node[i]);
                 }
             }
 
@@ -1074,7 +1024,7 @@
         },
 
         /**
-         * Remove an item from the instance so it's unselectable
+         * Remove an item from the instance so it's deselectable
          * @param  {Mixed} item index, node or object
          * @return {Boolean}
          */
@@ -1092,7 +1042,7 @@
                         rm = classList.remove;
 
                     rm(el, o.selectable);
-                    rm(el, o.unselecting);
+                    rm(el, o.deselecting);
                     rm(el, o.selecting);
                     rm(el, o.selected);
 
@@ -1129,7 +1079,7 @@
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
                 if (item.selected) {
-                    this.unselect(item);
+                    this.deselect(item);
                 } else {
                     this.select(item);
                 }
@@ -1142,7 +1092,7 @@
          */
         clear: function() {
             for (var i = this.items.length - 1; i >= 0; i--) {
-                this.unselect(this.items[i]);
+                this.deselect(this.items[i]);
             }
         },
 
@@ -1219,6 +1169,67 @@
         },
 
         /**
+         * State method
+         * @param  {String} type
+         * @return {Array}
+         */
+        state: function(type) {
+            var changed = false;
+            var emit = false;
+            switch (type) {
+                case "save":
+                    this.states = this.states || [];
+                    this.states.push(this.getSelectedNodes());
+
+                    // check we're at max saves limit
+                    if (isNumber(this.config.saveState)) {
+                        if (this.states.length > this.config.saveState) {
+                            this.states.shift();
+                        }
+                    }
+
+                    // move the current state index to the last element
+                    this.currentState = this.states.length - 1;
+                    emit = true;
+                    break;
+                case "undo":
+                    // decrement the current save state
+                    if (this.currentState > 0) {
+                        this.currentState--;
+                        changed = true;
+                        emit = true;
+                    }
+                    break;
+                case "redo":
+                    // increment the current save state
+                    if (this.currentState < this.states.length - 1) {
+                        this.currentState++;
+                        changed = true;
+                        emit = true;
+                    }
+                    break;
+                case "clear":
+                    this.states = [];
+                    this.currentState = false;
+                    break;
+            }
+
+            // check if the state changed
+            if (changed) {
+                // clear the current selection
+                this.clear();
+
+                // select the items in the saved state
+                this.select(this.states[this.currentState]);
+            }
+
+            // check if we need to emit the event
+            if (emit) {
+                this.emit("selectable.state." + type, this.states[this.currentState], this.states);
+            }
+        },
+
+        /**
          * Enable instance
          * @return {Boolean}
          */
@@ -1266,6 +1277,8 @@
         destroy: function() {
             this.disable();
             this.listeners = false;
+            this.clear();
+            this.state("clear");
             this.remove(this.items);
         },
 
@@ -1281,6 +1294,155 @@
                 return e.touches[0];
             }
             return e;
+        },
+
+        /**
+         * Scroll container
+         * @return {Void}
+         */
+        _autoScroll: function() {
+            var as = this.config.autoScroll;
+            var i = as.increment;
+            var t = as.threshold;
+            var inc = {
+                x: 0,
+                y: 0
+            };
+
+            if (this.bodyContainer) {
+                this.mouse.x -= this.scroll.x;
+                this.mouse.y -= this.scroll.y;
+            }
+
+            // check if we need to scroll
+            for (var n = 0; n < this.axes.length; n++) {
+                var axis = this.axes[n];
+                if (
+                    this.mouse[axis] >= this.rect[this.axes2[axis]] - t &&
+                    this.scroll[axis] < this.scroll.max[axis]
+                ) {
+                    inc[axis] = i;
+                } else if (
+                    this.mouse[axis] <= this.rect[this.axes1[axis]] + t &&
+                    this.scroll[axis] > 0
+                ) {
+                    inc[axis] = -i;
+                }
+            }
+
+            // scroll the container
+            if (this.bodyContainer) {
+                window.scrollBy(inc.x, inc.y);
+            } else {
+                this.container.scrollTop += inc.y;
+                this.container.scrollLeft += inc.x;
+            }
+        },
+
+        /**
+         * Limit lasso to container boundaries
+         * @return {Void}
+         */
+        _limitLasso: function() {
+            for (var i = 0; i < this.axes.length; i++) {
+                var axis = this.axes[i];
+                var max = this.rect[this.axes1[axis]] + this.scroll.size[axis];
+                if (this.mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
+                    var off = origin[axis] - this.rect[this.axes1[axis]] - this.scroll[axis];
+                    this.coords[this.axes1[axis]] = origin[axis] - this.rect[this.axes1[axis]];
+                    this.coords[this.axes2[axis]] = max - off - this.rect[this.axes1[axis]];
+                }
+
+                if (
+                    this.mouse[axis] <= this.rect[this.axes1[axis]] &&
+                    this.scroll[axis] <= 0
+                ) {
+                    this.coords[this.axes1[axis]] = 0;
+                    this.coords[this.axes2[axis]] = origin[axis] - this.rect[this.axes1[axis]];
+                }
+            }
+        },
+
+        /**
+         * Highlight an item
+         * @param  {Object} item   The item
+         * @return {Void}
+         */
+        _highlight: function(item, cmd) {
+            var o = this.config,
+                el = item.node,
+                over = false;
+
+            var x = this.bodyContainer ? 0 : this.scroll.x;
+            var y = this.bodyContainer ? 0 : this.scroll.y;
+
+            if (o.tolerance === "touch") {
+                over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
+                    (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
+            } else if (o.tolerance === "fit") {
+                over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
+                    (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
+            }
+
+            if (over) {
+                if (item.selected && !o.toggle) {
+                    classList.remove(el, o.classes.selected);
+                    item.selected = false;
+                }
+                if (item.deselecting && (!o.toggle || o.toggle && o.toggle !== "drag")) {
+                    classList.remove(el, o.classes.deselecting);
+                    item.deselecting = false;
+                }
+                if (!item.selecting) {
+                    classList.add(el, o.classes.selecting);
+                    item.selecting = true;
+                }
+            } else {
+                if (item.selecting) {
+                    classList.remove(el, o.classes.selecting);
+                    item.selecting = false;
+                    if (cmd && item.startselected) {
+                        classList.add(el, o.classes.selected);
+                        item.selected = true;
+                    } else {
+                        if (item.startselected && !o.toggle) {
+                            classList.add(el, o.classes.deselecting);
+                            item.deselecting = true;
+                        }
+                    }
+                }
+                if (el.selected) {
+                    if (!cmd) {
+                        if (!item.startselected) {
+                            classList.remove(el, o.classes.selected);
+                            item.selected = false;
+
+                            classList.add(el, o.classes.deselecting);
+                            item.deselecting = true;
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * mouseenter event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        focus: function(e) {
+            this.focused = true;
+            classList.add(this.container, "ui-focused");
+        },
+
+        /**
+         * mouseleave event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        blur: function(e) {
+            this.focused = false;
+            classList.remove(this.container, "ui-focused");
         }
     };
 
