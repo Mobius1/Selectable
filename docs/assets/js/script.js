@@ -189,7 +189,12 @@ function init() {
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.select.html">selectable.select</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.unselect.html">selectable.unselect</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.update.html">selectable.update</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.recalculate.html">selectable.recalculate</a></li>`;
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.recalculate.html">selectable.recalculate</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.refresh.html">selectable.refresh</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.save.html">selectable.state.save</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.undo.html">selectable.state.undo</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.redo.html">selectable.state.redo</a></li>
+                                            `;
 
     if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {
         menuOptions.firstElementChild.classList.add("has-arrow");

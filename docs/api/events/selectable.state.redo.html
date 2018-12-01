@@ -6,23 +6,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <!-- CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link href="assets/css/pace.min.css" rel="stylesheet">
-        <link href="assets/fontawesome/css/all.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/pace.min.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/fontawesome/css/all.css" rel="stylesheet">
         <link rel="stylesheet" href="//cdn.materialdesignicons.com/3.0.39/css/materialdesignicons.min.css">
-        <link href="assets/themify-icons/themify-icons.min.css" rel="stylesheet">
-        <link href="assets/css/metisMenu.min.css" rel="stylesheet">
-        <link href="assets/css/github.min.css" rel="stylesheet">
-        <link href="assets/css/prism.css" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/themify-icons/themify-icons.min.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/metisMenu.min.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/github.min.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/prism.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/style.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/toggle.css" rel="stylesheet">
         <title>Selectable - DOCS</title>
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+        <link rel="icon" type="image/png" href="https://mobius1.github.io/Selectable/assets/img/favicon.png" />
     </head>
     <body class="sidebar-layout">
 
             <nav class="navbar navbar-top">
                 <a class="navbar-brand" href="index-2.html">
-                    <img src="assets/img/logo.png" alt="">
+                    <img src="https://mobius1.github.io/Selectable/assets/img/logo.png" alt="">
                 </a>
                 <button class="navbar-toggler" type="button"  id="sidebarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -36,7 +37,6 @@
                             v0.13.1
                         </a>
                         <div class="dropdown-menu" aria-labelledby="versionDropdownMenu">
-                            <div>Versions</div>
 
                         </div>
                     </div>
@@ -51,26 +51,26 @@
                     <li>
                         <a class="has-arrow" href="#" aria-expanded="false">Overview</a>
                         <ul aria-expanded="false">
-                            <li><a href="https://bcbwoodshop.co.uk/api/index.html">Introduction</a></li>
-                            <li><a href="https://bcbwoodshop.co.uk/api/getting-started.html">Getting Started</a></li>
+                            <li><a href="api/index.html">Introduction</a></li>
+                            <li><a href="api/getting-started.html">Getting Started</a></li>
                         </ul>
                     </li>
                     <li class="active">
-                        <a class="has-arrow" href="#" aria-expanded="true">API</a>
+                        <a class="has-arrow" href="api/#" aria-expanded="true">API</a>
                         <ul aria-expanded="true">
                             <li>
-                                <a class="has-arrow" href="https://bcbwoodshop.co.uk/api/options.html">Options</a>
+                                <a class="has-arrow" href="api/options.html">Options</a>
                                 <ul aria-expanded="true">
 
                                 </ul>                                
                             </li>
                             <li>
-                                <a href="https://bcbwoodshop.co.uk/api/public-methods.html">Public Methods</a>
-                                <ul aria-expanded="true">
+                                <a href="api/public-methods.html">Public Methods</a>
+                                <ul aria-expanded="true" id="menu-methods">
 
                                 </ul>                                  
                             </li>
-                            <li><a href="https://bcbwoodshop.co.uk/api/events.html">Events</a></li>
+                            <li><a href="api/events.html">Events</a><ul></ul></li>
                         </ul>
                     </li>
                 </ul>
@@ -83,35 +83,28 @@
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="#">Overview</a></li>
-                                    <li class="breadcrumb-item active">Using States</li>
+                                    <li class="breadcrumb-item"><a href="#">API</a></li>
+                                    <li class="breadcrumb-item"><a href="#">Events</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">selectable.state.redo</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> Select<strong>able</strong></h1>
-                                
-<h2 class="scroll-title" id="using-states">Using States</h2>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selectable.state.redo</h1>
+                                <hr />
+<p>Fires when the the current selection is loaded via redo.</p>
 
-<p>Selectable can store selections that can be retrieved at any time.</p>
-
-<p>You can set the instance to save the current state when the current selection is changed by using the <a href="https://mobius1.github.io/Selectable/api/options/saveState.html"><code>saveState</code></a> option.</p>
-<p>You can use <code>ctrl + z</code> to undo a selection and <code>ctrl + y</code> to restore / redo an undone selection.</p>
-<p>The <a href="https://mobius1.github.io/Selectable/api/methods/state.html"><code>state()</code></a> method can be used to manually save, load, undo, redo and clear states.</p>
-
-<p>The instance will also fire it's own custom events corresponding to the state event. See <a href="https://mobius1.github.io/Selectable/api/events/selectable.state.save.html"><code>selectable.state.save</code></a>, <a href="https://mobius1.github.io/Selectable/api/events/selectable.state.undo.html"><code>selectable.state.undo</code></a> and <a href="https://mobius1.github.io/Selectable/api/events/selectable.state.redo.html"><code>selectable.state.redo</code></a>.</p>
-
-<div class="alert alert-success" role="alert">
-    <h4 class="alert-heading">Heads Up!</h4>
-    <p>If you have defined a container with the <a href="https://mobius1.github.io/Selectable/api/options/appendTo.html"><code>appendTo</code></a> option, you must have the mouse pointer over the container for the keyboard controls to work. This prevents overriding the default keyboard controls for the webpage.</p>
-</div>
-
+<pre><code class="javascript language-javascript">selectable.on("selectable.state.redo", function() {
+    // do something when the current state was redone
+});
+</code></pre>         
 <hr />
+
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <!-- <a href="#" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a> -->
-                                <a href="options.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="../../events.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="selectable.start.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>
@@ -140,19 +133,19 @@
                     </div>
                 </footer><!-- /.End of site footer --> 
             </div><!-- /.Page Content Holder -->
-            <div class="overlay"></div>
 
         <!-- Optional JavaScript -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="assets/js/pace.min.js"></script>
-        <script src="assets/js/jquery.dd.min.js"></script>
-        <script src="assets/js/metisMenu.min.js"></script>
-        <script src="assets/js/ResizeSensor.min.js"></script>
-        <script src="assets/js/theia-sticky-sidebar.min.js"></script>
-        <script type="text/javascript" src="assets/js/prism.min.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/pace.min.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/jquery.dd.min.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/metisMenu.min.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/ResizeSensor.min.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/theia-sticky-sidebar.min.js"></script>
+        <script type="text/javascript" src="https://mobius1.github.io/Selectable/assets/js/prism.min.js"></script>
         <script type="text/javascript" src="https://unpkg.com/selectable.js@latest/selectable.min.js"></script>
-        <script src="assets/js/script.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/script.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/toggle.js"></script>
     </body>
 </html>
