@@ -173,7 +173,7 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/invert.html">invert()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/off.html">off()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/on.html">on()</a></li>
-                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/recalculate.html">recalculate()</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/refresh.html">refresh()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/remove.html">remove()</a></li> 
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/select.html">select()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/selectAll.html">selectAll()</a></li>
