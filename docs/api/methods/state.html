@@ -92,7 +92,7 @@
                             <div class="doc-content">
                                 <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> state()</h1>
                                 <hr />
-<p>Save, load or clear saved states.</p>
+<p>Save, load or clear saved states. See <a href="https://mobius1.github.io/Selectable/using-states.html">Using States</a> for more info.</p>
 <h5 id="syntax" class="scroll-title">Syntax</h5>                             
 <div class="syntax"><i><pre><code class="js language-js">Selectable.state([command])</code></pre></i></div>
 <p>The method accepts a single argument as a <code>String</code> and can be the following:</p>
@@ -109,36 +109,6 @@
 
 <hr />
 
-<h4 id="selectingsingleitems" class="scroll-title">Selecting single items</h4>
-
-<h6>Markup</h6>
-<pre><code class="html language-html">&lt;ul&gt;
-    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
-    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
-    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
-    &lt;li class="ul-selectable"&gt;&lt;/li&gt;
-    ...
-&lt;/ul&gt;
-</code></pre>
-
-<h6>Javascript</h6>
-<p></p>
-<pre><code class="javascript language-javascript">// All three of these methods will select the first item
-
-// as a node
-var item = document.querySelectorAll("li")[0];
-selectable.select(item);
-
-// as an index
-selectable.select(0);
-
-// as a reference to the item
-var item = selectable.items[0];
-selectable.select(item);
-</code></pre>
-
-<hr />
-
 <h4 id="selectingmultipleitems" class="scroll-title">Demo</h4>
 
 <div id="container-demo">
@@ -152,7 +122,7 @@ selectable.select(item);
     </div>    
 </div>
 <hr />       
-<hr />
+
 
                             </div>
                             <!--  /.End of documentation text content -->

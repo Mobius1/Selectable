@@ -37,20 +37,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="versionDropdownMenu">
                             <div>Versions</div>
-                            <a class="dropdown-item active" href="#">latest</a>
-                            <a class="dropdown-item" href="#">stable</a>
-                            <a class="dropdown-item" href="#">v1.7.1</a>
-                            <a class="dropdown-item" href="#">v1.7.0</a>
-                            <a class="dropdown-item" href="#">v1.6.4</a>
-                            <a class="dropdown-item" href="#">v1.6.1</a>
-                            <a class="dropdown-item" href="#"> v1.6.0</a>
-                            <a class="dropdown-item" href="#">v1.5.1</a>
-                            <a class="dropdown-item" href="#">v1.5.0</a>
-                            <a class="dropdown-item" href="#">v1.4.1</a>
-                            <a class="dropdown-item" href="#">v1.4.0</a>
-                            <a class="dropdown-item" href="#">1.3.1</a>
-                            <a class="dropdown-item" href="#">1.3.0</a>
-                            <a class="dropdown-item" href="#">master</a>
+
                         </div>
                     </div>
                     <div class="form-group has-search">
@@ -97,96 +84,22 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">Overview</a></li>
-                                    <li class="breadcrumb-item active">Getting Started</li>
+                                    <li class="breadcrumb-item active">Using States</li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
                                 <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> Select<strong>able</strong></h1>
                                 
-<h2 class="scroll-title" id="install">Install</h2>
-<h4>npm</h4>
+<h2 class="scroll-title" id="using-states">Using States</h2>
 
-<p><pre class="language-js"><code>npm install selectable.js --save</code></pre></p>
-<h4>Bower</h4>
+<p>Selectable can store selections that can be retrieved at any time.</p>
 
-<p><pre class="language-js"><code>bower install selectable.js --save</code></pre></p>
+<p>You can set the instance to save the current state when the current selection is changed by using the <a href="https://mobius1.github.io/Selectable/api/options/saveState.html"><code>saveState</code></a> options.</p>
+<p>You can use <code>ctrl + z</code> to undo a selection and <code>ctrl + y</code> to restore / redo an undone selection.</p>
+<p>The <a href="https://mobius1.github.io/Selectable/api/methods/state.html"><code>state()</code></a> method can be used to manually save, load, undo, redo and clear states.</p>
 
-<h2 class="scroll-title" id="browser">Browser</h2>
-
-<p>Grab the file from one of the CDNs and include it in your page:</p>
-
-<p><pre class="language-markup"><code>https://unpkg.com/selectable.js@latest/selectable.min.js</code></pre></p>
-
-<p>or</p>
-
-<p><pre class="language-markup"><code>https://cdn.jsdelivr.net/npm/selectable.js@latest/selectable.min.js</code></pre></p>
-
-<p>You can replace latest with the required release number if needed.</p>
-
- <h2 class="scroll-title" id="initialise"><span>Initialise</h2>
-
-<p>This will create a new instance and add any element found in the DOM with the <code>ui-selectable</code> class name and make them selectable.</p>
-
-<p><pre class="language-js"><code>const selectable = new Selectable();</code></pre></p>
-
-<p>If you don't add the "ui-selectable" class name to your items then simply tell the instance what to look for instead with the filter option:</p>
-
-<p><pre class="language-js"><code>const selectable = new Selectable({
-   filter: ".my-classname"
-});
-
-// or
-
-const selectable = new Selectable({
-   filter: document.querySelectorAll(".my-classname")
-});</code></pre></p>
-
-<p>If your document doesn't have any selectable items yet, e.g. they're added asynchronously via an ajax call, then simply create a new instance as normal, then use the <code>add()</code> method when they're available:</p>
-
-<p><pre class="language-js"><code>const selectable = new Selectable();
-
-// items added to DOM ...
-
-// then...
-selectable.add(items);</code></pre></p>
-
-<h2 class="scroll-title" id="multiple-instances"><span>Multiple Instances</h2>
-<p>It's important to note that multiple instances of `Selectable` on one page can conflict with each other if no container is defined with the `appendTo` option.</p>
-<p>The problem is that the event listeners for an instance (<code>mousedown</code> / <code>touchstart</code> and <code>mouseup</code> / <code>touchend</code>) are attached to the <code>appendTo</code> element. If you have more than one instance and don't define a container, it defaults to <code>document.body</code> so for example you'll have multiple <code>mousedown</code> event listeners attached to <code>document.body</code> and they'll all fire at the same time and hence all <code>selectable.start</code> and <code>selectable.end</code>events for each instance defined with <code>on()</code> will fire at same time.</p>
-
-<p>By defining a unique container for each instance with <code>appendTo</code>, the event listeners are instead attached to that container and will prevent conflicting with other instances.</p>
-
-
-<pre><code class="html language-html">&lt;ul id="items1"&gt;
-    &lt;li class="item"&gt;1&lt;/li&gt;
-    &lt;li class="item"&gt;2&lt;/li&gt;
-    &lt;li class="item"&gt;3&lt;/li&gt;
-    &lt;li class="item"&gt;4&lt;/li&gt;
-    ...
-&lt;/ul&gt;
-&lt;ul id="items2"&gt;
-    &lt;li class="item"&gt;1&lt;/li&gt;
-    &lt;li class="item"&gt;2&lt;/li&gt;
-    &lt;li class="item"&gt;3&lt;/li&gt;
-    &lt;li class="item"&gt;4&lt;/li&gt;
-    ...
-&lt;/ul&gt;    
-</code></pre>
-
-<pre><code class="javascript language-javascript">const list1 = document.getElementById("items1");
-const list2 = document.getElementById("items2");
-
-const selectable1 = new Selectable({
-    filter: list1.children,
-    appendTo: list1
-});
-
-const selectable2 = new Selectable({
-    filter: list2.children,
-    appendTo: list2
-});
-</code></pre>
+<hr />
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
