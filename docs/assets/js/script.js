@@ -124,6 +124,7 @@ function init() {
 
     menuOverview.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/index.html">Introduction</a></li>
                                               <li><a href="https://mobius1.github.io/Selectable/getting-started.html">Getting Started</a></li>
+                                              <li><a href="https://mobius1.github.io/Selectable/using-states.html">Using States</a></li>
                                               <li><a href="https://mobius1.github.io/Selectable/options.html">Options</a></li>
                                               <li><a href="https://mobius1.github.io/Selectable/public-methods.html">Public Methods</a></li>
                                               <li><a href="https://mobius1.github.io/Selectable/events.html">Events</a></li>
@@ -133,12 +134,13 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/autoRefresh.html">autoRefresh</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/autoScroll.html">autoScroll</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/classes.html">classes</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/options/filter.html">filter</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/ignore.html">ignore</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/lasso.html">lasso</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/options/saveState.html">saveState</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/throttle.html">throttle</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/toggle.html">toggle</a></li>
-                                                <li><a href="https://mobius1.github.io/Selectable/api/options/tolerance.html">tolerance</a></li>
-                                                <li><a href="https://mobius1.github.io/Selectable/api/options/filter.html">filter</a></li>`;
+                                                <li><a href="https://mobius1.github.io/Selectable/api/options/tolerance.html">tolerance</a></li>`;
 
     propsMenu.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/properties/bodyContainer.html">bodyContainer</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/cmdDown.html">cmdDown</a></li>
@@ -176,6 +178,7 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/select.html">select()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/selectAll.html">selectAll()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/setContainer.html">setContainer()</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/state.html">state()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/unselect.html">unselect()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/update.html">update()</a></li>`;
 
