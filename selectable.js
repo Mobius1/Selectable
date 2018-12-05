@@ -237,6 +237,7 @@
         };
 
         this.version = "0.14.0";
+        this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
             (window.DocumentTouch && document instanceof DocumentTouch);
@@ -337,7 +338,7 @@
                 if (o.saveState) {
                     that.state("save");
                 }
-                that.emit("init");
+                that.emit(this.v[1] < 15 ? "selectable.init" : "init");
             }, 10);
         },
 
@@ -394,7 +395,7 @@
                 });
             }
 
-            this.emit("update", this.items);
+            this.emit(this.v[1] < 15 ? "selectable.update" : "update", this.items);
         },
 
         /**
@@ -405,7 +406,7 @@
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
             }
-            this.emit('refresh');
+            this.emit(this.v[1] < 15 ? "selectable.refresh" : "refresh");
         },
 
         /**
@@ -651,7 +652,7 @@
 
             this.startEl = node;
 
-            this.emit('start', e, originalEl);
+            this.emit(this.v[1] < 15 ? "selectable.start" : "start", e, originalEl);
         },
 
         /**
@@ -735,7 +736,7 @@
             }
 
             // emit the "drag" event
-            this.emit("drag", e, this.coords);
+            this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, this.coords);
         },
 
         /**
@@ -817,7 +818,7 @@
                 this.state("save");
             }
 
-            this.emit('end', e, selected, deselected);
+            this.emit(this.v[1] < 15 ? "selectable.end" : "end", e, selected, deselected);
         },
 
         /**
@@ -962,7 +963,7 @@
                 item.selected = true;
                 item.startselected = true;
 
-                this.emit('selecteditem', item);
+                this.emit(this.v[1] < 15 ? "selectable.select" : "selecteditem", item);
 
                 return item;
             }
@@ -1000,7 +1001,7 @@
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
 
-                this.emit('deselecteditem', item);
+                this.emit(this.v[1] < 15 ? "selectable.deselect" : "deselecteditem", item);
 
                 return item;
             }
@@ -1241,7 +1242,7 @@
 
             // check if we need to emit the event
             if (emit) {
-                this.emit("state." + type, this.states[this.currentState], this.states);
+                this.emit((this.v[1] < 15 ? "selectable.state." : "state.") + type, this.states[this.currentState], this.states);
             }
         },
 
@@ -1261,7 +1262,7 @@
 
                 classList.add(this.container, this.config.classes.container);
 
-                this.emit('enabled');
+                this.emit(this.v[1] < 15 ? "selectable.enable" : "enabled");
             }
 
             return this.enabled;
@@ -1280,7 +1281,7 @@
 
                 classList.remove(this.container, this.config.classes.container);
 
-                this.emit('disabled');
+                this.emit(this.v[1] < 15 ? "selectable.disable" : "disabled");
             }
 
             return this.enabled;
