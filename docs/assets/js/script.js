@@ -193,6 +193,8 @@ function init() {
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/update.html">update</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/refresh.html">refresh</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/state.html">state</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/enabled.html">enabled</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/disabled.html">disabled</a></li>
                                             `;
 
     if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {

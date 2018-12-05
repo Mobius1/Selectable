@@ -85,30 +85,26 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">deselecteditem</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">enabled</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> deselecteditem</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> enabled</h1>
                                 <hr />
-<p>Fires when an item is unselected.</p>
+<p>Fires when he instance is enabled.</p>
 
-<p>The callback has one parameter which returns a reference to the unselected item.</p>
-
-<pre><code class="javascript language-javascript">selectable.on("deselecteditem", function(item) {
+<pre><code class="javascript language-javascript">selectable.on("enabled", function() {
 
 });
-</code></pre>
-
-<p>If you require a list of unselected items instead of listening for when each individual item is unselected then listen for the <a href="https://mobius1.github.io/Selectable/api/events/selectable.end.html">selectable.end</a> event instead as this returns a list of items that were unselected during the current selection.</p>
+</code></pre>        
 <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="addeditem.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="disabled.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="drag.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="end.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>
