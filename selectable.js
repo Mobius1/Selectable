@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.14.0
+ * Version: 0.14.1
  *
  */
 (function(root, factory) {
@@ -236,7 +236,7 @@
             y: "y2"
         };
 
-        this.version = "0.14.0";
+        this.version = "0.14.1";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
