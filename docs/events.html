@@ -121,12 +121,12 @@
 
 <pre><code class="javascript language-javascript">const selectable = new Selectable();
 
-selectable.on('selectable.XXXX', fn);
+selectable.on('XXXX', fn);
 </code></pre>
 
 <p>Event listeners can be detached by calling the <a href="api/methods/off.html"><code>off()</code></a> method with the same arguments:</p>
 
-<pre><code class="javascript language-javascript">selectable.off('selectable.XXXX', fn);
+<pre><code class="javascript language-javascript">selectable.off('XXXX', fn);
 </code></pre>
 
 <hr />
@@ -137,7 +137,7 @@ selectable.on('selectable.XXXX', fn);
 
 <h3 id="incorrect">Incorrect</h3>
 
-<pre><code class="javascript language-javascript">selectable.on('selectable.end', (e, selected, unselected) =&gt; {
+<pre><code class="javascript language-javascript">selectable.on('end', (e, selected, unselected) =&gt; {
     counter.innerHTML = selected.length;
 });
 </code></pre>
@@ -149,10 +149,10 @@ selectable.on('selectable.XXXX', fn);
 };
 
 // attach the event listener
-selectable.on('selectable.end', updateCounter);
+selectable.on('end', updateCounter);
 
 // detach the event listener
-selectable.off('selectable.end', updateCounter);
+selectable.off('end', updateCounter);
 </code></pre>
 
 <hr />
