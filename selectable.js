@@ -338,7 +338,7 @@
                 if (o.saveState) {
                     that.state("save");
                 }
-                that.emit(this.v[1] < 15 ? "selectable.init" : "init");
+                that.emit(that.v[1] < 15 ? "selectable.init" : "init");
             }, 10);
         },
 
