@@ -337,7 +337,7 @@
                 if (o.saveState) {
                     that.state("save");
                 }
-                that.emit("selectable.init");
+                that.emit("init");
             }, 10);
         },
 
@@ -394,7 +394,7 @@
                 });
             }
 
-            this.emit("selectable.update", this.items);
+            this.emit("update", this.items);
         },
 
         /**
@@ -405,7 +405,7 @@
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
             }
-            this.emit('selectable.refresh');
+            this.emit('refresh');
         },
 
         /**
@@ -651,7 +651,7 @@
 
             this.startEl = node;
 
-            this.emit('selectable.start', e, originalEl);
+            this.emit('start', e, originalEl);
         },
 
         /**
@@ -735,7 +735,7 @@
             }
 
             // emit the "drag" event
-            this.emit("selectable.drag", e, this.coords);
+            this.emit("drag", e, this.coords);
         },
 
         /**
@@ -817,7 +817,7 @@
                 this.state("save");
             }
 
-            this.emit('selectable.end', e, selected, deselected);
+            this.emit('end', e, selected, deselected);
         },
 
         /**
@@ -839,13 +839,19 @@
                 if (this.cmdDown && this.focused) {
                     e.preventDefault();
                     switch (code) {
-                        case 65: case "a": case "A":
+                        case 65:
+                        case "a":
+                        case "A":
                             this.selectAll();
                             break;
-                        case 89: case "y": case "Y":
+                        case 89:
+                        case "y":
+                        case "Y":
                             this.state("redo");
                             break;
-                        case 90: case "z": case "Z":
+                        case 90:
+                        case "z":
+                        case "Z":
                             this.state("undo");
                             break;
                     }
@@ -956,7 +962,7 @@
                 item.selected = true;
                 item.startselected = true;
 
-                this.emit('selectable.select', item);
+                this.emit('selecteditem', item);
 
                 return item;
             }
@@ -994,7 +1000,7 @@
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
 
-                this.emit('selectable.deselect', item);
+                this.emit('deselecteditem', item);
 
                 return item;
             }
@@ -1008,19 +1014,26 @@
          * * @return {Void}
          */
         add: function(node) {
-            var els = this.nodes;
+            var els = [];
 
             if (!isCollection(node)) {
                 node = [node];
             }
 
             for (var i = 0; i < node.length; i++) {
-                if (els.indexOf(node[i]) < 0 && node[i] instanceof Element) {
+                if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
                     els.push(node[i]);
                 }
             }
 
+            this.nodes = this.nodes.concat(els);
+
             this.update();
+
+            // emit "addeditem" for each new item
+            for (var i = 0; i < els.length; i++) {
+                this.emit("addeditem", this.get(els[i]));
+            }
         },
 
         /**
@@ -1047,6 +1060,9 @@
                     rm(el, o.selected);
 
                     this.nodes.splice(this.nodes.indexOf(item.node), 1);
+
+                    // emit "removeditem"
+                    this.emit("removeditem", item);
                 }
 
                 if (!stop) {
@@ -1225,7 +1241,7 @@
 
             // check if we need to emit the event
             if (emit) {
-                this.emit("selectable.state." + type, this.states[this.currentState], this.states);
+                this.emit("state." + type, this.states[this.currentState], this.states);
             }
         },
 
@@ -1245,7 +1261,7 @@
 
                 classList.add(this.container, this.config.classes.container);
 
-                this.emit('selectable.enable');
+                this.emit('enabled');
             }
 
             return this.enabled;
@@ -1264,7 +1280,7 @@
 
                 classList.remove(this.container, this.config.classes.container);
 
-                this.emit('selectable.disable');
+                this.emit('disabled');
             }
 
             return this.enabled;
