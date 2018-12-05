@@ -85,26 +85,27 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">selectable.state.redo</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">removeditem</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selectable.state.redo</h1>
-                                <hr />
-<p>Fires when the the current selection is loaded via redo.</p>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> removeditem</h1>
+                                <p>Fires when an element is removed from the instance.</p>
 
-<pre><code class="javascript language-javascript">selectable.on("selectable.state.redo", function() {
-    // do something when the current state was redone
-});
-</code></pre>         
-<hr />
+                                <p>The callback has a single argument which returns a reference to the item removed.</p>
+                                
+                                <pre><code class="javascript language-javascript">selectable.on("removeditem", function(item) {
+
+                                });
+                                </code></pre>        
+                                <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="../../events.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="selectable.start.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="init.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="selecteditem.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>

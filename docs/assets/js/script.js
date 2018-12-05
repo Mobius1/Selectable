@@ -182,17 +182,17 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/unselect.html">unselect()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/update.html">update()</a></li>`;
 
-    menuEvents.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/selectable.init.html">selectable.init</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.start.html">selectable.start</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.drag.html">selectable.drag</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.end.html">selectable.end</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.select.html">selectable.select</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.unselect.html">selectable.unselect</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.update.html">selectable.update</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.refresh.html">selectable.refresh</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.save.html">selectable.state.save</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.undo.html">selectable.state.undo</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selectable.state.redo.html">selectable.state.redo</a></li>
+    menuEvents.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/init.html">init</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/start.html">start</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/drag.html">drag</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/end.html">end</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selecteditem.html">selecteditem</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/deselecteditem.html">deselecteditem</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/addeditem.html">addeditem</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/removeditem.html">removeditem</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/update.html">update</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/refresh.html">refresh</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/state.html">state</a></li>
                                             `;
 
     if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {

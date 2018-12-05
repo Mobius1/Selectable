@@ -85,26 +85,50 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">selectable.init</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">selectable.drag</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selectable.init</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selectable.drag</h1>
                                 <hr />
-<p>Fires when the instance is ready for use.</p>
+<p>Fires on <code>mousemove</code> / <code>touchmove</code>.</p>
 
-<pre><code class="javascript language-javascript">selectable.on("selectable.init", function() {
-    // instance is ready
+<p>The callback has two parameters which returns the orignal event and coordinates of the selection area (lasso) as an <code>Object</code>.</p>
+
+<pre><code class="javascript language-javascript">selectable.on("selectable.drag", function(e, coords) {
+
 });
-</code></pre>         
+</code></pre>
+
+<p>The <code>coords</code> parameter returns an <code>Object</code> of the following format:</p>
+
+<pre><code class="javascript language-javascript">{
+    x1: Number, // the origin x offset
+    y1: Number, // the origin y offset
+    x2: Number, // the x offset from x1
+    y2: Number, // the y offset from y1
+}
+</code></pre>
+
+<pre><code>x1,y1 (origin)
+      +----------------------+
+      |                      |
+      |                      |
+      |                      |
+      |                      |
+      |                      |
+      |                      |
+      +----------------------+
+                              x2, y2 (mouse pointer)
+</code></pre>     
 <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="../../events.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="selectable.start.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="deselecteditem.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="end.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>
