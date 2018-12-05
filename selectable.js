@@ -837,6 +837,7 @@
             }
 
             if (code) {
+
                 if (this.cmdDown && this.focused) {
                     e.preventDefault();
                     switch (code) {
@@ -854,6 +855,13 @@
                         case "z":
                         case "Z":
                             this.state("undo");
+                            break;
+                    }
+                } else {
+                    switch (code) {
+                        case 32:
+                        case " ":
+                            this.toggle(document.activeElement);
                             break;
                     }
                 }
@@ -1007,6 +1015,29 @@
             }
 
             return false;
+        },
+
+        /**
+         * Toggle an item
+         * @param  {Object} item
+         * @return {Boolean}
+         */
+        toggle: function(item) {
+            var test = this.get(item);
+
+            if (test) {
+                if (!isCollection(test)) {
+                    test = [test];
+                }
+
+                for (var i = 0; i < test.length; i++) {
+                    if (test[i].selected) {
+                        this.deselect(test[i]);
+                    } else {
+                        this.select(test[i]);
+                    }
+                }
+            }
         },
 
         /**
