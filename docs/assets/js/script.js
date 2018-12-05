@@ -297,7 +297,7 @@ function createNavLinks() {
           // Where to grab the headings to build the table of contents.
           contentSelector: '.content-wrapper',
           // Which headings to grab inside of the contentSelector element.
-          headingSelector: '.scroll-title, h3, h4, h5, h6',
+          headingSelector: 'h2, h3, h4, h5, h6',
           // listClass: '',
           listItemClass: 'toc-entry',
         });
