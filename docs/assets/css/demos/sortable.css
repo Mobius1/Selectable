@@ -1,6 +1,5 @@
 #container {
-  width: 30vw;
-  margin: 0 auto;
+  text-align: center;
 }
 #demo-title {
   letter-spacing: -2px;
@@ -24,12 +23,13 @@
   font-weight: 800;
 }
 #items {
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 30vw;
 }
 #items .item {
   list-style: none;
