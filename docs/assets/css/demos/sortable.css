@@ -1,5 +1,6 @@
 #container {
   width: 30vw;
+  margin: 0 auto;
 }
 #demo-title {
   letter-spacing: -2px;
