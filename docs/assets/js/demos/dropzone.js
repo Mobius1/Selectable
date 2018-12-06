@@ -83,11 +83,11 @@ DROPZONE.on("uploadprogress", (file, progress) => {
 		
 		el.classList.remove("loading");
 		el.querySelector(".mdi").classList.add("mdi-upload");
-		el.querySelector(".file-progress-text").textContent = `Processing`;	
+		el.querySelector(".file-progress-text").textContent = file.mock ? `Done` : `Processing`;	
 		el.querySelector(".file-text").textContent = p === 100 ? `Uploaded` : `Uploading ${p}%`;	
 });
 
-DROPZONE.on("complete", function(file) {
+DROPZONE.on("success", function(file) {
 	const el = file.previewElement;
 	const mdi = el.querySelector(".mdi");
 	
@@ -95,3 +95,57 @@ DROPZONE.on("complete", function(file) {
 	mdi.classList.add("mdi-check");
 	el.querySelector(".file-progress-text").textContent = `Upload complete`;
 });
+
+DROPZONE.on("error", function(file, message, xhr) {
+	const el = file.previewElement;
+	const mdi = el.querySelector(".mdi");
+	
+	console.log(arguments)
+	
+	mdi.classList.remove("mdi-upload");
+	mdi.classList.add("mdi-close");
+	el.querySelector(".file-progress-text").textContent = `ERROR`;
+	el.querySelector(".file-text").textContent = xhr.statusText;
+});
+
+
+/* ---------- MOCK FILES ---------- */
+for ( let i = 0; i < 3; i++ ) {
+	// Create the mock file:
+	var mockFile = { name: makeid(8), size: randSize(100, 10000000), mock: true };
+
+	// Call the default addedfile event handler
+	DROPZONE.emit("addedfile", mockFile);
+
+	// And optionally show the thumbnail of the file:
+	DROPZONE.emit("thumbnail", mockFile, "/image/url");
+
+	// Make sure that there is no progress bar, etc...
+	DROPZONE.emit("uploadprogress", mockFile, 100);
+	DROPZONE.emit("complete", mockFile);
+	
+	DROPZONE.files.push(mockFile);
+	
+	SELECTABLE.add(mockFile.previewElement);
+}
+
+/* ---------- HELPER FUNCTIONS ---------- */
+
+function randSize(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function makeid(n) {
+  var text = "";
+  var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+	const extensions = [".jpg", ".png", ".mp3", ".zip"];
+	const ext = extensions[Math.floor(Math.random()*extensions.length)];
+
+  for (var i = 0; i < n; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+
+  return `${text}${ext}`;
+}

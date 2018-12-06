@@ -100,7 +100,8 @@
 .file .file-progress .mdi {
   position: absolute;
   z-index: 1000;
-  left: 50%;
+  right: 12px;
+  top: 8px;
 }
 .file.dz-complete .file-progress .mdi {
   display: block;
