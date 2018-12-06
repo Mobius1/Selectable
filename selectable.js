@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.15.0
+ * Version: 0.15.1
  *
  */
 (function(root, factory) {
@@ -209,7 +209,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.15.0";
+        this.version = "0.15.1";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         touch =
             "ontouchstart" in window ||
@@ -307,6 +307,18 @@
             }
 
             this.setContainer();
+
+            if (isCollection(o.filter)) {
+                this.nodes = [].slice.call(o.filter);
+            } else if (typeof o.filter === "string") {
+                this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
+            }
+
+            // activate items
+            this.nodes.forEach(node => {
+                classList.add(node, o.classes.selectable);
+            });
+
             this.update();
             this.enable();
 
@@ -342,7 +354,7 @@
 
             offsetWidth = this.container.offsetWidth;
             offsetHeight = this.container.offsetHeight;
-            clientHeight = this.container.clientHeight;
+            clientWidth = this.container.clientWidth;
             clientHeight = this.container.clientHeight;
             scrollWidth = this.container.scrollWidth;
             scrollHeight = this.container.scrollHeight;
@@ -372,6 +384,8 @@
                     y: scrollHeight > offsetHeight
                 }
             };
+
+            console.log(scroll)
 
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
@@ -609,6 +623,7 @@
             for (var i = 0; i < node.length; i++) {
                 if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
                     els.push(node[i]);
+                    classList.add(node[i], this.config.classes.selectable);
                 }
             }
 
@@ -1077,7 +1092,6 @@
             let tmp;
             var evt = this._getEvent(e);
             var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            var scroll = scroll;
             var origin = this.origin;
 
             this.mouse = {
@@ -1306,26 +1320,24 @@
          */
         _loadItems: function() {
             var o = this.config;
-            if (isCollection(o.filter)) {
-                this.nodes = [].slice.call(o.filter);
-            } else if (typeof o.filter === "string") {
-                this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
-            }
 
+            this.nodes = [].slice.call(this.container.querySelectorAll("." + o.classes.selectable));
             this.items = [];
 
-            for (var i = 0; i < this.nodes.length; i++) {
-                var el = this.nodes[i];
-                classList.add(el, o.classes.selectable);
+            if (this.nodes.length) {
+                for (var i = 0; i < this.nodes.length; i++) {
+                    var el = this.nodes[i];
+                    classList.add(el, o.classes.selectable);
 
-                this.items.push({
-                    node: el,
-                    rect: rect(el),
-                    startselected: false,
-                    selected: classList.contains(el, o.classes.selected),
-                    selecting: classList.contains(el, o.classes.selecting),
-                    deselecting: classList.contains(el, o.classes.deselecting)
-                });
+                    this.items.push({
+                        node: el,
+                        rect: rect(el),
+                        startselected: false,
+                        selected: classList.contains(el, o.classes.selected),
+                        selecting: classList.contains(el, o.classes.selecting),
+                        deselecting: classList.contains(el, o.classes.deselecting)
+                    });
+                }
             }
         },
 
