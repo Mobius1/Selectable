@@ -376,16 +376,14 @@
                     y: scrollHeight - (this.bodyContainer ? wh : clientHeight)
                 },
                 size: {
-                    x: this.clientWidth,
-                    y: this.clientHeight
+                    x: clientWidth,
+                    y: clientHeight
                 },
                 scrollable: {
                     x: scrollWidth > offsetWidth,
                     y: scrollHeight > offsetHeight
                 }
             };
-
-            console.log(scroll)
 
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
@@ -1373,8 +1371,6 @@
                 this.mouse.y -= scroll.y;
             }
 
-            console.log(this.mouse.y, window.innerHeight - t, scroll.max["y"])
-
             // check if we need to scroll
             for (var n = 0; n < axes.length; n++) {
                 var axis = axes[n];
@@ -1393,7 +1389,6 @@
 
             // scroll the container
             if (this.bodyContainer) {
-                console.log(inc)
                 window.scrollBy(inc.x, inc.y);
             } else {
                 this.container.scrollTop += inc.y;
