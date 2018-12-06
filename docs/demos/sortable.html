@@ -14,7 +14,7 @@
         <link href="https://mobius1.github.io/Selectable/assets/css/github.min.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/prism.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/style.css" rel="stylesheet">
-        <link href="https://mobius1.github.io/Selectable/assets/assets/css/demos/dropzone.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/assets/css/demos/sortable.css" rel="stylesheet">
         <title>Selectable - DOCS</title>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="https://mobius1.github.io/Selectable/assets/img/favicon.png" />
@@ -37,21 +37,7 @@
                             v0.13.1
                         </a>
                         <div class="dropdown-menu" aria-labelledby="versionDropdownMenu">
-                            <div>Versions</div>
-                            <a class="dropdown-item active" href="#">latest</a>
-                            <a class="dropdown-item" href="#">stable</a>
-                            <a class="dropdown-item" href="#">v1.7.1</a>
-                            <a class="dropdown-item" href="#">v1.7.0</a>
-                            <a class="dropdown-item" href="#">v1.6.4</a>
-                            <a class="dropdown-item" href="#">v1.6.1</a>
-                            <a class="dropdown-item" href="#"> v1.6.0</a>
-                            <a class="dropdown-item" href="#">v1.5.1</a>
-                            <a class="dropdown-item" href="#">v1.5.0</a>
-                            <a class="dropdown-item" href="#">v1.4.1</a>
-                            <a class="dropdown-item" href="#">v1.4.0</a>
-                            <a class="dropdown-item" href="#">1.3.1</a>
-                            <a class="dropdown-item" href="#">1.3.0</a>
-                            <a class="dropdown-item" href="#">master</a>
+
                         </div>
                     </div>
                     <div class="form-group has-search">
@@ -104,95 +90,68 @@
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
                                 <div id="container">
-                                    <h1 id="demo-title"><span class="sl">Select</span>able &amp; <span class="dz">dropzone<small>JS</small></span></h1>
-                                    <button type="button" class="btn btn-primary" id="addFiles">Add files...</button>
-                                    <button type="button" class="btn btn-primary" id="processQueue" onclick="DROPZONE.processQueue()">Upload Files</button>		
-                                    <button type="button" class="btn btn-danger" id="removeFiles">Remove files</button>
-                                    <form action="/upload-target" id="dropzone"></form>
+                                    <ul id="items">
+                                        <li class="item">
+                                            Item 1
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 2
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 3
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 4
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 5
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 6
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 7
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 8
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 9
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                        <li class="item">
+                                            Item 10
+                                            <div class="handle mdi mdi-menu"></div>
+                                        </li>
+                                    </ul>
                                 </div>
-                                
-                                
-                                <div id="template">
-                                    <div class="file loading">
-                                        <div class="file-remove"><button class="faded" data-dz-remove>&times;</button></div>
-                                        <div class="file-data">
-                                            <div class="file-name" data-dz-name></div>
-                                            <div class="file-size faded" data-dz-size></div>
-                                        </div>
-                                        <div class="file-info">
-                                            <div class="file-progress-text">Uploading</div>
-                                            <div class="file-text faded">Uploading</div>
-                                        </div>
-                                        <div class="file-progress">
-                                            <span class="mdi"></span>
-                                            <svg class="radial-svg" width="50" height="50" transform="rotate(-90 0 0)">
-                                                <circle class="radial-fill" stroke-width="2" r="14" cx="20" cy="20" stroke-linecap="round"></circle>
-                                            </svg>
-                                        </div>
-                                    </div>		
-                                </div>
+<p>
+    <pre class="language-js"><code>const items = document.getElementById('items');
 
-                                <p>
-<pre class="language-js"><code>/* --------- DROPZONE INSTANCE --------- */
-    const DROPZONE = new Dropzone("#dropzone", {
-        autoProcessQueue: false,
-        clickable: '#addFiles',
-    });
-    
-    /* --------- SELECTABLE INSTANCE --------- */
-    const SELECTABLE = new Selectable({
-        appendTo: "#dropzone",
-        ignore: "[data-dz-remove]", // stop remove button triggering selection
-    });
-    
-    /* --------- SELECTABLE EVENTS --------- */
-    SELECTABLE.on("end", (e, selected) => {
-        // show the "removeFiles" button if we have selected files
-        removeFiles.classList.toggle("active", selected.length);
-    });
-    
-    /* --------- DROPZONE EVENTS --------- */
-    DROPZONE.on("addedfile", function(file) {
-        const el = file.previewElement;
-        
-        // add element to Selectable instance when added by Dropzone
-        SELECTABLE.add(el);	
-    });
-    
-    DROPZONE.on("removedfile", function(file) {
-        const el = file.previewElement;
-        
-        // remove element from Selectable instance when removed by Dropzone
-        SELECTABLE.remove(el);
-    });
+const SELECTABLE = new Selectable({
+    filter: ".item",
+    appendTo: items,
+    ignore: ".handle" // ignore the handle used for sorting
+});
 
-    /* --------- BUTTONS --------- */
-    const removeFiles = document.getElementById("removeFiles");
-    
-    removeFiles.addEventListener("click", e => {
-        // get files
-        const files = DROPZONE.files;
-        
-        if ( files.length ) {
-            for ( const file of files ) {
-                // get the item instance from Selectable
-                const el = SELECTABLE.get(file.previewElement);
-                
-                // if it's selected, then remove it.
-                // Dropzone is set to listen to "removedfile" and 
-                // will remove it from the Selectable instance
-                if ( el.selected ) {
-                    DROPZONE.removeFile(file);
-                    
-                    // hide the button
-                    removeFiles.classList.remove("active");
-                }
-            }
-        }
-    });    
-
-</code></pre>
-                                </p>
+/* https://github.com/SortableJS/Sortable */
+const SORTABLE = Sortable.create(items, {
+    animation: 200,
+    handle: ".handle",
+    onUpdate: function (evt) {
+        // Selecting will still work, but shift + select will be broken due to the order difference.
+        // So update the Selctable instance to reflect the new order.
+        selectable.update();
+    }
+});</code></pre></p>                                
 
                             </div>
                             <!--  /.End of documentation text content -->
@@ -239,9 +198,9 @@
         <script src="https://mobius1.github.io/Selectable/assets/js/ResizeSensor.min.js"></script>
         <script src="https://mobius1.github.io/Selectable/assets/js/theia-sticky-sidebar.min.js"></script>
         <script type="text/javascript" src="https://mobius1.github.io/Selectable/assets/js/prism.min.js"></script>
-        <script type="text/javascript" src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+        <script type="text/javascript" src="https://raw.githack.com/RubaXa/Sortable/master/Sortable.js"></script>
         <script type="text/javascript" src="https://unpkg.com/selectable.js@latest/selectable.min.js"></script>
-        <script src="https://mobius1.github.io/Selectable/assets/assets/js/script.js"></script>
-        <script src="https://mobius1.github.io/Selectable/assets/assets/js/demos/dropzone.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/script.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/assets/js/demos/sortable.js"></script>
     </body>
 </html>

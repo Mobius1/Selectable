@@ -143,7 +143,7 @@ code {
     color: #0054d1;
     font-size: 85%;
     margin: 0;
-    padding: .2em .4em;
+    /* padding: .2em .4em; */
     /* box-shadow: inset 0px 1px 4px rgba(238,62,140,0.2); */
 }
 .main-content {
