@@ -21,6 +21,14 @@
 })(typeof global !== 'undefined' ? global : this.window || this.global, function() {
     "use strict";
 
+    var startEl, endEl,
+        autoscroll,
+        scroll,
+        touch,
+        offsetHeight, offsetWidth,
+        clientHeight, clientWidth,
+        scrollHeight, scrollWidth;
+
     /**
      * Check for classList support
      * @type {Boolean}
@@ -203,7 +211,7 @@
     var Selectable = function(options) {
         this.version = "0.14.1";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
-        this.touch =
+        touch =
             "ontouchstart" in window ||
             (window.DocumentTouch && document instanceof DocumentTouch);
         this.init(options);
@@ -266,7 +274,7 @@
             var o = this.config;
 
             // Is auto-scroll enabled?
-            this.autoscroll = isObject(o.autoScroll);
+            autoscroll = isObject(o.autoScroll);
 
             this.lasso = false;
 
@@ -281,7 +289,7 @@
                 }, o.lasso));
             }
 
-            if (this.touch) {
+            if (touch) {
                 o.toggle = false;
             }
 
@@ -294,7 +302,7 @@
 
             this.events._refresh = throttle(this.refresh, o.throttle, this);
 
-            if (this.autoscroll) {
+            if (autoscroll) {
                 this.events._scroll = this._onScroll.bind(this);
             }
 
@@ -332,12 +340,12 @@
             var x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
             var y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
-            var _arr = ["scroll", "offset", "client"];
-            for (var _i = 0; _i < _arr.length; _i++) {
-                var size = _arr[_i];
-                this[size + "Width"] = this.container[size + "Width"];
-                this[size + "Height"] = this.container[size + "Height"];
-            }
+            offsetWidth = this.container.offsetWidth;
+            offsetHeight = this.container.offsetHeight;
+            clientHeight = this.container.clientHeight;
+            clientHeight = this.container.clientHeight;
+            scrollWidth = this.container.scrollWidth;
+            scrollHeight = this.container.scrollHeight;
 
             // get the parent container DOMRect
             this.rect = rect(this.container);
@@ -348,20 +356,20 @@
             }
 
             // get the parent container scroll dimensions
-            this.scroll = {
+            scroll = {
                 x: x,
                 y: y,
                 max: {
-                    x: this.scrollWidth - (this.bodyContainer ? ww : this.clientWidth),
-                    y: this.scrollHeight - (this.bodyContainer ? wh : this.clientHeight)
+                    x: scrollWidth - (this.bodyContainer ? ww : clientWidth),
+                    y: scrollHeight - (this.bodyContainer ? wh : clientHeight)
                 },
                 size: {
                     x: this.clientWidth,
                     y: this.clientHeight
                 },
                 scrollable: {
-                    x: this.scrollWidth > this.offsetWidth,
-                    y: this.scrollHeight > this.offsetHeight
+                    x: scrollWidth > offsetWidth,
+                    y: scrollHeight > offsetHeight
                 }
             };
 
@@ -380,7 +388,7 @@
 
             this.unbind();
 
-            if (this.touch) {
+            if (touch) {
                 this.on(this.container, "touchstart", e._touchstart);
                 this.on(document, "touchend", e._end);
                 this.on(document, "touchcancel", e._end);
@@ -403,7 +411,7 @@
                 }
             }
 
-            if (this.autoscroll) {
+            if (autoscroll) {
                 this.on(this.bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
@@ -427,7 +435,7 @@
             this.off(this.container, "mouseenter", e._focus);
             this.off(this.container, "mouseleave", e._blur);
 
-            if (this.autoscroll) {
+            if (autoscroll) {
                 this.off(this.bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
@@ -473,7 +481,7 @@
 
             this._loadItems();
 
-            if (this.autoscroll) {
+            if (autoscroll) {
                 var style = css(this.container);
 
                 if (style.position === "static" && !this.bodyContainer) {
@@ -952,7 +960,7 @@
 
             // check if the parent container is scrollable and 
             // prevent deselection when clicking on the scrollbars
-            if (this.scroll.scrollable.y && evt.pageX > this.rect.x1 + this.scroll.size.x || this.scroll.scrollable.x && evt.pageY > this.rect.y1 + this.scroll.size.y) {
+            if (scroll.scrollable.y && evt.pageX > this.rect.x1 + scroll.size.x || scroll.scrollable.x && evt.pageY > this.rect.y1 + scroll.size.y) {
                 return false;
             }
 
@@ -995,11 +1003,11 @@
             this.dragging = true;
 
             this.origin = {
-                x: (evt.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
-                y: (evt.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
+                x: (evt.pageX) + (this.bodyContainer ? 0 : scroll.x),
+                y: (evt.pageY) + (this.bodyContainer ? 0 : scroll.y),
                 scroll: {
-                    x: this.scroll.x,
-                    y: this.scroll.y
+                    x: scroll.x,
+                    y: scroll.y
                 }
             };
 
@@ -1017,11 +1025,11 @@
                 this.refresh();
             }
 
-            if (shift && this.startEl) {
+            if (shift && startEl) {
 
                 var items = this.items,
                     currentIndex = this.getNodes().indexOf(node),
-                    lastIndex = this.getNodes().indexOf(this.startEl),
+                    lastIndex = this.getNodes().indexOf(startEl),
                     step = currentIndex < lastIndex ? 1 : -1;
 
                 while ((currentIndex += step) && currentIndex !== lastIndex) {
@@ -1037,7 +1045,7 @@
 
                     item.startselected = true;
 
-                    var deselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
+                    var deselect = (touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
 
                     if (deselect) {
                         classList.remove(el, o.classes.selected);
@@ -1052,7 +1060,7 @@
                 }
             }
 
-            this.startEl = node;
+            startEl = node;
 
             this.emit(this.v[1] < 15 ? "selectable.start" : "start", e, originalEl);
         },
@@ -1069,7 +1077,7 @@
             let tmp;
             var evt = this._getEvent(e);
             var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            var scroll = this.scroll;
+            var scroll = scroll;
             var origin = this.origin;
 
             this.mouse = {
@@ -1110,7 +1118,7 @@
             };
 
             // auto scroll
-            if (this.autoscroll) {
+            if (autoscroll) {
                 // subtract the parent container's position
                 if (!this.bodyContainer) {
                     this.coords.x1 -= this.rect.x1;
@@ -1122,7 +1130,7 @@
             // lasso
             if (this.lasso) {
                 // stop lasso causing overflow
-                if (!this.bodyContainer && this.autoscroll && !this.config.autoScroll.lassoOverflow) {
+                if (!this.bodyContainer && autoscroll && !this.config.autoScroll.lassoOverflow) {
                     this._limitLasso();
                 }
 
@@ -1195,7 +1203,7 @@
                 // toggling it's state to deselected won't work if we've dragged even
                 // a small amount. This can happen if we're moving between items quickly
                 // while the mouse button is down. We can fix that here.
-                if (o.toggle && item.node === endEl && item.node === that.startEl) {
+                if (o.toggle && item.node === endEl && item.node === startEl) {
                     if (item.selecting && item.startselected) {
                         item.deselecting = true;
                         item.selecting = false;
@@ -1284,8 +1292,8 @@
          * @return {Void}
          */
         _onScroll: function(e) {
-            this.scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
-            this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
+            scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
             for (var i = 0; i < this.items.length; i++) {
                 this.items[i].rect = rect(this.items[i].node);
@@ -1326,7 +1334,7 @@
          * @return {Object}
          */
         _getEvent: function(e) {
-            if (this.touch) {
+            if (touch) {
                 if (e.type === "touchend") {
                     return e.changedTouches[0];
                 }
@@ -1349,23 +1357,23 @@
             };
 
             if (this.bodyContainer) {
-                this.mouse.x -= this.scroll.x;
-                this.mouse.y -= this.scroll.y;
+                this.mouse.x -= scroll.x;
+                this.mouse.y -= scroll.y;
             }
 
-            console.log(this.mouse.y, window.innerHeight - t, this.scroll.max["y"])
+            console.log(this.mouse.y, window.innerHeight - t, scroll.max["y"])
 
             // check if we need to scroll
             for (var n = 0; n < axes.length; n++) {
                 var axis = axes[n];
                 if (
                     this.mouse[axis] >= this.rect[axes2[axis]] - t &&
-                    this.scroll[axis] < this.scroll.max[axis]
+                    scroll[axis] < scroll.max[axis]
                 ) {
                     inc[axis] = i;
                 } else if (
                     this.mouse[axis] <= this.rect[axes1[axis]] + t &&
-                    this.scroll[axis] > 0
+                    scroll[axis] > 0
                 ) {
                     inc[axis] = -i;
                 }
@@ -1388,16 +1396,16 @@
         _limitLasso: function() {
             for (var i = 0; i < axes.length; i++) {
                 var axis = axes[i];
-                var max = this.rect[axes1[axis]] + this.scroll.size[axis];
-                if (this.mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
-                    var off = origin[axis] - this.rect[axes1[axis]] - this.scroll[axis];
+                var max = this.rect[axes1[axis]] + scroll.size[axis];
+                if (this.mouse[axis] >= max && scroll[axis] >= scroll.max[axis]) {
+                    var off = origin[axis] - this.rect[axes1[axis]] - scroll[axis];
                     this.coords[axes1[axis]] = origin[axis] - this.rect[axes1[axis]];
                     this.coords[axes2[axis]] = max - off - this.rect[axes1[axis]];
                 }
 
                 if (
                     this.mouse[axis] <= this.rect[axes1[axis]] &&
-                    this.scroll[axis] <= 0
+                    scroll[axis] <= 0
                 ) {
                     this.coords[axes1[axis]] = 0;
                     this.coords[axes2[axis]] = origin[axis] - this.rect[axes1[axis]];
@@ -1415,8 +1423,8 @@
                 el = item.node,
                 over = false;
 
-            var x = this.bodyContainer ? 0 : this.scroll.x;
-            var y = this.bodyContainer ? 0 : this.scroll.y;
+            var x = this.bodyContainer ? 0 : scroll.x;
+            var y = this.bodyContainer ? 0 : scroll.y;
 
             if (o.tolerance === "touch") {
                 over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
