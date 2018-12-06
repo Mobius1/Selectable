@@ -189,18 +189,18 @@
         return !!e.shiftKey;
     };
 
+    var axes = ["x", "y"];
+    var axes1 = {
+        x: "x1",
+        y: "y1"
+    };
+    var axes2 = {
+        x: "x2",
+        y: "y2"
+    };
+
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.axes = ["x", "y"];
-        this.axes1 = {
-            x: "x1",
-            y: "y1"
-        };
-        this.axes2 = {
-            x: "x2",
-            y: "y2"
-        };
-
         this.version = "0.14.1";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
@@ -210,6 +210,9 @@
     }
 
     Selectable.prototype = {
+
+        /* ---------- PUBLIC METHODS ---------- */
+
         /**
          * Init instance
          * @return {void}
@@ -285,14 +288,14 @@
             this.events = {};
 
             // bind events
-            ["start", "touchstart", "drag", "end", "keyup", "keydown", "blur", "focus"].forEach(event => {
+            ["_start", "_touchstart", "_drag", "_end", "_keyup", "_keydown", "_blur", "_focus"].forEach(event => {
                 this.events[event] = this[event].bind(this);
             });
 
-            this.events.refresh = throttle(this.refresh, o.throttle, this);
+            this.events._refresh = throttle(this.refresh, o.throttle, this);
 
             if (this.autoscroll) {
-                this.events.scroll = this.onScroll.bind(this);
+                this.events._scroll = this._onScroll.bind(this);
             }
 
             this.setContainer();
@@ -324,6 +327,8 @@
          * @return {Void}
          */
         refresh: function() {
+            var ww = window.innerWidth;
+            var wh = window.innerHeight;
             var x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
             var y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
@@ -337,13 +342,18 @@
             // get the parent container DOMRect
             this.rect = rect(this.container);
 
+            if (this.bodyContainer) {
+                this.rect.x2 = ww;
+                this.rect.y2 = wh;
+            }
+
             // get the parent container scroll dimensions
             this.scroll = {
                 x: x,
                 y: y,
                 max: {
-                    x: this.scrollWidth - this.clientWidth,
-                    y: this.scrollHeight - this.clientHeight
+                    x: this.scrollWidth - (this.bodyContainer ? ww : this.clientWidth),
+                    y: this.scrollHeight - (this.bodyContainer ? wh : this.clientHeight)
                 },
                 size: {
                     x: this.clientWidth,
@@ -362,51 +372,6 @@
         },
 
         /**
-         * Add custom event listener
-         * @param  {String} event
-         * @param  {Function} callback
-         * @return {Void}
-         */
-        on: function(listener, fn, capture) {
-            if (typeof listener === "string") {
-                this.listeners = this.listeners || {};
-                this.listeners[listener] = this.listeners[listener] || [];
-                this.listeners[listener].push(fn);
-            } else {
-                arguments[0].addEventListener(arguments[1], arguments[2], false);
-            }
-        },
-
-        /**
-         * Remove custom listener listener
-         * @param  {String} listener
-         * @param  {Function} callback
-         * @return {Void}
-         */
-        off: function(listener, fn) {
-            if (typeof listener === "string") {
-                this.listeners = this.listeners || {};
-                if (listener in this.listeners === false) return;
-                this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
-            } else {
-                arguments[0].removeEventListener(arguments[1], arguments[2]);
-            }
-        },
-
-        /**
-         * Fire custom listener
-         * @param  {String} listener
-         * @return {Void}
-         */
-        emit: function(listener) {
-            this.listeners = this.listeners || {};
-            if (listener in this.listeners === false) return;
-            for (var i = 0; i < this.listeners[listener].length; i++) {
-                this.listeners[listener][i].apply(this, Array.prototype.slice.call(arguments, 1));
-            }
-        },
-
-        /**
          * Add instance event listeners
          * @return {Void}
          */
@@ -416,34 +381,34 @@
             this.unbind();
 
             if (this.touch) {
-                this.on(this.container, "touchstart", e.touchstart);
-                this.on(document, "touchend", e.end);
-                this.on(document, "touchcancel", e.end);
+                this.on(this.container, "touchstart", e._touchstart);
+                this.on(document, "touchend", e._end);
+                this.on(document, "touchcancel", e._end);
 
                 if (this.lasso !== false) {
-                    this.on(document, "touchmove", e.drag);
+                    this.on(document, "touchmove", e._drag);
                 }
             } else {
-                this.on(this.container, 'mousedown', e.start);
+                this.on(this.container, "mousedown", e._start);
 
-                this.on(document, 'mouseup', e.end);
-                this.on(document, 'keydown', e.keydown);
-                this.on(document, 'keyup', e.keyup);
+                this.on(document, "mouseup", e._end);
+                this.on(document, "keydown", e._keydown);
+                this.on(document, "keyup", e._keyup);
 
-                this.on(this.container, "mouseenter", e.focus);
-                this.on(this.container, "mouseleave", e.blur);
+                this.on(this.container, "mouseenter", e._focus);
+                this.on(this.container, "mouseleave", e._blur);
 
                 if (this.lasso !== false) {
-                    this.on(document, 'mousemove', e.drag);
+                    this.on(document, "mousemove", e._drag);
                 }
             }
 
             if (this.autoscroll) {
-                this.on(this.bodyContainer ? window : this.container, "scroll", e.scroll);
+                this.on(this.bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
-            this.on(window, 'resize', e.refresh);
-            this.on(window, 'scroll', e.refresh);
+            this.on(window, 'resize', e._refresh);
+            this.on(window, 'scroll', e._refresh);
         },
 
         /**
@@ -453,396 +418,27 @@
         unbind: function() {
             var e = this.events;
 
-            this.off(this.container, 'mousedown', e.start);
-            this.off(document, 'mousemove', e.drag);
-            this.off(document, 'mouseup', e.end);
-            this.off(document, 'keydown', e.keydown);
-            this.off(document, 'keyup', e.keyup);
+            this.off(this.container, 'mousedown', e._start);
+            this.off(document, 'mousemove', e._drag);
+            this.off(document, 'mouseup', e._end);
+            this.off(document, 'keydown', e._keydown);
+            this.off(document, 'keyup', e._keyup);
 
-            this.off(this.container, "mouseenter", e.focus);
-            this.off(this.container, "mouseleave", e.blur);
+            this.off(this.container, "mouseenter", e._focus);
+            this.off(this.container, "mouseleave", e._blur);
 
             if (this.autoscroll) {
-                this.off(this.bodyContainer ? window : this.container, "scroll", e.scroll);
+                this.off(this.bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
             // Mobile
-            this.off(this.container, "touchstart", e.start);
-            this.off(document, "touchend", e.end);
-            this.off(document, "touchcancel", e.end);
-            this.off(document, "touchmove", e.drag);
+            this.off(this.container, "touchstart", e._start);
+            this.off(document, "touchend", e._end);
+            this.off(document, "touchcancel", e._end);
+            this.off(document, "touchmove", e._drag);
 
-            this.off(window, 'resize', e.refresh);
-            this.off(window, 'scroll', e.refresh);
-        },
-
-        /**
-         * touchstart event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        touchstart: function(e) {
-            this.off(this.container, "mousedown", this.events.start);
-
-            this.start(e);
-        },
-
-        /**
-         * mousedown / touchstart event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        start: function(e) {
-            var that = this,
-                evt = this._getEvent(e),
-                o = this.config,
-                originalEl,
-                cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
-                shift = (this.canShift && isShiftKey(e));
-
-            if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
-
-            // check if the parent container is scrollable and 
-            // prevent deselection when clicking on the scrollbars
-            if (this.scroll.scrollable.y && evt.pageX > this.rect.x1 + this.scroll.size.x || this.scroll.scrollable.x && evt.pageY > this.rect.y1 + this.scroll.size.y) {
-                return false;
-            }
-
-            // check for ignored descendants
-            if (this.config.ignore) {
-                var stop = false;
-                var ignore = this.config.ignore;
-
-                if (!Array.isArray(ignore)) {
-                    ignore = [ignore];
-                }
-
-                for (var i = 0; i < ignore.length; i++) {
-                    var ancestor = e.target.closest(ignore[i]);
-
-                    if (ancestor) {
-                        stop = true;
-                        break;
-                    }
-                }
-
-                if (stop) {
-                    return false;
-                }
-            }
-
-            // selectable nodes may have child elements
-            // so let's get the closest selectable node
-            var node = closest(e.target, function(el) {
-                return el === that.container || classList.contains(el, o.classes.selectable);
-            });
-
-            if (!node) return false;
-
-            // allow form inputs to be receive focus
-            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
-                e.preventDefault();
-            }
-
-            this.dragging = true;
-
-            this.origin = {
-                x: (evt.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
-                y: (evt.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
-                scroll: {
-                    x: this.scroll.x,
-                    y: this.scroll.y
-                }
-            };
-
-            if (this.lasso) {
-                this.container.appendChild(this.lasso);
-            }
-
-            if (node !== this.container) {
-                var item = this.get(node);
-                item.selecting = true;
-                classList.add(node, o.classes.selecting);
-            }
-
-            if (o.autoRefresh) {
-                this.refresh();
-            }
-
-            if (shift && this.startEl) {
-
-                var items = this.items,
-                    currentIndex = this.getNodes().indexOf(node),
-                    lastIndex = this.getNodes().indexOf(this.startEl),
-                    step = currentIndex < lastIndex ? 1 : -1;
-
-                while ((currentIndex += step) && currentIndex !== lastIndex) {
-                    items[currentIndex].selecting = true;
-                }
-            }
-
-            for (var i = 0; i < this.items.length; i++) {
-                var item = this.items[i],
-                    el = item.node,
-                    isCurrentNode = el === node;
-                if (item.selected) {
-
-                    item.startselected = true;
-
-                    var deselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
-
-                    if (deselect) {
-                        classList.remove(el, o.classes.selected);
-                        item.selected = false;
-
-                        classList.add(el, o.classes.deselecting);
-                        item.deselecting = true;
-                    }
-                }
-                if (isCurrentNode) {
-                    originalEl = item;
-                }
-            }
-
-            this.startEl = node;
-
-            this.emit(this.v[1] < 15 ? "selectable.start" : "start", e, originalEl);
-        },
-
-        /**
-         * mousmove / touchmove event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        drag: function(e) {
-            var o = this.config;
-            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
-
-            let tmp;
-            var evt = this._getEvent(e);
-            var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            var scroll = this.scroll;
-            var origin = this.origin;
-
-            this.mouse = {
-                x: evt.pageX,
-                y: evt.pageY
-            };
-
-            this.current = {
-                x1: origin.x,
-                y1: origin.y,
-                x2: this.mouse.x + (this.bodyContainer ? 0 : scroll.x),
-                y2: this.mouse.y + (this.bodyContainer ? 0 : scroll.y)
-            };
-
-            var current = this.current;
-
-            // flip lasso
-            for (var i = 0; i < this.axes.length; i++) {
-                var axis = this.axes[i];
-                if (current[this.axes1[axis]] > current[this.axes2[axis]]) {
-                    tmp = current[this.axes2[axis]];
-                    current[this.axes2[axis]] = current[this.axes1[axis]];
-                    current[this.axes1[axis]] = tmp;
-                }
-            }
-
-            /* highlight */
-            for (var i = 0; i < this.items.length; i++) {
-                this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
-            }
-
-            // lasso coordinates
-            this.coords = {
-                x1: current.x1,
-                x2: current.x2 - current.x1,
-                y1: current.y1,
-                y2: current.y2 - current.y1
-            };
-
-            // subtract the parent container's position
-            if (!this.bodyContainer) {
-                this.coords.x1 -= this.rect.x1;
-                this.coords.y1 -= this.rect.y1;
-            }
-
-            // auto scroll
-            if (this.autoscroll) {
-                this._autoScroll();
-            }
-
-            // lasso
-            if (this.lasso) {
-                // stop lasso causing overflow
-                if (!this.bodyContainer && !this.config.autoScroll.lassoOverflow) {
-                    this._limitLasso();
-                }
-
-                // style the lasso
-                css(this.lasso, {
-                    left: this.coords.x1,
-                    top: this.coords.y1,
-                    width: this.coords.x2,
-                    height: this.coords.y2,
-                    opacity: 1
-                });
-            }
-
-            // emit the "drag" event
-            this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, this.coords);
-        },
-
-        /**
-         * mouseup / touchend event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        end: function(e) {
-            if (!this.dragging) return;
-
-            this.dragging = false;
-
-            var that = this,
-                o = that.config,
-                node = e.target,
-                evt = this._getEvent(e),
-                endEl,
-                selected = [],
-                deselected = [];
-
-            // remove the lasso
-            if (this.lasso && this.container.contains(this.lasso)) {
-                this.container.removeChild(this.lasso);
-            }
-
-            if (this.lasso) {
-                // Reset the lasso
-                css(this.lasso, {
-                    opacity: 0,
-                    left: 0,
-                    width: 0,
-                    top: 0,
-                    height: 0
-                });
-
-                // the lasso was the event.target so let's get the actual
-                // node below the pointer
-                node = document.elementFromPoint(evt.pageX, evt.pageY);
-
-                if (!node) {
-                    node = this.container;
-                }
-            }
-
-            // now let's get the closest valid selectable node
-            endEl = closest(node, function(el) {
-                return classList.contains(el, o.classes.selectable);
-            });
-
-            // loop over items and check their state
-            for (var i = 0; i < this.items.length; i++) {
-                var item = this.items[i];
-
-                // If we've mousedown'd and mouseup'd on the same selected item
-                // toggling it's state to deselected won't work if we've dragged even
-                // a small amount. This can happen if we're moving between items quickly
-                // while the mouse button is down. We can fix that here.
-                if (o.toggle && item.node === endEl && item.node === that.startEl) {
-                    if (item.selecting && item.startselected) {
-                        item.deselecting = true;
-                        item.selecting = false;
-                    }
-                }
-
-                // item was marked for deselect
-                if (item.deselecting) {
-                    deselected.push(item);
-                    this.deselect(item);
-                }
-
-                // item was marked for select
-                if (item.selecting) {
-                    selected.push(item);
-                    this.select(item);
-                }
-            }
-
-            if (o.saveState) {
-                this.state("save");
-            }
-
-            this.emit(this.v[1] < 15 ? "selectable.end" : "end", e, selected, deselected);
-        },
-
-        /**
-         * keydown event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        keydown: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
-
-            var code = false;
-            if (e.key !== undefined) {
-                code = e.key;
-            } else if (e.keyCode !== undefined) {
-                code = e.keyCode;
-            }
-
-            if (code) {
-
-                if (this.cmdDown && this.focused) {
-                    e.preventDefault();
-                    switch (code) {
-                        case 65:
-                        case "a":
-                        case "A":
-                            this.selectAll();
-                            break;
-                        case 89:
-                        case "y":
-                        case "Y":
-                            this.state("redo");
-                            break;
-                        case 90:
-                        case "z":
-                        case "Z":
-                            this.state("undo");
-                            break;
-                    }
-                } else {
-                    switch (code) {
-                        case 32:
-                        case " ":
-                            this.toggle(document.activeElement);
-                            break;
-                    }
-                }
-            }
-        },
-
-        /**
-         * keyup event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        keyup: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
-        },
-
-        /**
-         * scroll event listener
-         * @param  {Object} e Event interface
-         * @return {Void}
-         */
-        onScroll: function(e) {
-            this.scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
-            this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
-
-            for (var i = 0; i < this.items.length; i++) {
-                this.items[i].rect = rect(this.items[i].node);
-            }
+            this.off(window, 'resize', e._refresh);
+            this.off(window, 'scroll', e._refresh);
         },
 
         /**
@@ -1281,7 +877,423 @@
         },
 
         /**
-         * Load items
+         * Add custom event listener
+         * @param  {String} event
+         * @param  {Function} callback
+         * @return {Void}
+         */
+        on: function(listener, fn, capture) {
+            if (typeof listener === "string") {
+                this.listeners = this.listeners || {};
+                this.listeners[listener] = this.listeners[listener] || [];
+                this.listeners[listener].push(fn);
+            } else {
+                arguments[0].addEventListener(arguments[1], arguments[2], false);
+            }
+        },
+
+        /**
+         * Remove custom listener listener
+         * @param  {String} listener
+         * @param  {Function} callback
+         * @return {Void}
+         */
+        off: function(listener, fn) {
+            if (typeof listener === "string") {
+                this.listeners = this.listeners || {};
+                if (listener in this.listeners === false) return;
+                this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
+            } else {
+                arguments[0].removeEventListener(arguments[1], arguments[2]);
+            }
+        },
+
+        /**
+         * Fire custom listener
+         * @param  {String} listener
+         * @return {Void}
+         */
+        emit: function(listener) {
+            this.listeners = this.listeners || {};
+            if (listener in this.listeners === false) return;
+            for (var i = 0; i < this.listeners[listener].length; i++) {
+                this.listeners[listener][i].apply(this, Array.prototype.slice.call(arguments, 1));
+            }
+        },
+
+
+        /* ---------- PRIVATE METHODS ---------- */
+
+        /**
+         * touchstart event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _touchstart: function(e) {
+            this.off(this.container, "mousedown", this.events.start);
+
+            this.start(e);
+        },
+
+        /**
+         * mousedown / touchstart event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _start: function(e) {
+            var that = this,
+                evt = this._getEvent(e),
+                o = this.config,
+                originalEl,
+                cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
+                shift = (this.canShift && isShiftKey(e));
+
+            if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
+
+            // check if the parent container is scrollable and 
+            // prevent deselection when clicking on the scrollbars
+            if (this.scroll.scrollable.y && evt.pageX > this.rect.x1 + this.scroll.size.x || this.scroll.scrollable.x && evt.pageY > this.rect.y1 + this.scroll.size.y) {
+                return false;
+            }
+
+            // check for ignored descendants
+            if (this.config.ignore) {
+                var stop = false;
+                var ignore = this.config.ignore;
+
+                if (!Array.isArray(ignore)) {
+                    ignore = [ignore];
+                }
+
+                for (var i = 0; i < ignore.length; i++) {
+                    var ancestor = e.target.closest(ignore[i]);
+
+                    if (ancestor) {
+                        stop = true;
+                        break;
+                    }
+                }
+
+                if (stop) {
+                    return false;
+                }
+            }
+
+            // selectable nodes may have child elements
+            // so let's get the closest selectable node
+            var node = closest(e.target, function(el) {
+                return el === that.container || classList.contains(el, o.classes.selectable);
+            });
+
+            if (!node) return false;
+
+            // allow form inputs to be receive focus
+            if (['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA', 'OPTION'].indexOf(e.target.tagName) === -1) {
+                e.preventDefault();
+            }
+
+            this.dragging = true;
+
+            this.origin = {
+                x: (evt.pageX) + (this.bodyContainer ? 0 : this.scroll.x),
+                y: (evt.pageY) + (this.bodyContainer ? 0 : this.scroll.y),
+                scroll: {
+                    x: this.scroll.x,
+                    y: this.scroll.y
+                }
+            };
+
+            if (this.lasso) {
+                this.container.appendChild(this.lasso);
+            }
+
+            if (node !== this.container) {
+                var item = this.get(node);
+                item.selecting = true;
+                classList.add(node, o.classes.selecting);
+            }
+
+            if (o.autoRefresh) {
+                this.refresh();
+            }
+
+            if (shift && this.startEl) {
+
+                var items = this.items,
+                    currentIndex = this.getNodes().indexOf(node),
+                    lastIndex = this.getNodes().indexOf(this.startEl),
+                    step = currentIndex < lastIndex ? 1 : -1;
+
+                while ((currentIndex += step) && currentIndex !== lastIndex) {
+                    items[currentIndex].selecting = true;
+                }
+            }
+
+            for (var i = 0; i < this.items.length; i++) {
+                var item = this.items[i],
+                    el = item.node,
+                    isCurrentNode = el === node;
+                if (item.selected) {
+
+                    item.startselected = true;
+
+                    var deselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
+
+                    if (deselect) {
+                        classList.remove(el, o.classes.selected);
+                        item.selected = false;
+
+                        classList.add(el, o.classes.deselecting);
+                        item.deselecting = true;
+                    }
+                }
+                if (isCurrentNode) {
+                    originalEl = item;
+                }
+            }
+
+            this.startEl = node;
+
+            this.emit(this.v[1] < 15 ? "selectable.start" : "start", e, originalEl);
+        },
+
+        /**
+         * mousmove / touchmove event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _drag: function(e) {
+            var o = this.config;
+            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
+
+            let tmp;
+            var evt = this._getEvent(e);
+            var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            var scroll = this.scroll;
+            var origin = this.origin;
+
+            this.mouse = {
+                x: evt.pageX,
+                y: evt.pageY
+            };
+
+            this.current = {
+                x1: origin.x,
+                y1: origin.y,
+                x2: this.mouse.x + (this.bodyContainer ? 0 : scroll.x),
+                y2: this.mouse.y + (this.bodyContainer ? 0 : scroll.y)
+            };
+
+            var current = this.current;
+
+            // flip lasso
+            for (var i = 0; i < axes.length; i++) {
+                var axis = axes[i];
+                if (current[axes1[axis]] > current[axes2[axis]]) {
+                    tmp = current[axes2[axis]];
+                    current[axes2[axis]] = current[axes1[axis]];
+                    current[axes1[axis]] = tmp;
+                }
+            }
+
+            /* highlight */
+            for (var i = 0; i < this.items.length; i++) {
+                this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+            }
+
+            // lasso coordinates
+            this.coords = {
+                x1: current.x1,
+                x2: current.x2 - current.x1,
+                y1: current.y1,
+                y2: current.y2 - current.y1
+            };
+
+            // auto scroll
+            if (this.autoscroll) {
+                // subtract the parent container's position
+                if (!this.bodyContainer) {
+                    this.coords.x1 -= this.rect.x1;
+                    this.coords.y1 -= this.rect.y1;
+                }
+                this._autoScroll();
+            }
+
+            // lasso
+            if (this.lasso) {
+                // stop lasso causing overflow
+                if (!this.bodyContainer && this.autoscroll && !this.config.autoScroll.lassoOverflow) {
+                    this._limitLasso();
+                }
+
+                // style the lasso
+                css(this.lasso, {
+                    left: this.coords.x1,
+                    top: this.coords.y1,
+                    width: this.coords.x2,
+                    height: this.coords.y2,
+                    opacity: 1
+                });
+            }
+
+            // emit the "drag" event
+            this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, this.coords);
+        },
+
+        /**
+         * mouseup / touchend event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _end: function(e) {
+            if (!this.dragging) return;
+
+            this.dragging = false;
+
+            var that = this,
+                o = that.config,
+                node = e.target,
+                evt = this._getEvent(e),
+                endEl,
+                selected = [],
+                deselected = [];
+
+            // remove the lasso
+            if (this.lasso && this.container.contains(this.lasso)) {
+                this.container.removeChild(this.lasso);
+            }
+
+            if (this.lasso) {
+                // Reset the lasso
+                css(this.lasso, {
+                    opacity: 0,
+                    left: 0,
+                    width: 0,
+                    top: 0,
+                    height: 0
+                });
+
+                // the lasso was the event.target so let's get the actual
+                // node below the pointer
+                node = document.elementFromPoint(evt.pageX, evt.pageY);
+
+                if (!node) {
+                    node = this.container;
+                }
+            }
+
+            // now let's get the closest valid selectable node
+            endEl = closest(node, function(el) {
+                return classList.contains(el, o.classes.selectable);
+            });
+
+            // loop over items and check their state
+            for (var i = 0; i < this.items.length; i++) {
+                var item = this.items[i];
+
+                // If we've mousedown'd and mouseup'd on the same selected item
+                // toggling it's state to deselected won't work if we've dragged even
+                // a small amount. This can happen if we're moving between items quickly
+                // while the mouse button is down. We can fix that here.
+                if (o.toggle && item.node === endEl && item.node === that.startEl) {
+                    if (item.selecting && item.startselected) {
+                        item.deselecting = true;
+                        item.selecting = false;
+                    }
+                }
+
+                // item was marked for deselect
+                if (item.deselecting) {
+                    deselected.push(item);
+                    this.deselect(item);
+                }
+
+                // item was marked for select
+                if (item.selecting) {
+                    selected.push(item);
+                    this.select(item);
+                }
+            }
+
+            if (o.saveState) {
+                this.state("save");
+            }
+
+            this.emit(this.v[1] < 15 ? "selectable.end" : "end", e, selected, deselected);
+        },
+
+        /**
+         * keydown event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _keydown: function(e) {
+            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+
+            var code = false;
+            if (e.key !== undefined) {
+                code = e.key;
+            } else if (e.keyCode !== undefined) {
+                code = e.keyCode;
+            }
+
+            if (code) {
+
+                if (this.cmdDown && this.focused) {
+                    e.preventDefault();
+                    switch (code) {
+                        case 65:
+                        case "a":
+                        case "A":
+                            this.selectAll();
+                            break;
+                        case 89:
+                        case "y":
+                        case "Y":
+                            this.state("redo");
+                            break;
+                        case 90:
+                        case "z":
+                        case "Z":
+                            this.state("undo");
+                            break;
+                    }
+                } else {
+                    switch (code) {
+                        case 32:
+                        case " ":
+                            this.toggle(document.activeElement);
+                            break;
+                    }
+                }
+            }
+        },
+
+        /**
+         * keyup event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _keyup: function(e) {
+            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+        },
+
+        /**
+         * scroll event listener
+         * @param  {Object} e Event interface
+         * @return {Void}
+         */
+        _onScroll: function(e) {
+            this.scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
+
+            for (var i = 0; i < this.items.length; i++) {
+                this.items[i].rect = rect(this.items[i].node);
+            }
+        },
+
+        /**
+         * Load items from the given filter
          * @return {void}
          */
         _loadItems: function() {
@@ -1291,7 +1303,7 @@
             } else if (typeof o.filter === "string") {
                 this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
             }
-                    
+
             this.items = [];
 
             for (var i = 0; i < this.nodes.length; i++) {
@@ -1306,7 +1318,7 @@
                     selecting: classList.contains(el, o.classes.selecting),
                     deselecting: classList.contains(el, o.classes.deselecting)
                 });
-            }					
+            }
         },
 
         /**
@@ -1341,16 +1353,18 @@
                 this.mouse.y -= this.scroll.y;
             }
 
+            console.log(this.mouse.y, window.innerHeight - t, this.scroll.max["y"])
+
             // check if we need to scroll
-            for (var n = 0; n < this.axes.length; n++) {
-                var axis = this.axes[n];
+            for (var n = 0; n < axes.length; n++) {
+                var axis = axes[n];
                 if (
-                    this.mouse[axis] >= this.rect[this.axes2[axis]] - t &&
+                    this.mouse[axis] >= this.rect[axes2[axis]] - t &&
                     this.scroll[axis] < this.scroll.max[axis]
                 ) {
                     inc[axis] = i;
                 } else if (
-                    this.mouse[axis] <= this.rect[this.axes1[axis]] + t &&
+                    this.mouse[axis] <= this.rect[axes1[axis]] + t &&
                     this.scroll[axis] > 0
                 ) {
                     inc[axis] = -i;
@@ -1359,6 +1373,7 @@
 
             // scroll the container
             if (this.bodyContainer) {
+                console.log(inc)
                 window.scrollBy(inc.x, inc.y);
             } else {
                 this.container.scrollTop += inc.y;
@@ -1371,28 +1386,28 @@
          * @return {Void}
          */
         _limitLasso: function() {
-            for (var i = 0; i < this.axes.length; i++) {
-                var axis = this.axes[i];
-                var max = this.rect[this.axes1[axis]] + this.scroll.size[axis];
+            for (var i = 0; i < axes.length; i++) {
+                var axis = axes[i];
+                var max = this.rect[axes1[axis]] + this.scroll.size[axis];
                 if (this.mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
-                    var off = origin[axis] - this.rect[this.axes1[axis]] - this.scroll[axis];
-                    this.coords[this.axes1[axis]] = origin[axis] - this.rect[this.axes1[axis]];
-                    this.coords[this.axes2[axis]] = max - off - this.rect[this.axes1[axis]];
+                    var off = origin[axis] - this.rect[axes1[axis]] - this.scroll[axis];
+                    this.coords[axes1[axis]] = origin[axis] - this.rect[axes1[axis]];
+                    this.coords[axes2[axis]] = max - off - this.rect[axes1[axis]];
                 }
 
                 if (
-                    this.mouse[axis] <= this.rect[this.axes1[axis]] &&
+                    this.mouse[axis] <= this.rect[axes1[axis]] &&
                     this.scroll[axis] <= 0
                 ) {
-                    this.coords[this.axes1[axis]] = 0;
-                    this.coords[this.axes2[axis]] = origin[axis] - this.rect[this.axes1[axis]];
+                    this.coords[axes1[axis]] = 0;
+                    this.coords[axes2[axis]] = origin[axis] - this.rect[axes1[axis]];
                 }
             }
         },
 
         /**
-         * Highlight an item
-         * @param  {Object} item   The item
+         * Highlight an item for selection based on lasso position
+         * @param  {Object} item
          * @return {Void}
          */
         _highlight: function(item, cmd) {
@@ -1457,7 +1472,7 @@
          * @param  {Object} e Event interface
          * @return {Void}
          */
-        focus: function(e) {
+        _focus: function(e) {
             this.focused = true;
             classList.add(this.container, "ui-focused");
         },
@@ -1467,7 +1482,7 @@
          * @param  {Object} e Event interface
          * @return {Void}
          */
-        blur: function(e) {
+        _blur: function(e) {
             this.focused = false;
             classList.remove(this.container, "ui-focused");
         }
