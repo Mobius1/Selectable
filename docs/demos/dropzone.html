@@ -96,14 +96,41 @@
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="#">Overview</a></li>
-                                    <li class="breadcrumb-item active">Getting Started</li>
+                                    <li class="breadcrumb-item"><a href="#">Demos</a></li>
+                                    <li class="breadcrumb-item active">Dropzone</li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
                                 <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> Select<strong>able</strong></h1>
+                                <div id="container">
+                                    <h1 id="demo-title"><span class="dz">dropzone<small>JS</small></span> + <span class="sl">Select</span>able</h1>
+                                    <button type="button" class="btn" id="addFiles">Add files...</button>
+                                    <button type="button" class="btn" id="processQueue" onclick="DROPZONE.processQueue()">Upload Files</button>		
+                                    <button type="button" class="btn btn-danger" id="removeFiles">Remove files</button>
+                                    <form action="/upload-target" id="dropzone"></form>
+                                </div>
                                 
+                                
+                                <div id="template">
+                                    <div class="file loading">
+                                        <div class="file-remove"><button class="faded" data-dz-remove>&times;</button></div>
+                                        <div class="file-data">
+                                            <div class="file-name" data-dz-name></div>
+                                            <div class="file-size faded" data-dz-size></div>
+                                        </div>
+                                        <div class="file-info">
+                                            <div class="file-progress-text">Uploading</div>
+                                            <div class="file-text faded">Uploading</div>
+                                        </div>
+                                        <div class="file-progress">
+                                            <span class="mdi"></span>
+                                            <svg class="radial-svg" width="50" height="50" transform="rotate(-90 0 0)">
+                                                <circle class="radial-fill" stroke-width="2" r="14" cx="20" cy="20" stroke-linecap="round"></circle>
+                                            </svg>
+                                        </div>
+                                    </div>		
+                                </div>
 
                             </div>
                             <!--  /.End of documentation text content -->
@@ -150,6 +177,7 @@
         <script src="assets/js/ResizeSensor.min.js"></script>
         <script src="assets/js/theia-sticky-sidebar.min.js"></script>
         <script type="text/javascript" src="assets/js/prism.min.js"></script>
+        <script type="text/javascript" src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
         <script type="text/javascript" src="https://unpkg.com/selectable.js@latest/selectable.min.js"></script>
         <script src="assets/js/script.js"></script>
     </body>

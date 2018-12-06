@@ -100,6 +100,10 @@ function init() {
         menuEvents.appendChild(ul);
     }
 
+    const demosMenu = document.createElement("li");
+    demosMenu.innerHTML = `<a href="#" class="has-arrow">Demos</a><ul></ul>`;
+    sidebarMenu.appendChild(demosMenu);
+
     fetch("https://api.github.com/repos/Mobius1/Selectable/releases").then(resp => resp.json()).then(json => {
 
         versions.previousElementSibling.textContent = json[0].name;
@@ -196,6 +200,8 @@ function init() {
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/enabled.html">enabled</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/disabled.html">disabled</a></li>
                                             `;
+
+    demosMenu.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/demos/dropzone.html">Dropzone</a></li>`;
 
     if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {
         menuOptions.firstElementChild.classList.add("has-arrow");
