@@ -161,6 +161,7 @@ function init() {
 
     menuMethods.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/methods/add.html">add()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/clear.html">clear()</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/deselect.html">deselect()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/destroy.html">destroy()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/disable.html">disable()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/enable.html">enable()</a></li>
@@ -179,7 +180,6 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/selectAll.html">selectAll()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/setContainer.html">setContainer()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/state.html">state()</a></li>
-                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/unselect.html">unselect()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/update.html">update()</a></li>`;
 
     menuEvents.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/api/events/init.html">init</a></li>

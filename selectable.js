@@ -159,50 +159,15 @@
      * @type {Object}
      */
     var classList = {
-        /**
-         * Add a class name to a node
-         * @param {Object} node Element node
-         * @param {String} a Class name
-         */
-        add: function(node, name) {
-            if (_supports) {
-                node.classList.add(name);
-            } else {
-                if (!classList.contains(node, name)) {
-                    node.className = node.className.trim() + " " + name;
-                }
-            }
+        add: function(a, c) {
+            _supports ? a.classList.add(c) : classList.contains(a, c) || (a.className = a.className.trim() + " " + c)
         },
-
-        /**
-         * Remove a class name from a node
-         * @param {Object} node Element node
-         * @param {String} name Class name
-         */
-        remove: function(node, name) {
-            if (_supports) {
-                node.classList.remove(name);
-            } else {
-                if (classList.contains(node, name)) {
-                    node.className = node.className.replace(
-                        new RegExp("(^|\\s)" + name.split(" ").join("|") + "(\\s|$)", "gi"),
-                        " "
-                    );
-                }
-            }
+        remove: function(a, c) {
+            _supports ? a.classList.remove(c) : classList.contains(a, c) && (a.className = a.className.replace(new RegExp("(^|\\s)" + c.split(" ").join("|") +
+                "(\\s|$)", "gi"), " "))
         },
-
-        /**
-         * Check a node has class name
-         * @param {Object} node Element node
-         * @param {String} name Class name
-         */
-        contains: function(node, name) {
-            if (node)
-                return _supports ?
-                    node.classList.contains(name) :
-                    !!node.className &&
-                    !!node.className.match(new RegExp("(\\s|^)" + name + "(\\s|$)"));
+        contains: function(a, c) {
+            if (a) return _supports ? a.classList.contains(c) : !!a.className && !!a.className.match(new RegExp("(\\s|^)" + c + "(\\s|$)"))
         }
     };
 
@@ -347,7 +312,18 @@
          * @return {Void}
          */
         update: function() {
-            var o = this.config.classes;
+            this._loadItems();
+
+            this.refresh();
+
+            this.emit(this.v[1] < 15 ? "selectable.update" : "update", this.items);
+        },
+
+        /**
+         * Update item coords
+         * @return {Void}
+         */
+        refresh: function() {
             var x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
             var y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
@@ -379,30 +355,6 @@
                 }
             };
 
-            this.items = [];
-
-            for (var i = 0; i < this.nodes.length; i++) {
-                var el = this.nodes[i];
-                classList.add(el, o.selectable);
-
-                this.items.push({
-                    node: el,
-                    rect: rect(el),
-                    startselected: false,
-                    selected: classList.contains(el, o.selected),
-                    selecting: classList.contains(el, o.selecting),
-                    deselecting: classList.contains(el, o.deselecting)
-                });
-            }
-
-            this.emit(this.v[1] < 15 ? "selectable.update" : "update", this.items);
-        },
-
-        /**
-         * Update item coords
-         * @return {Void}
-         */
-        refresh: function() {
             for (var i = 0; i < this.nodes.length; i++) {
                 this.items[i].rect = rect(this.nodes[i]);
             }
@@ -608,11 +560,13 @@
             }
 
             if (node !== this.container) {
+                var item = this.get(node);
+                item.selecting = true;
                 classList.add(node, o.classes.selecting);
             }
 
             if (o.autoRefresh) {
-                this.update();
+                this.refresh();
             }
 
             if (shift && this.startEl) {
@@ -921,11 +875,7 @@
 
             this.bodyContainer = this.container === document.body;
 
-            if (isCollection(o.filter)) {
-                this.nodes = [].slice.call(o.filter);
-            } else if (typeof o.filter === "string") {
-                this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
-            }
+            this._loadItems();
 
             if (this.autoscroll) {
                 var style = css(this.container);
@@ -1328,6 +1278,35 @@
             this.clear();
             this.state("clear");
             this.remove(this.items);
+        },
+
+        /**
+         * Load items
+         * @return {void}
+         */
+        _loadItems: function() {
+            var o = this.config;
+            if (isCollection(o.filter)) {
+                this.nodes = [].slice.call(o.filter);
+            } else if (typeof o.filter === "string") {
+                this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
+            }
+                    
+            this.items = [];
+
+            for (var i = 0; i < this.nodes.length; i++) {
+                var el = this.nodes[i];
+                classList.add(el, o.classes.selectable);
+
+                this.items.push({
+                    node: el,
+                    rect: rect(el),
+                    startselected: false,
+                    selected: classList.contains(el, o.classes.selected),
+                    selecting: classList.contains(el, o.classes.selecting),
+                    deselecting: classList.contains(el, o.classes.deselecting)
+                });
+            }					
         },
 
         /**
