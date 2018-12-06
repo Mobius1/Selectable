@@ -151,7 +151,7 @@ const SORTABLE = Sortable.create(items, {
     onUpdate: function (evt) {
         // Selecting will still work, but shift + select will be broken due to the order difference.
         // So update the Selctable instance to reflect the new order.
-        selectable.update();
+        SELECTABLE.update();
     }
 });</code></pre></p>                                
 
