@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.15.1
+ * Version: 0.15.2
  *
  */
 (function(root, factory) {
@@ -25,6 +25,16 @@
         autoscroll,
         scroll,
         touch,
+        canShift,
+        canCtrl,
+        canMeta,
+        cmdDown,
+        bodyContainer,
+        focused,
+        boundingRect,
+        origin, mouse,
+        coords, current,
+        dragging,
         offsetHeight, offsetWidth,
         clientHeight, clientWidth,
         scrollHeight, scrollWidth;
@@ -209,7 +219,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.15.1";
+        this.version = "0.15.2";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         touch =
             "ontouchstart" in window ||
@@ -257,7 +267,7 @@
                     backgroundColor: 'rgba(52, 152, 219, 0.2)',
                 },
 
-                keys: ['shiftKey', 'ctrlKey', 'metaKey'],
+                keys: ['shiftKey', 'ctrlKey', 'metaKey', ""],
 
                 classes: {
                     lasso: "ui-lasso",
@@ -349,8 +359,8 @@
         refresh: function() {
             var ww = window.innerWidth;
             var wh = window.innerHeight;
-            var x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
-            var y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
+            var x = bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            var y = bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
             offsetWidth = this.container.offsetWidth;
             offsetHeight = this.container.offsetHeight;
@@ -360,11 +370,11 @@
             scrollHeight = this.container.scrollHeight;
 
             // get the parent container DOMRect
-            this.rect = rect(this.container);
+            boundingRect = rect(this.container);
 
-            if (this.bodyContainer) {
-                this.rect.x2 = ww;
-                this.rect.y2 = wh;
+            if (bodyContainer) {
+                boundingRect.x2 = ww;
+                boundingRect.y2 = wh;
             }
 
             // get the parent container scroll dimensions
@@ -372,8 +382,8 @@
                 x: x,
                 y: y,
                 max: {
-                    x: scrollWidth - (this.bodyContainer ? ww : clientWidth),
-                    y: scrollHeight - (this.bodyContainer ? wh : clientHeight)
+                    x: scrollWidth - (bodyContainer ? ww : clientWidth),
+                    y: scrollHeight - (bodyContainer ? wh : clientHeight)
                 },
                 size: {
                     x: clientWidth,
@@ -424,7 +434,7 @@
             }
 
             if (autoscroll) {
-                this.on(this.bodyContainer ? window : this.container, "scroll", e._scroll);
+                this.on(bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
             this.on(window, 'resize', e._refresh);
@@ -448,7 +458,7 @@
             this.off(this.container, "mouseleave", e._blur);
 
             if (autoscroll) {
-                this.off(this.bodyContainer ? window : this.container, "scroll", e._scroll);
+                this.off(bodyContainer ? window : this.container, "scroll", e._scroll);
             }
 
             // Mobile
@@ -489,14 +499,14 @@
                 classList.remove(old, o.classes.container);
             }
 
-            this.bodyContainer = this.container === document.body;
+            bodyContainer = this.container === document.body;
 
             this._loadItems();
 
             if (autoscroll) {
                 var style = css(this.container);
 
-                if (style.position === "static" && !this.bodyContainer) {
+                if (style.position === "static" && !bodyContainer) {
                     this.container.style.position = "relative"
                 }
             }
@@ -523,7 +533,7 @@
 
             if (item) {
                 // toggle item if already selected
-                if (this.config.toggle && this.config.toggle === "drag" && !all && item.selected && !this.cmdDown) {
+                if (this.config.toggle && this.config.toggle === "drag" && !all && item.selected && !cmdDown) {
                     return this.deselect(item);
                 }
 
@@ -852,9 +862,9 @@
             if (!this.enabled) {
                 var keys = this.config.keys;
                 this.enabled = true;
-                this.canShift = keys.indexOf("shiftKey") >= 0;
-                this.canCtrl = keys.indexOf("ctrlKey") >= 0;
-                this.canMeta = keys.indexOf("metaKey") >= 0;
+                canShift = keys.indexOf("shiftKey") >= 0;
+                canCtrl = keys.indexOf("ctrlKey") >= 0;
+                canMeta = keys.indexOf("metaKey") >= 0;
 
                 this.bind();
 
@@ -953,7 +963,7 @@
         _touchstart: function(e) {
             this.off(this.container, "mousedown", this.events.start);
 
-            this.start(e);
+            this._start(e);
         },
 
         /**
@@ -966,14 +976,14 @@
                 evt = this._getEvent(e),
                 o = this.config,
                 originalEl,
-                cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
-                shift = (this.canShift && isShiftKey(e));
+                cmd = isCmdKey(e) && (canCtrl || canMeta),
+                shift = (canShift && isShiftKey(e));
 
             if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
 
             // check if the parent container is scrollable and 
             // prevent deselection when clicking on the scrollbars
-            if (scroll.scrollable.y && evt.pageX > this.rect.x1 + scroll.size.x || scroll.scrollable.x && evt.pageY > this.rect.y1 + scroll.size.y) {
+            if (scroll.scrollable.y && evt.pageX > boundingRect.x1 + scroll.size.x || scroll.scrollable.x && evt.pageY > boundingRect.y1 + scroll.size.y) {
                 return false;
             }
 
@@ -1013,11 +1023,11 @@
                 e.preventDefault();
             }
 
-            this.dragging = true;
+            dragging = true;
 
-            this.origin = {
-                x: (evt.pageX) + (this.bodyContainer ? 0 : scroll.x),
-                y: (evt.pageY) + (this.bodyContainer ? 0 : scroll.y),
+            origin = {
+                x: (evt.pageX) + (bodyContainer ? 0 : scroll.x),
+                y: (evt.pageY) + (bodyContainer ? 0 : scroll.y),
                 scroll: {
                     x: scroll.x,
                     y: scroll.y
@@ -1085,26 +1095,23 @@
          */
         _drag: function(e) {
             var o = this.config;
-            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
+            if (o.disabled || !dragging || (isShiftKey(e) && canShift)) return;
 
             let tmp;
             var evt = this._getEvent(e);
-            var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
-            var origin = this.origin;
+            var cmd = isCmdKey(e) && (canCtrl || canMeta);
 
-            this.mouse = {
+            mouse = {
                 x: evt.pageX,
                 y: evt.pageY
             };
 
-            this.current = {
+            current = {
                 x1: origin.x,
                 y1: origin.y,
-                x2: this.mouse.x + (this.bodyContainer ? 0 : scroll.x),
-                y2: this.mouse.y + (this.bodyContainer ? 0 : scroll.y)
+                x2: mouse.x + (bodyContainer ? 0 : scroll.x),
+                y2: mouse.y + (bodyContainer ? 0 : scroll.y)
             };
-
-            var current = this.current;
 
             // flip lasso
             for (var i = 0; i < axes.length; i++) {
@@ -1118,11 +1125,11 @@
 
             /* highlight */
             for (var i = 0; i < this.items.length; i++) {
-                this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+                this._highlight(this.items[i], isCmdKey(e) && (canCtrl || canMeta));
             }
 
             // lasso coordinates
-            this.coords = {
+            coords = {
                 x1: current.x1,
                 x2: current.x2 - current.x1,
                 y1: current.y1,
@@ -1132,9 +1139,9 @@
             // auto scroll
             if (autoscroll) {
                 // subtract the parent container's position
-                if (!this.bodyContainer) {
-                    this.coords.x1 -= this.rect.x1;
-                    this.coords.y1 -= this.rect.y1;
+                if (!bodyContainer) {
+                    coords.x1 -= boundingRect.x1;
+                    coords.y1 -= boundingRect.y1;
                 }
                 this._autoScroll();
             }
@@ -1142,22 +1149,22 @@
             // lasso
             if (this.lasso) {
                 // stop lasso causing overflow
-                if (!this.bodyContainer && autoscroll && !this.config.autoScroll.lassoOverflow) {
+                if (!bodyContainer && autoscroll && !this.config.autoScroll.lassoOverflow) {
                     this._limitLasso();
                 }
 
                 // style the lasso
                 css(this.lasso, {
-                    left: this.coords.x1,
-                    top: this.coords.y1,
-                    width: this.coords.x2,
-                    height: this.coords.y2,
+                    left: coords.x1,
+                    top: coords.y1,
+                    width: coords.x2,
+                    height: coords.y2,
                     opacity: 1
                 });
             }
 
             // emit the "drag" event
-            this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, this.coords);
+            this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, coords);
         },
 
         /**
@@ -1166,9 +1173,9 @@
          * @return {Void}
          */
         _end: function(e) {
-            if (!this.dragging) return;
+            if (!dragging) return;
 
-            this.dragging = false;
+            dragging = false;
 
             var that = this,
                 o = that.config,
@@ -1248,7 +1255,7 @@
          * @return {Void}
          */
         _keydown: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            cmdDown = isCmdKey(e) && (canCtrl || canMeta);
 
             var code = false;
             if (e.key !== undefined) {
@@ -1259,8 +1266,8 @@
 
             if (code) {
 
-                if (this.cmdDown && this.focused) {
-                    e.preventDefault();
+                if (cmdDown && focused) {
+                    // e.preventDefault();
                     switch (code) {
                         case 65:
                         case "a":
@@ -1295,7 +1302,7 @@
          * @return {Void}
          */
         _keyup: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            cmdDown = isCmdKey(e) && (canCtrl || canMeta);
         },
 
         /**
@@ -1304,8 +1311,8 @@
          * @return {Void}
          */
         _onScroll: function(e) {
-            scroll.x = this.bodyContainer ? window.pageXOffset : this.container.scrollLeft;
-            scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
+            scroll.x = bodyContainer ? window.pageXOffset : this.container.scrollLeft;
+            scroll.y = bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
             for (var i = 0; i < this.items.length; i++) {
                 this.items[i].rect = rect(this.items[i].node);
@@ -1366,21 +1373,21 @@
                 y: 0
             };
 
-            if (this.bodyContainer) {
-                this.mouse.x -= scroll.x;
-                this.mouse.y -= scroll.y;
+            if (bodyContainer) {
+                mouse.x -= scroll.x;
+                mouse.y -= scroll.y;
             }
 
             // check if we need to scroll
             for (var n = 0; n < axes.length; n++) {
                 var axis = axes[n];
                 if (
-                    this.mouse[axis] >= this.rect[axes2[axis]] - t &&
+                    mouse[axis] >= boundingRect[axes2[axis]] - t &&
                     scroll[axis] < scroll.max[axis]
                 ) {
                     inc[axis] = i;
                 } else if (
-                    this.mouse[axis] <= this.rect[axes1[axis]] + t &&
+                    mouse[axis] <= boundingRect[axes1[axis]] + t &&
                     scroll[axis] > 0
                 ) {
                     inc[axis] = -i;
@@ -1388,7 +1395,7 @@
             }
 
             // scroll the container
-            if (this.bodyContainer) {
+            if (bodyContainer) {
                 window.scrollBy(inc.x, inc.y);
             } else {
                 this.container.scrollTop += inc.y;
@@ -1403,19 +1410,19 @@
         _limitLasso: function() {
             for (var i = 0; i < axes.length; i++) {
                 var axis = axes[i];
-                var max = this.rect[axes1[axis]] + scroll.size[axis];
-                if (this.mouse[axis] >= max && scroll[axis] >= scroll.max[axis]) {
-                    var off = origin[axis] - this.rect[axes1[axis]] - scroll[axis];
-                    this.coords[axes1[axis]] = origin[axis] - this.rect[axes1[axis]];
-                    this.coords[axes2[axis]] = max - off - this.rect[axes1[axis]];
+                var max = boundingRect[axes1[axis]] + scroll.size[axis];
+                if (mouse[axis] >= max && scroll[axis] >= scroll.max[axis]) {
+                    var off = origin[axis] - boundingRect[axes1[axis]] - scroll[axis];
+                    coords[axes1[axis]] = origin[axis] - boundingRect[axes1[axis]];
+                    coords[axes2[axis]] = max - off - boundingRect[axes1[axis]];
                 }
 
                 if (
-                    this.mouse[axis] <= this.rect[axes1[axis]] &&
+                    mouse[axis] <= boundingRect[axes1[axis]] &&
                     scroll[axis] <= 0
                 ) {
-                    this.coords[axes1[axis]] = 0;
-                    this.coords[axes2[axis]] = origin[axis] - this.rect[axes1[axis]];
+                    coords[axes1[axis]] = 0;
+                    coords[axes2[axis]] = origin[axis] - boundingRect[axes1[axis]];
                 }
             }
         },
@@ -1430,15 +1437,15 @@
                 el = item.node,
                 over = false;
 
-            var x = this.bodyContainer ? 0 : scroll.x;
-            var y = this.bodyContainer ? 0 : scroll.y;
+            var x = bodyContainer ? 0 : scroll.x;
+            var y = bodyContainer ? 0 : scroll.y;
 
             if (o.tolerance === "touch") {
-                over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
-                    (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
+                over = !(item.rect.x1 + x > current.x2 || (item.rect.x2 + x < current.x1 ||
+                    (item.rect.y1 + y > current.y2 || item.rect.y2 + y < current.y1)));
             } else if (o.tolerance === "fit") {
-                over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
-                    (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
+                over = item.rect.x1 + x > current.x1 && (item.rect.x2 + x < current.x2 &&
+                    (item.rect.y1 + y > current.y1 && item.rect.y2 + y < current.y2));
             }
 
             if (over) {
@@ -1488,7 +1495,7 @@
          * @return {Void}
          */
         _focus: function(e) {
-            this.focused = true;
+            focused = true;
             classList.add(this.container, "ui-focused");
         },
 
@@ -1498,7 +1505,7 @@
          * @return {Void}
          */
         _blur: function(e) {
-            this.focused = false;
+            focused = false;
             classList.remove(this.container, "ui-focused");
         }
     };
