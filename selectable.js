@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.15.5
+ * Version: 0.15.6
  *
  */
 (function(root, factory) {
@@ -201,7 +201,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.15.5";
+        this.version = "0.15.6";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
@@ -606,6 +606,10 @@
         add: function(node) {
             var els = [];
 
+            if ( typeof node === "string" ) {
+                node = [].slice.call(this.container.querySelectorAll(node));
+            }
+
             if (!isCollection(node)) {
                 node = [node];
             }
@@ -709,6 +713,10 @@
          */
         get: function(item) {
             var found = false;
+
+            if ( typeof item === "string" ) {
+                item = [].slice.call(this.container.querySelectorAll(item));
+            }
 
             if (isCollection(item)) {
                 found = [];
