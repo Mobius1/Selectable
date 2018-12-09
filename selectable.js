@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.15.4
+ * Version: 0.15.5
  *
  */
 (function(root, factory) {
@@ -201,7 +201,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.15.4";
+        this.version = "0.15.5";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
@@ -1365,12 +1365,12 @@
                 var axis = axes[n];
                 if (
                     this.mouse[axis] >= this.boundingRect[axes2[axis]] - t &&
-                    scroll[axis] < this.scroll.max[axis]
+                    this.scroll[axis] < this.scroll.max[axis]
                 ) {
                     inc[axis] = i;
                 } else if (
                     this.mouse[axis] <= this.boundingRect[axes1[axis]] + t &&
-                    scroll[axis] > 0
+                    this.scroll[axis] > 0
                 ) {
                     inc[axis] = -i;
                 }
@@ -1393,15 +1393,15 @@
             for (var i = 0; i < axes.length; i++) {
                 var axis = axes[i];
                 var max = this.boundingRect[axes1[axis]] + this.scroll.size[axis];
-                if (this.mouse[axis] >= max && scroll[axis] >= this.scroll.max[axis]) {
-                    var off = this.origin[axis] - this.boundingRect[axes1[axis]] - scroll[axis];
+                if (this.mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
+                    var off = this.origin[axis] - this.boundingRect[axes1[axis]] - this.scroll[axis];
                     this.coords[axes1[axis]] = this.origin[axis] - this.boundingRect[axes1[axis]];
                     this.coords[axes2[axis]] = max - off - this.boundingRect[axes1[axis]];
                 }
 
                 if (
                     this.mouse[axis] <= this.boundingRect[axes1[axis]] &&
-                    scroll[axis] <= 0
+                    this.scroll[axis] <= 0
                 ) {
                     this.coords[axes1[axis]] = 0;
                     this.coords[axes2[axis]] = this.origin[axis] - this.boundingRect[axes1[axis]];
