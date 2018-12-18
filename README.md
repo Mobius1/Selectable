@@ -30,6 +30,7 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 ## Demos
 
+* [Checkboxes](https://mobius1.github.io/Selectable/demos/checkboxes.html)
 * [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
 * [Advanced Usage](https://s.codepen.io/Mobius1/pen/OOXPwo)
 
