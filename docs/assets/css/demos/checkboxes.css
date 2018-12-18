@@ -27,7 +27,7 @@
   background: #5c5879;
 }
 #items .item label {
-  margin-right: 20px;
+  margin: 0 20px 0 0;
 }
 #items .item.ui-selecting {
   background: #827da0;
