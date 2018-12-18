@@ -1,20 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700");
-body {
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Inconsolata";
-  background-color: #38354a;
-}
-
-ul {
+#items {
   padding: 0;
   margin: 0;
 }
-ul li {
+#items li {
   list-style: none;
 }
 
