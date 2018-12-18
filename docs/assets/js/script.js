@@ -202,7 +202,8 @@ function init() {
                                             `;
 
     demosMenu.lastElementChild.innerHTML = `<li><a href="https://mobius1.github.io/Selectable/demos/dropzone.html">Dropzone</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/demos/sortable.html">Sortable</a></li>`;
+                                            <li><a href="https://mobius1.github.io/Selectable/demos/sortable.html">Sortable</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/demos/checkboxes.html">Checkboxes</a></li>`;
 
     if ( !menuOptions.firstElementChild.classList.contains("has-arrow") ) {
         menuOptions.firstElementChild.classList.add("has-arrow");

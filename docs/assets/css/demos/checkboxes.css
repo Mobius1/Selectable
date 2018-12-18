@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700");
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inconsolata";
+  background-color: #38354a;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+ul li {
+  list-style: none;
+}
+
+#items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 15px;
+}
+#items .item {
+  display: flex;
+  align-items: center;
+  width: 250px;
+  padding: 6px;
+  background: #514d6a;
+  margin: 0 0 5px 0;
+  border-radius: 3px;
+  color: #fff;
+}
+#items .item:hover {
+  background: #5c5879;
+}
+#items .item label {
+  margin-right: 20px;
+}
+#items .item.ui-selecting {
+  background: #827da0;
+  color: #fff;
+}
+#items .item.ui-selected {
+  background-color: #009688;
+  color: #fff;
+}
