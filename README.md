@@ -33,6 +33,11 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 * [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
 * [Advanced Usage](https://s.codepen.io/Mobius1/pen/OOXPwo)
 
+## Integration with other libs
+
+* with [Dropzone](https://mobius1.github.io/Selectable/demos/dropzone.html) ([enyo/dropzone](https://github.com/enyo/dropzone))
+* with [Sortable](https://mobius1.github.io/Selectable/demos/sortable.html) ([SortableJS/Sortable](https://github.com/SortableJS/Sortable))
+
 ---
 
 ## Install
