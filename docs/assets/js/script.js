@@ -94,8 +94,8 @@ function init() {
 
         let latest = json[0].name;
 
-        const main = document.getElementById("main-js");
-        main.src = main.src.replace("latest", latest);
+        // const main = document.getElementById("main-js");
+        // main.src = main.src.replace("latest", latest);
 
         versions.previousElementSibling.textContent = latest;
 
