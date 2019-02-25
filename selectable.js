@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.15.6
+ * Version: 0.16.0
  *
  */
 (function(root, factory) {
@@ -201,7 +201,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.15.6";
+        this.version = "0.16.0";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||

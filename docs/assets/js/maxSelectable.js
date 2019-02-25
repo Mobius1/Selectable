@@ -16,7 +16,7 @@ const selectable = new Selectable({
 
 
 const frag = document.createDocumentFragment();
-for ( let i = 0; i < 128; i++ ) {
+for ( let i = 0; i < 40; i++ ) {
 	const li = document.createElement("li");
 	li.classList.add("ui-selectable");
 	frag.appendChild(li);
