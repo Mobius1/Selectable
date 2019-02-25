@@ -218,6 +218,10 @@ function init() {
         menuEvents.firstElementChild.classList.add("has-arrow");
     }
 
+    if ( document.getElementById("optionsList") ) {
+        document.getElementById("optionsList").innerHTML = menuOptions.lastElementChild.innerHTML;
+    }
+
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
 
     if ( activeBreadcrumb ) {
