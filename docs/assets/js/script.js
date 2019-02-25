@@ -44,22 +44,6 @@ $(document).ready(function () {
 
     $('.faqLeftSidebar, .faqContent').theiaStickySidebar();
 
-    //Language dropdown
-    $("#lng_select").msDropdown();
-
-    //Navbar top search
-    $(".navbar").each(function () {
-        $("li.search > a", this).on("click", function (e) {
-            e.preventDefault();
-            $(".top-search").slideToggle();
-        });
-    });
-    $(".input-group-addon.close-search").on("click", function () {
-        $(".top-search").slideUp();
-    });
-
-
-
 
 });
 
@@ -219,7 +203,7 @@ function init() {
     }
 
     if ( document.getElementById("optionsList") ) {
-        document.getElementById("optionsList").innerHTML = menuOptions.lastElementChild.innerHTML;
+        document.getElementById("optionsList").innerHTML = menuOptions.lastElementChild.innerHTML; 
     }
 
     const activeBreadcrumb = document.querySelector(".breadcrumb-item.active");
