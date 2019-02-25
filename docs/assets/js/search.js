@@ -15,6 +15,7 @@ const list = [
 	"api/options/toggle.html",
 	"api/options/tolerance.html",
 	"api/options/lasso.html",
+	"api/options/maxSelectable.html",
 	"api/methods/add.html",
 	"api/methods/clear.html",
 	"api/methods/destroy.html",
