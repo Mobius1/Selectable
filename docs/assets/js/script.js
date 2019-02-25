@@ -47,6 +47,8 @@ $(document).ready(function () {
 
 });
 
+
+
 const sidebarMenu = document.getElementById("sidebarMenu");
 let bar = false;
 
@@ -90,7 +92,12 @@ function init() {
 
     fetch("https://api.github.com/repos/Mobius1/Selectable/releases").then(resp => resp.json()).then(json => {
 
-        versions.previousElementSibling.textContent = json[0].name;
+        let latest = json[0].name;
+
+        const main = document.getElementById("main-js");
+        main.src = main.src.replace("latest", latest);
+
+        versions.previousElementSibling.textContent = latest;
 
         const frag = document.createDocumentFragment();
         json.slice(0,10).forEach((item,i) => {
