@@ -244,6 +244,8 @@
 
                 ignore: false,
 
+                maxSelectable: false,
+
                 lasso: {
                     border: '1px dotted #000',
                     backgroundColor: 'rgba(52, 152, 219, 0.2)',
@@ -360,7 +362,7 @@
             }
 
             // get the parent container scroll dimensions
-           this.scroll = {
+            this.scroll = {
                 x: x,
                 y: y,
                 max: {
@@ -504,8 +506,14 @@
         select: function(item, all) {
 
             if (isCollection(item)) {
+                var count = this.getSelectedItems().length;
                 for (var i = 0; i < item.length; i++) {
+                    if (!!this.config.maxSelectable && count >= this.config.maxSelectable) {
+                        break;
+                    }
+
                     this.select(item[i]);
+                    count++;
                 }
 
                 return this.getSelectedItems();
@@ -606,7 +614,7 @@
         add: function(node) {
             var els = [];
 
-            if ( typeof node === "string" ) {
+            if (typeof node === "string") {
                 node = [].slice.call(this.container.querySelectorAll(node));
             }
 
@@ -675,6 +683,9 @@
          * @return {Void}
          */
         selectAll: function() {
+            if (!!this.config.maxSelectable && this.config.maxSelectable < this.items.length) {
+                return this._maxReached();
+            }
             for (var i = 0; i < this.items.length; i++) {
                 this.select(this.items[i], true);
             }
@@ -686,6 +697,10 @@
          */
         invert: function() {
             var items = this.getItems();
+
+            if (!!this.config.maxSelectable && this.config.maxSelectable < items.length) {
+                return this._maxReached();
+            }
 
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
@@ -714,7 +729,7 @@
         get: function(item) {
             var found = false;
 
-            if ( typeof item === "string" ) {
+            if (typeof item === "string") {
                 item = [].slice.call(this.container.querySelectorAll(item));
             }
 
@@ -945,6 +960,10 @@
 
         /* ---------- PRIVATE METHODS ---------- */
 
+        _maxReached: function() {
+            return this.emit("maxitems");
+        },
+
         /**
          * touchstart event listener
          * @param  {Object} e Event interface
@@ -967,7 +986,14 @@
                 o = this.config,
                 originalEl,
                 cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
-                shift = (this.canShift && isShiftKey(e));
+                shift = (this.canShift && isShiftKey(e)),
+                count = this.getSelectedItems().length,
+                max = o.maxSelectable;
+
+            // max items reached and toggle is enabled or the cmd / shift key is down
+            if (!!max && count >= max && (cmd || shift || o.toggle)) {
+                return this._maxReached();
+            }
 
             if (!this.container.contains(e.target) || e.which === 3 || e.button > 0 || o.disabled) return;
 
@@ -1173,7 +1199,9 @@
                 evt = this._getEvent(e),
                 endEl,
                 selected = [],
-                deselected = [];
+                deselected = [],
+                count = this.getSelectedItems().length,
+                max = o.maxSelectable;
 
             // remove the lasso
             if (this.lasso && this.container.contains(this.lasso)) {
@@ -1204,6 +1232,8 @@
                 return classList.contains(el, o.classes.selectable);
             });
 
+            var maxReached = false;
+
             // loop over items and check their state
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
@@ -1227,8 +1257,16 @@
 
                 // item was marked for select
                 if (item.selecting) {
-                    selected.push(item);
-                    this.select(item);
+                    // max items reached
+                    if (!!max && count + selected.length >= max) {
+                        item.selecting = false;
+                        classList.remove(item.node, o.classes.selecting);
+
+                        maxReached = true;
+                    } else {
+                        selected.push(item);
+                        this.select(item);
+                    }
                 }
             }
 
@@ -1237,6 +1275,10 @@
             }
 
             this.emit(this.v[1] < 15 ? "selectable.end" : "end", e, selected, deselected);
+
+            if (maxReached) {
+                return this._maxReached();
+            }
         },
 
         /**
