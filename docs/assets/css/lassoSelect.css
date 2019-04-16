@@ -42,6 +42,7 @@
 
 #calendar ul.day-grid li.ui-selected {
   background-color: #0054D1;
+  color: #fff;
 }
 
 #calendar ul.weekdays abbr[title] {
