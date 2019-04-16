@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.17.0
+ * Version: 0.17.1
  *
  */
 (function(root, factory) {
@@ -201,7 +201,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.17.0";
+        this.version = "0.17.1";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
@@ -1467,25 +1467,27 @@
 
         _sequentialSelect: function(e) {
             var c = this.config.classes,
-                lastEl = document.elementFromPoint(this.mouse.x, this.mouse.y).closest(`.${c.selectable}`),
+                lastEl = document.elementFromPoint(this.mouse.x, this.mouse.y),
                 start, end, items;
-
             if (lastEl) {
-                if (this.mouse.y > this.origin.y) {
-                    start = this.nodes.indexOf(this.startEl);
-                    end = this.nodes.indexOf(lastEl);
-                } else if (this.mouse.y < this.origin.y) {
-                    start = this.nodes.indexOf(lastEl);
-                    end = this.nodes.indexOf(this.startEl);
-                }
+                lastEl = lastEl.closest(`.${c.selectable}`)
+                if (lastEl) {
+                    if (this.mouse.y > this.origin.y) {
+                        start = this.nodes.indexOf(this.startEl);
+                        end = this.nodes.indexOf(lastEl);
+                    } else if (this.mouse.y < this.origin.y) {
+                        start = this.nodes.indexOf(lastEl);
+                        end = this.nodes.indexOf(this.startEl);
+                    }
 
-                for (var i = 0; i < this.items.length; i++) {
-                    var item = this.items[i];
-                    if (i >= start && i <= end) {
-                        this._highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
-                    } else {
-                        item.selecting = false;
-                        item.node.classList.remove(c.selecting);
+                    for (var i = 0; i < this.items.length; i++) {
+                        var item = this.items[i];
+                        if (i >= start && i <= end) {
+                            this._highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
+                        } else {
+                            item.selecting = false;
+                            item.node.classList.remove(c.selecting);
+                        }
                     }
                 }
             }
