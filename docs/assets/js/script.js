@@ -132,7 +132,7 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/filter.html">filter</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/ignore.html">ignore</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/lasso.html">lasso</a></li>
-                                                <li><a href="https://mobius1.github.io/Selectable/api/properties/lassoSelect.html">lassoSelect</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/options/lassoSelect.html">lassoSelect</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/maxSelectable.html">maxSelectable</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/saveState.html">saveState</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/options/throttle.html">throttle</a></li>
