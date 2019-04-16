@@ -30,18 +30,18 @@
   border: 1px solid #eaeaea;
   height: 12vw;
   max-height: 125px;
-	
-	&.prev, &.next {
-		cursor: not-allowed;
-	}
-	
-	&.ui-selecting {
-		background-color: #90CAF9;
-	}
-	
-	&.ui-selected {
-		background-color: #A5D6A7;
-	}
+}
+
+#calendar ul.day-grid li.prev, #calendar ul.day-grid li.next {
+  cursor: not-allowed;
+}
+
+#calendar ul.day-grid li.ui-selecting {
+  background-color: rgb(181, 210, 253);
+}
+
+#calendar ul.day-grid li.ui-selected {
+  background-color: #0054D1;
 }
 
 #calendar ul.weekdays abbr[title] {
