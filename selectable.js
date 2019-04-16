@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.17.1
+ * Version: 0.17.2
  *
  */
 (function(root, factory) {
@@ -201,7 +201,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.17.1";
+        this.version = "0.17.2";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
@@ -1147,7 +1147,7 @@
                     this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
                 }
             } else if (o.lassoSelect === "sequential") {
-                this._sequentialSelect(e);
+                this._sequentialSelect(evt);
             }
 
             // lasso coordinates
@@ -1467,10 +1467,10 @@
 
         _sequentialSelect: function(e) {
             var c = this.config.classes,
-                lastEl = document.elementFromPoint(this.mouse.x, this.mouse.y),
+                lastEl = document.elementFromPoint(e.pageX, e.pageY - window.pageYOffset),
                 start, end, items;
             if (lastEl) {
-                lastEl = lastEl.closest(`.${c.selectable}`)
+                lastEl = lastEl.closest(`.${c.selectable}`);
                 if (lastEl) {
                     if (this.mouse.y > this.origin.y) {
                         start = this.nodes.indexOf(this.startEl);
