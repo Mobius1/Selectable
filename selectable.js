@@ -235,6 +235,8 @@
 
                 throttle: 50,
 
+                lassoSelect: "normal",
+
                 autoScroll: {
                     threshold: 0,
                     increment: 10,
@@ -1139,9 +1141,13 @@
                 }
             }
 
-            /* highlight */
-            for (var i = 0; i < this.items.length; i++) {
-                this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+            if (o.lassoSelect === "normal") {
+                /* highlight */
+                for (var i = 0; i < this.items.length; i++) {
+                    this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
+                }
+            } else if (o.lassoSelect === "sequential") {
+                this._sequentialSelect(e);
             }
 
             // lasso coordinates
@@ -1459,6 +1465,32 @@
             }
         },
 
+        _sequentialSelect: function(e) {
+            var c = this.config.classes,
+                lastEl = document.elementFromPoint(this.mouse.x, this.mouse.y).closest(`.${c.selectable}`),
+                start, end, items;
+
+            if (lastEl) {
+                if (this.mouse.y > this.origin.y) {
+                    start = this.nodes.indexOf(this.startEl);
+                    end = this.nodes.indexOf(lastEl);
+                } else if (this.mouse.y < this.origin.y) {
+                    start = this.nodes.indexOf(lastEl);
+                    end = this.nodes.indexOf(this.startEl);
+                }
+
+                for (var i = 0; i < this.items.length; i++) {
+                    var item = this.items[i];
+                    if (i >= start && i <= end) {
+                        this._highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
+                    } else {
+                        item.selecting = false;
+                        item.node.classList.remove(c.selecting);
+                    }
+                }
+            }
+        },
+
         /**
          * Highlight an item for selection based on lasso position
          * @param  {Object} item
@@ -1472,12 +1504,16 @@
             var x = this.bodyContainer ? 0 : this.scroll.x;
             var y = this.bodyContainer ? 0 : this.scroll.y;
 
-            if (o.tolerance === "touch") {
-                over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
-                    (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
-            } else if (o.tolerance === "fit") {
-                over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
-                    (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
+            if (o.lassoSelect === "normal") {
+                if (o.tolerance === "touch") {
+                    over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
+                        (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
+                } else if (o.tolerance === "fit") {
+                    over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
+                        (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
+                }
+            } else {
+                over = true;
             }
 
             if (over) {

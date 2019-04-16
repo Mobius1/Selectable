@@ -146,6 +146,7 @@ function init() {
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/events.html">events</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/items.html">items</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/lasso.html">lasso</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/properties/lassoSelect.html">lassoSelect</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/listeners.html">listeners</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/nodes.html">nodes</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/properties/rect.html">rect</a></li>

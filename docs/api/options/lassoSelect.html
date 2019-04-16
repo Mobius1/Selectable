@@ -14,6 +14,7 @@
         <link href="https://mobius1.github.io/Selectable/assets/css/github.min.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/prism.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/style.css" rel="stylesheet">
+        <link href="https://mobius1.github.io/Selectable/assets/css/lasso.css" rel="stylesheet">
         <title>Selectable - DOCS</title>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="https://mobius1.github.io/Selectable/assets/img/favicon.png" />
@@ -102,35 +103,120 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Options</a></li>
-                                    <li class="breadcrumb-item active">tolerance</li>
+                                    <li class="breadcrumb-item active">lassoSelect</li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> tolerance</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> lassoSelect</h1>
                                 <hr />
-<h5 id="typestring">Type <code>String</code></h5>
+<h5 id="typeobject">Type <code>String</code></h5>
 
-<h5 id="defaulttouch">Default <code>"touch"</code></h5>
-
-<p>Defined how far the lasso overlaps a selectable element before it's highlighted for selection. </p>
+<p>Set the selecting sequence for the lasso.</p>
+<hr />
+<p><div class="alert alert-primary" role="alert">Must be an <code>object</code> of valid CSS properties and values</div></p>
+<p>Set to <code>"sequential"</code> to allow the lasso to select items sequentially instead of only the ones within the lasso.</p>
+<p>Defaults to <code>"normal"</code></p>
 
 <hr />
 
-<ul>
-<li><p><code>"touch"</code> - the lasso only needs to touch the item to highlight it for selection
-<p><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/1touch.gif" alt="" /></p></li></p>
+<h5 id="demo" class="scroll-title">Demo</h5>
 
-<li><p><code>"fit"</code> - the item needs to be completely within the lasso to be highlighted for selection
-<p><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/1fit.gif" alt="" /></p></li></p>
-</ul>
+<pre><code class="javascript language-javascript">new Selectable({
+    lasso: {
+        lassoSelect: "sequential",
+        appendTo: "#calendar",
+        filter: ".day",
+    }
+});
+</code></pre>
+<hr />
+
+
+<div id="container-demo">
+    <div id="calendar">
+        <header>
+          <h1>November 2017</h1>
+        </header>
+      
+        <ul class="weekdays">
+          <li>
+            <abbr title="S">Sunday</abbr>
+          </li>
+          <li>
+            <abbr title="M">Monday</abbr>
+          </li>
+          <li>
+            <abbr title="T">Tuesday</abbr>
+          </li>
+          <li>
+            <abbr title="W">Wednesday</abbr>
+          </li>
+          <li>
+            <abbr title="T">Thursday</abbr>
+          </li>
+          <li>
+            <abbr title="F">Friday</abbr>
+          </li>
+          <li>
+            <abbr title="S">Saturday</abbr>
+          </li>
+        </ul>
+      
+        <ul class="day-grid">
+          <li class="prev">29</li>
+          <li class="prev">30</li>
+          <li class="prev">31</li>
+          <li class="day">1</li>
+          <li class="day">2</li>
+          <li class="day">3</li>
+          <li class="day">4</li>
+          <li class="day">5</li>
+          <li class="day">6</li>
+          <li class="day">7</li>
+          <li class="day">8</li>
+          <li class="day">9</li>
+          <li class="day">10</li>
+          <li class="day">11</li>
+          <li class="day">12</li>
+          <li class="day">13</li>
+          <li class="day">14</li>
+          <li class="day">15</li>
+          <li class="day">16</li>
+          <li class="day">17</li>
+          <li class="day">18</li>
+          <li class="day">19</li>
+          <li class="day">20</li>
+          <li class="day">21</li>
+          <li class="day">22</li>
+          <li class="day">23</li>
+          <li class="day">24</li>
+          <li class="day">25</li>
+          <li class="day">26</li>
+          <li class="day">27</li>
+          <li class="day">28</li>
+          <li class="day">29</li>
+          <li class="day">30</li>
+          <li class="next">1</li>
+          <li class="next">2</li>
+        </ul>
+          
+      </div>
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <button class="btn btn-sm btn-danger" onclick="selectable.clear()" type="button">Clear</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable.invert()" type="button">Invert</button>
+            <button class="btn btn-sm btn-primary" onclick="selectable.selectAll()" type="button">Select All</button>
+        </div>
+    </div>    
+</div>
 
 <hr />
-                            </div>
+                   </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="toggle.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <!-- <a href="ignore.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a> -->
+                                <a href="lasso.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="maxSelectable.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>
@@ -172,5 +258,6 @@
         <script type="text/javascript" src="https://mobius1.github.io/Selectable/assets/js/prism.min.js"></script>
         <script id="main-js" type="text/javascript" src="https://unpkg.com/selectable.js@0.16.0/selectable.min.js"></script>
         <script src="https://mobius1.github.io/Selectable/assets/js/script.js"></script>
+        <script src="https://mobius1.github.io/Selectable/assets/js/lassoSelect.js"></script>
     </body>
 </html>

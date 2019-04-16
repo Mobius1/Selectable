@@ -1,0 +1,87 @@
+header {
+  display: flex;
+  align-items: center;
+  font-size: calc(14px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
+  justify-content: center;
+  margin-bottom: 1.5em;
+  background: #000;
+  color: #fff;
+  min-height: 8vh;
+  text-align: center;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 1em;
+  margin: 0 auto;
+  max-width: 64em;
+  padding: 0;
+	cursor: crosshair;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin-left: 0;
+  font-size: calc(16px + (21 - 16) * ((100vw - 300px) / (1600 - 300)));
+}
+
+ul.weekdays {
+  margin-bottom: 1em;
+}
+
+ul.weekdays li {
+  height: 4vw;
+}
+
+ul.day-grid li {
+  background-color: #eaeaea;
+  border: 1px solid #eaeaea;
+  height: 12vw;
+  max-height: 125px;
+	
+	&.prev, &.next {
+		cursor: not-allowed;
+	}
+	
+	&.ui-selecting {
+		background-color: #90CAF9;
+	}
+	
+	&.ui-selected {
+		background-color: #A5D6A7;
+	}
+}
+
+ul.weekdays abbr[title] {
+  border: none;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+ul.day-grid li:nth-child(1),
+ul.day-grid li:nth-child(2),
+ul.day-grid li:nth-child(3),
+ul.day-grid li:nth-child(34),
+ul.day-grid li:nth-child(35) {
+  background-color: #fff;
+}
+
+@media all and (max-width: 800px) {
+  ul {
+    grid-gap: .25em;
+  }
+  
+  ul.weekdays li {
+    font-size: 0;
+  }
+  
+  ul.weekdays > li abbr:after {
+      content: attr(title);
+      font-size: calc(16px + (26 - 16) * ((100vw - 300px) / (1600 - 300)));
+    text-align: center;
+    }
+}
