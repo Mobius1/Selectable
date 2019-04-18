@@ -336,10 +336,12 @@ if ( window.Selectable && typeof Selectable === "function" ) {
 
     const container1 = document.getElementById("demo-container");
     const container2 = document.getElementById("demo-container-2");
-    const container3 = document.querySelector(".desktop");
+    const container3 = document.getElementById("demo-container-3");
+    const container4 = document.querySelector(".desktop");
     let selectable1;
     let selectable2;
     let selectable3;
+    let selectable4;
 
     function demo1() {
         if ( container1 ) {
@@ -395,7 +397,21 @@ if ( window.Selectable && typeof Selectable === "function" ) {
 
     function demo3() {
         if ( container3 ) {
-            new Selectable({
+            selectable3 = new Selectable({
+                lassoSelect: "sequential",
+                appendTo: "#calendar",
+                filter: ".day",
+                lasso: {
+                    border: "2px dashed rgba(255, 255, 255, 0)",
+                    backgroundColor: "rgba(255, 255, 255, 0)"
+                },
+            });
+        }    
+    }
+
+    function demo4() {
+        if ( container4 ) {
+            selectable4 = new Selectable({
               filter: ".icon-desktop",
               appendTo: container3,
               lasso: {
@@ -404,7 +420,7 @@ if ( window.Selectable && typeof Selectable === "function" ) {
               },
             });
         }    
-    }
+    }    
 }
 
 function initSearch() {
