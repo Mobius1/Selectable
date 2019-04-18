@@ -414,7 +414,7 @@ if ( window.Selectable && typeof Selectable === "function" ) {
         if ( container4 ) {
             selectable4 = new Selectable({
               filter: ".icon-desktop",
-              appendTo: container3,
+              appendTo: container4,
               lasso: {
                 border: "1px solid rgba(51, 153, 255, 1)",
                 backgroundColor: "rgba(51, 153, 255, 0.2)"
