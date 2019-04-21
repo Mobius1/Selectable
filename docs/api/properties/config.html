@@ -132,19 +132,25 @@
 
     throttle: 50,
 
+    lassoSelect: "normal",
+
     autoScroll: {
         threshold: 0,
-        increment: 20,
+        increment: 10,
     },
 
+    saveState: false,
+
     ignore: false,
+
+    maxSelectable: false,
 
     lasso: {
         border: '1px dotted #000',
         backgroundColor: 'rgba(52, 152, 219, 0.2)',
     },
 
-    keys: ['shiftKey', 'ctrlKey', 'metaKey'],
+    keys: ['shiftKey', 'ctrlKey', 'metaKey', ""],
 
     classes: {
         lasso: "ui-lasso",
@@ -152,8 +158,7 @@
         container: "ui-container",
         selecting: "ui-selecting",
         selectable: "ui-selectable",
-        unselecting: "ui-unselecting"
-    }
+        deselecting: "ui-deselecting"
 }</code></pre>
 <hr />
 
