@@ -28,133 +28,6 @@
     var _supports = 'classList' in document.documentElement;
 
     /**
-     * Find the closest matching ancestor to a node
-     * @param  {Object}   el HTMLElement
-     * @param  {Function} fn Callback
-     * @return {Object|Boolean}
-     */
-    var closest = function(el, fn) {
-        return el && el !== document.documentElement && (fn(el) ? el : closest(el.parentNode, fn));
-    };
-
-    /**
-     * Check is item is object
-     * @return {Boolean}
-     */
-    var isObject = function(val) {
-        return Object.prototype.toString.call(val) === "[object Object]";
-    };
-
-    /**
-     * Check item is iterable
-     * @param  {Mixed} arr
-     * @return {Boolean}
-     */
-    var isCollection = function(arr) {
-        return Array.isArray(arr) || arr instanceof HTMLCollection || arr instanceof NodeList;
-    };
-
-    /**
-     * Check var is a number
-     * @param  {Mixed} n
-     * @return {Boolean}
-     */
-    var isNumber = function(n) {
-        if ("isInteger" in Number) {
-            return Number.isInteger(n);
-        }
-        return !isNaN(n);
-    };
-
-    /**
-     * Merge objects (reccursive)
-     * @param  {Object} r
-     * @param  {Object} t
-     * @return {Object}
-     */
-    var extend = function(src, props) {
-        for (var prop in props) {
-            if (props.hasOwnProperty(prop)) {
-                var val = props[prop];
-                if (val && isObject(val)) {
-                    src[prop] = src[prop] || {};
-                    extend(src[prop], val);
-                } else {
-                    src[prop] = val;
-                }
-            }
-        }
-        return src;
-    };
-
-    /**
-     * Mass assign style properties
-     * @param  {Object} t
-     * @param  {(String|Object)} e
-     * @param  {String|Object}
-     */
-    var css = function(el, obj) {
-        var style = el.style;
-        if (el) {
-            if (obj === undefined) {
-                return window.getComputedStyle(el);
-            } else {
-                if (isObject(obj)) {
-                    for (var prop in obj) {
-                        if (!(prop in style)) {
-                            prop = "-webkit-" + prop;
-                        }
-                        el.style[prop] = obj[prop] + (typeof obj[prop] === "string" ? "" : prop === "opacity" ? "" : "px");
-                    }
-                }
-            }
-        }
-    };
-
-    /**
-     * Get an element's DOMRect relative to the document instead of the viewport.
-     * @param  {Object} t   HTMLElement
-     * @param  {Boolean} e  Include margins
-     * @return {Object}     Formatted DOMRect copy
-     */
-    var rect = function(e) {
-        var w = window,
-            o = e.getBoundingClientRect(),
-            b = document.documentElement || document.body.parentNode || document.body,
-            d = (void 0 !== w.pageXOffset) ? w.pageXOffset : b.scrollLeft,
-            n = (void 0 !== w.pageYOffset) ? w.pageYOffset : b.scrollTop;
-        return {
-            x1: o.left + d,
-            x2: o.left + o.width + d,
-            y1: o.top + n,
-            y2: o.top + o.height + n,
-            height: o.height,
-            width: o.width
-        };
-    };
-
-    /**
-     * Returns a function, that, as long as it continues to be invoked, will not be triggered.
-     * @param  {Function} fn
-     * @param  {Number} lim
-     * @param  {Boolean} now
-     * @return {Function}
-     */
-    var throttle = function(fn, lim, context) {
-        var wait;
-        return function() {
-            context = context || this;
-            if (!wait) {
-                fn.apply(context, arguments);
-                wait = true;
-                return setTimeout(function() {
-                    wait = false;
-                }, lim);
-            }
-        };
-    };
-
-    /**
      * classList shim
      * @type {Object}
      */
@@ -176,7 +49,7 @@
      * @param  {Object}  e Event interface
      * @return {Boolean}
      */
-    var isCmdKey = function(e) {
+    var _isCmdKey = function(e) {
         return !!e.ctrlKey || !!e.metaKey;
     };
 
@@ -185,16 +58,16 @@
      * @param  {Object}  e Event interface
      * @return {Boolean}
      */
-    var isShiftKey = function(e) {
+    var _isShiftKey = function(e) {
         return !!e.shiftKey;
     };
 
-    var axes = ["x", "y"];
-    var axes1 = {
+    var _axes = ["x", "y"];
+    var _axes1 = {
         x: "x1",
         y: "y1"
     };
-    var axes2 = {
+    var _axes2 = {
         x: "x2",
         y: "y2"
     };
@@ -265,7 +138,17 @@
                 }
             };
 
-            this.config = extend(selectableConfig, options);
+            this.config = _extend(selectableConfig, options);
+
+            this.origin = {
+                x: 0,
+                y: 0
+            };
+
+            this.mouse = {
+                x: 0,
+                y: 0
+            };
 
             var o = this.config;
 
@@ -278,7 +161,7 @@
                 this.lasso = document.createElement('div');
                 this.lasso.className = o.classes.lasso;
 
-                css(this.lasso, extend({
+                _css(this.lasso, _extend({
                     position: "absolute",
                     boxSizing: "border-box",
                     opacity: 0, // border will show even at zero width / height
@@ -296,7 +179,7 @@
                 this.events[event] = this[event].bind(this);
             });
 
-            this.events._refresh = throttle(this.refresh, o.throttle, this);
+            this.events._refresh = _throttle(this.refresh, o.throttle, this);
 
             if (this.autoscroll) {
                 this.events._scroll = this._onScroll.bind(this);
@@ -356,7 +239,7 @@
             this.scrollHeight = this.container.scrollHeight;
 
             // get the parent container DOMRect
-            this.boundingRect = rect(this.container);
+            this.boundingRect = _rect(this.container);
 
             if (this.bodyContainer) {
                 this.boundingRect.x2 = ww;
@@ -382,7 +265,7 @@
             };
 
             for (var i = 0; i < this.nodes.length; i++) {
-                this.items[i].rect = rect(this.nodes[i]);
+                this.items[i].rect = _rect(this.nodes[i]);
             }
             this.emit(this.v[1] < 15 ? "selectable.refresh" : "refresh");
         },
@@ -490,7 +373,7 @@
             this._loadItems();
 
             if (this.autoscroll) {
-                var style = css(this.container);
+                var style = _css(this.container);
 
                 if (style.position === "static" && !this.bodyContainer) {
                     this.container.style.position = "relative"
@@ -987,8 +870,8 @@
                 evt = this._getEvent(e),
                 o = this.config,
                 originalEl,
-                cmd = isCmdKey(e) && (this.canCtrl || this.canMeta),
-                shift = (this.canShift && isShiftKey(e)),
+                cmd = _isCmdKey(e) && (this.canCtrl || this.canMeta),
+                shift = (this.canShift && _isShiftKey(e)),
                 count = this.getSelectedItems().length,
                 max = o.maxSelectable;
 
@@ -1113,11 +996,11 @@
          */
         _drag: function(e) {
             var o = this.config;
-            if (o.disabled || !this.dragging || (isShiftKey(e) && this.canShift)) return;
+            if (o.disabled || !this.dragging || (_isShiftKey(e) && this.canShift)) return;
 
             let tmp;
             var evt = this._getEvent(e);
-            var cmd = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            var cmd = _isCmdKey(e) && (this.canCtrl || this.canMeta);
 
             this.mouse = {
                 x: evt.pageX,
@@ -1132,22 +1015,13 @@
             };
 
             // flip lasso
-            for (var i = 0; i < axes.length; i++) {
-                var axis = axes[i];
-                if (this.current[axes1[axis]] > this.current[axes2[axis]]) {
-                    tmp = this.current[axes2[axis]];
-                    this.current[axes2[axis]] = this.current[axes1[axis]];
-                    this.current[axes1[axis]] = tmp;
+            for (var i = 0; i < _axes.length; i++) {
+                var axis = _axes[i];
+                if (this.current[_axes1[axis]] > this.current[_axes2[axis]]) {
+                    tmp = this.current[_axes2[axis]];
+                    this.current[_axes2[axis]] = this.current[_axes1[axis]];
+                    this.current[_axes1[axis]] = tmp;
                 }
-            }
-
-            if (o.lassoSelect === "normal") {
-                /* highlight */
-                for (var i = 0; i < this.items.length; i++) {
-                    this._highlight(this.items[i], isCmdKey(e) && (this.canCtrl || this.canMeta));
-                }
-            } else if (o.lassoSelect === "sequential") {
-                this._sequentialSelect(evt);
             }
 
             // lasso coordinates
@@ -1157,6 +1031,15 @@
                 y1: this.current.y1,
                 y2: this.current.y2 - this.current.y1
             };
+
+            if (o.lassoSelect === "normal") {
+                /* highlight */
+                for (var i = 0; i < this.items.length; i++) {
+                    this._highlight(this.items[i], _isCmdKey(e) && (this.canCtrl || this.canMeta), evt);
+                }
+            } else if (o.lassoSelect === "sequential") {
+                this._sequentialSelect(evt);
+            }
 
             // auto scroll
             if (this.autoscroll) {
@@ -1176,7 +1059,7 @@
                 }
 
                 // style the lasso
-                css(this.lasso, {
+                _css(this.lasso, {
                     left: this.coords.x1,
                     top: this.coords.y1,
                     width: this.coords.x2,
@@ -1216,7 +1099,7 @@
 
             if (this.lasso) {
                 // Reset the lasso
-                css(this.lasso, {
+                _css(this.lasso, {
                     opacity: 0,
                     left: 0,
                     width: 0,
@@ -1293,7 +1176,7 @@
          * @return {Void}
          */
         _keydown: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            this.cmdDown = _isCmdKey(e) && (this.canCtrl || this.canMeta);
 
             var code = false;
             if (e.key !== undefined) {
@@ -1340,7 +1223,7 @@
          * @return {Void}
          */
         _keyup: function(e) {
-            this.cmdDown = isCmdKey(e) && (this.canCtrl || this.canMeta);
+            this.cmdDown = _isCmdKey(e) && (this.canCtrl || this.canMeta);
         },
 
         /**
@@ -1353,7 +1236,7 @@
             this.scroll.y = this.bodyContainer ? window.pageYOffset : this.container.scrollTop;
 
             for (var i = 0; i < this.items.length; i++) {
-                this.items[i].rect = rect(this.items[i].node);
+                this.items[i].rect = _rect(this.items[i].node);
             }
         },
 
@@ -1372,14 +1255,67 @@
                     var el = this.nodes[i];
                     classList.add(el, o.classes.selectable);
 
-                    this.items.push({
+                    var item = {
                         node: el,
-                        rect: rect(el),
+                        rect: _rect(el),
                         startselected: false,
                         selected: classList.contains(el, o.classes.selected),
                         selecting: classList.contains(el, o.classes.selecting),
-                        deselecting: classList.contains(el, o.classes.deselecting)
-                    });
+                        deselecting: classList.contains(el, o.classes.deselecting),
+                    };
+
+                    var isTransformed = this._get2DTransformation(el);
+
+                    if (isTransformed) {
+                        var offset = _getOffset(el);
+
+                        var origin = isTransformed.origin,
+                            scale = isTransformed.scale,
+                            w = el.offsetWidth,
+                            h = el.offsetHeight,
+                            x = offset.left,
+                            y = offset.top;
+
+                        var orx = parseInt(origin[0], 10),
+                            ory = parseInt(origin[1], 10);
+                        var hx = (w / 2),
+                            hy = (h / 2);
+                        var cx = x + ((hx - orx) * scale) + orx,
+                            cy = y + ((hy - ory) * scale) + ory;
+                        var shx = hx * scale,
+                            shy = hy * scale;
+
+                        // rect coords
+                        var p = [
+                        {
+                            x: cx - shx,
+                            y: cy - shy
+                        },
+                        {
+                            x: cx + shx,
+                            y: cy - shy
+                        },
+                        {
+                            x: cx + shx,
+                            y: cy + shy
+                        },
+                        {
+                            x: cx - shx,
+                            y: cy + shy
+                        }];
+
+                        // rotate coords
+                        for (var n = 0; n <= 3; n++) {
+                            p[n] = _rotatePoint(p[n].x, p[n].y, x + orx, y + ory, isTransformed.angle);
+                        }
+
+                        item.transform = {
+                            rect: p,
+                        };
+
+                    }
+
+                    this.items.push(item);
                 }
             }
         },
@@ -1417,15 +1353,15 @@
             }
 
             // check if we need to scroll
-            for (var n = 0; n < axes.length; n++) {
-                var axis = axes[n];
+            for (var n = 0; n < _axes.length; n++) {
+                var axis = _axes[n];
                 if (
-                    this.mouse[axis] >= this.boundingRect[axes2[axis]] - t &&
+                    this.mouse[axis] >= this.boundingRect[_axes2[axis]] - t &&
                     this.scroll[axis] < this.scroll.max[axis]
                 ) {
                     inc[axis] = i;
                 } else if (
-                    this.mouse[axis] <= this.boundingRect[axes1[axis]] + t &&
+                    this.mouse[axis] <= this.boundingRect[_axes1[axis]] + t &&
                     this.scroll[axis] > 0
                 ) {
                     inc[axis] = -i;
@@ -1446,21 +1382,21 @@
          * @return {Void}
          */
         _limitLasso: function() {
-            for (var i = 0; i < axes.length; i++) {
-                var axis = axes[i];
-                var max = this.boundingRect[axes1[axis]] + this.scroll.size[axis];
+            for (var i = 0; i < _axes.length; i++) {
+                var axis = _axes[i];
+                var max = this.boundingRect[_axes1[axis]] + this.scroll.size[axis];
                 if (this.mouse[axis] >= max && this.scroll[axis] >= this.scroll.max[axis]) {
-                    var off = this.origin[axis] - this.boundingRect[axes1[axis]] - this.scroll[axis];
-                    this.coords[axes1[axis]] = this.origin[axis] - this.boundingRect[axes1[axis]];
-                    this.coords[axes2[axis]] = max - off - this.boundingRect[axes1[axis]];
+                    var off = this.origin[axis] - this.boundingRect[_axes1[axis]] - this.scroll[axis];
+                    this.coords[_axes1[axis]] = this.origin[axis] - this.boundingRect[_axes1[axis]];
+                    this.coords[_axes2[axis]] = max - off - this.boundingRect[_axes1[axis]];
                 }
 
                 if (
-                    this.mouse[axis] <= this.boundingRect[axes1[axis]] &&
+                    this.mouse[axis] <= this.boundingRect[_axes1[axis]] &&
                     this.scroll[axis] <= 0
                 ) {
-                    this.coords[axes1[axis]] = 0;
-                    this.coords[axes2[axis]] = this.origin[axis] - this.boundingRect[axes1[axis]];
+                    this.coords[_axes1[axis]] = 0;
+                    this.coords[_axes2[axis]] = this.origin[axis] - this.boundingRect[_axes1[axis]];
                 }
             }
         },
@@ -1483,7 +1419,7 @@
                     for (var i = 0; i < this.items.length; i++) {
                         var item = this.items[i];
                         if (i >= start && i <= end) {
-                            this._highlight(item, isCmdKey(e) && (this.canCtrl || this.canMeta));
+                            this._highlight(item, _isCmdKey(e) && (this.canCtrl || this.canMeta));
                         } else {
                             item.selecting = false;
                             item.node.classList.remove(c.selecting);
@@ -1498,7 +1434,7 @@
          * @param  {Object} item
          * @return {Void}
          */
-        _highlight: function(item, cmd) {
+        _highlight: function(item, cmd, evt) {
             var o = this.config,
                 el = item.node,
                 over = false;
@@ -1508,9 +1444,37 @@
 
             if (o.lassoSelect === "normal") {
                 if (o.tolerance === "touch") {
-                    over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
-                        (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
+
+                    // element is 2d transformed so we need to do some more complex collision detection
+                    if (item.transform) {
+
+                        var a = [
+                        {
+                            x: this.origin.x,
+                            y: this.origin.y
+                        },
+                        {
+                            x: this.mouse.x,
+                            y: this.origin.y
+                        },
+                        {
+                            x: this.mouse.x,
+                            y: this.mouse.y
+                        },
+                        {
+                            x: this.origin.x,
+                            y: this.mouse.y
+                        }, ];
+
+                        over = _rectsIntersecting(a, item.transform.rect);
+                    } else {
+                        // element has no 2d transform applied so just detect collision with the bounding box
+                        over = !(item.rect.x1 + x > this.current.x2 || (item.rect.x2 + x < this.current.x1 ||
+                            (item.rect.y1 + y > this.current.y2 || item.rect.y2 + y < this.current.y1)));
+                    }
                 } else if (o.tolerance === "fit") {
+                    // this relies on detecting the bounding box of the element so
+                    // both normal and 2d transformed elements will work								
                     over = item.rect.x1 + x > this.current.x1 && (item.rect.x2 + x < this.current.x2 &&
                         (item.rect.y1 + y > this.current.y1 && item.rect.y2 + y < this.current.y2));
                 }
@@ -1577,7 +1541,256 @@
         _blur: function(e) {
             this.focused = false;
             classList.remove(this.container, "ui-focused");
+        },
+
+        /**
+         * Get an element's 2d transformation properties
+         * @param  {Object} el HTMLElement
+         * @return {Bool|Object}
+         */
+        _get2DTransformation: function(el) {
+            var st = window.getComputedStyle(el, null);
+
+            var tr = st.getPropertyValue("-webkit-transform") ||
+                st.getPropertyValue("-moz-transform") ||
+                st.getPropertyValue("-ms-transform") ||
+                st.getPropertyValue("-o-transform") ||
+                st.getPropertyValue("transform") ||
+                false;
+
+            if (tr && tr !== "none") {
+
+                var matrix = tr.split('(')[1].split(')')[0].split(', ');
+
+                var a = parseFloat(matrix[0]);
+                var b = parseFloat(matrix[1]);
+                var scale = Math.sqrt(a * a + b * b);
+
+                return {
+                    angle: Math.round(Math.atan2(b, a) * (180 / Math.PI)),
+                    scale: scale,
+                    origin: st.transformOrigin.split(" ")
+                }
+            }
+
+            return false;
         }
+    };
+
+
+    /* ---------- HELPER FUNCTIONS ---------- *?/
+	
+    /**
+     * Find the closest matching ancestor to a node
+     * @param  {Object}   el HTMLElement
+     * @param  {Function} fn Callback
+     * @return {Object|Boolean}
+     */
+    function closest(el, fn) {
+        return el && el !== document.documentElement && (fn(el) ? el : closest(el.parentNode, fn));
+    };
+
+    /**
+     * Check is item is object
+     * @return {Boolean}
+     */
+    function isObject(val) {
+        return Object.prototype.toString.call(val) === "[object Object]";
+    };
+
+    /**
+     * Check item is iterable
+     * @param  {Mixed} arr
+     * @return {Boolean}
+     */
+    function isCollection(arr) {
+        return Array.isArray(arr) || arr instanceof HTMLCollection || arr instanceof NodeList;
+    };
+
+    /**
+     * Check var is a number
+     * @param  {Mixed} n
+     * @return {Boolean}
+     */
+    function isNumber(n) {
+        if ("isInteger" in Number) {
+            return Number.isInteger(n);
+        }
+        return !isNaN(n);
+    };
+
+    /**
+     * Merge objects (reccursive)
+     * @param  {Object} r
+     * @param  {Object} t
+     * @return {Object}
+     */
+    function _extend(src, props) {
+        for (var prop in props) {
+            if (props.hasOwnProperty(prop)) {
+                var val = props[prop];
+                if (val && isObject(val)) {
+                    src[prop] = src[prop] || {};
+                    _extend(src[prop], val);
+                } else {
+                    src[prop] = val;
+                }
+            }
+        }
+        return src;
+    };
+
+    /**
+     * Mass assign style properties
+     * @param  {Object} t
+     * @param  {(String|Object)} e
+     * @param  {String|Object}
+     */
+    function _css(el, obj) {
+        var style = el.style;
+        if (el) {
+            if (obj === undefined) {
+                return window.getComputedStyle(el);
+            } else {
+                if (isObject(obj)) {
+                    for (var prop in obj) {
+                        if (!(prop in style)) {
+                            prop = "-webkit-" + prop;
+                        }
+                        el.style[prop] = obj[prop] + (typeof obj[prop] === "string" ? "" : prop === "opacity" ? "" : "px");
+                    }
+                }
+            }
+        }
+    };
+
+    /**
+     * Get an element's DOMRect relative to the document instead of the viewport.
+     * @param  {Object} t   HTMLElement
+     * @param  {Boolean} e  Include margins
+     * @return {Object}     Formatted DOMRect copy
+     */
+    function _rect(e) {
+        var w = window,
+            o = e.getBoundingClientRect(),
+            b = document.documentElement || document.body.parentNode || document.body,
+            d = (void 0 !== w.pageXOffset) ? w.pageXOffset : b.scrollLeft,
+            n = (void 0 !== w.pageYOffset) ? w.pageYOffset : b.scrollTop;
+        return {
+            x1: o.left + d,
+            x2: o.left + o.width + d,
+            y1: o.top + n,
+            y2: o.top + o.height + n,
+            height: o.height,
+            width: o.width
+        };
+    };
+
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not be triggered.
+     * @param  {Function} fn
+     * @param  {Number} lim
+     * @param  {Boolean} now
+     * @return {Function}
+     */
+    function _throttle(fn, lim, context) {
+        var wait;
+        return function() {
+            context = context || this;
+            if (!wait) {
+                fn.apply(context, arguments);
+                wait = true;
+                return setTimeout(function() {
+                    wait = false;
+                }, lim);
+            }
+        };
+    };
+
+    function _getOffset(el) {
+        var top = 0,
+            left = 0;
+        do {
+            top += el.offsetTop || 0;
+            left += el.offsetLeft || 0;
+            el = el.offsetParent;
+        } while (el);
+
+        return {
+            top: top,
+            left: left
+        };
+    };
+
+    function _rotatePoint(px, py, x, y, theta) {
+        theta = theta * Math.PI / 180.0;
+        return {
+            x: Math.cos(theta) * (px - x) - Math.sin(theta) * (py - y) + x,
+            y: Math.sin(theta) * (px - x) + Math.cos(theta) * (py - y) + y
+        };
+    };
+
+    /**
+     * Determine whether there is an intersection between the two rects described
+     * by the lists of vertices. Uses the Separating Axis Theorem.
+     *
+     * @param {Array} a Array of coords
+     * @param {Array} b Array of coords
+     * @return {Bool}
+     */
+    function _rectsIntersecting(a, b) {
+        var rects = [a, b];
+        var mnA, mxA, projected, i, i1, j, mnB, mxB;
+
+        for (i = 0; i < rects.length; i++) {
+            // for each rect, look at each edge of the rect, and determine if it separates the two shapes
+            var rect = rects[i];
+            for (i1 = 0; i1 < rect.length; i1++) {
+
+                // grab 2 vertices to create an edge
+                var i2 = (i1 + 1) % rect.length;
+                var p1 = rect[i1];
+                var p2 = rect[i2];
+
+                // find the line perpendicular to this edge
+                var normal = {
+                    x: p2.y - p1.y,
+                    y: p1.x - p2.x
+                };
+
+                mnA = mxA = undefined;
+                // for each vertex in the first shape, project it onto the line perpendicular to the edge
+                // and keep track of the min and max of these values
+                for (j = 0; j < a.length; j++) {
+                    projected = normal.x * a[j].x + normal.y * a[j].y;
+                    if (mnA === undefined || projected < mnA) {
+                        mnA = projected;
+                    }
+                    if (mxA === undefined || projected > mxA) {
+                        mxA = projected;
+                    }
+                }
+
+                // for each vertex in the second shape, project it onto the line perpendicular to the edge
+                // and keep track of the min and max of these values
+                mnB = mxB = undefined;
+                for (j = 0; j < b.length; j++) {
+                    projected = normal.x * b[j].x + normal.y * b[j].y;
+                    if (mnB === undefined || projected < mnB) {
+                        mnB = projected;
+                    }
+                    if (mxB === undefined || projected > mxB) {
+                        mxB = projected;
+                    }
+                }
+
+                // no overlap
+                if (mxA < mnB || mxB < mnA) {
+                    return false;
+                }
+            }
+        }
+        return true;
     };
 
     return Selectable;
