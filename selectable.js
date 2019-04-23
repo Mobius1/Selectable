@@ -1449,22 +1449,11 @@
                     if (item.transform) {
 
                         var a = [
-                        {
-                            x: this.origin.x,
-                            y: this.origin.y
-                        },
-                        {
-                            x: this.mouse.x,
-                            y: this.origin.y
-                        },
-                        {
-                            x: this.mouse.x,
-                            y: this.mouse.y
-                        },
-                        {
-                            x: this.origin.x,
-                            y: this.mouse.y
-                        }, ];
+                            { x: this.origin.x, y: this.origin.y },
+                            { x: this.mouse.x + x, y: this.origin.y },
+                            { x: this.mouse.x + x, y: this.mouse.y + y },
+                            { x: this.origin.x, y: this.mouse.y + y },
+                        ];
 
                         over = _rectsIntersecting(a, item.transform.rect);
                     } else {
