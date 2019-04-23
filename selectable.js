@@ -187,6 +187,11 @@
 
             this.setContainer();
 
+            this.scroll = {
+                x: this.bodyContainer ? window.pageXOffset : this.container.scrollLeft,
+                y: this.bodyContainer ? window.pageYOffset : this.container.scrollTop
+            };
+
             if (isCollection(o.filter)) {
                 this.nodes = [].slice.call(o.filter);
             } else if (typeof o.filter === "string") {
@@ -1449,11 +1454,22 @@
                     if (item.transform) {
 
                         var a = [
-                            { x: this.origin.x, y: this.origin.y },
-                            { x: this.mouse.x + x, y: this.origin.y },
-                            { x: this.mouse.x + x, y: this.mouse.y + y },
-                            { x: this.origin.x, y: this.mouse.y + y },
-                        ];
+                        {
+                            x: this.origin.x,
+                            y: this.origin.y
+                        },
+                        {
+                            x: this.mouse.x + x,
+                            y: this.origin.y
+                        },
+                        {
+                            x: this.mouse.x + x,
+                            y: this.mouse.y + y
+                        },
+                        {
+                            x: this.origin.x,
+                            y: this.mouse.y + y
+                        }, ];
 
                         over = _rectsIntersecting(a, item.transform.rect);
                     } else {
@@ -1538,31 +1554,20 @@
          * @return {Bool|Object}
          */
         _get2DTransformation: function(el) {
-            var st = window.getComputedStyle(el, null);
-
-            var tr = st.getPropertyValue("-webkit-transform") ||
-                st.getPropertyValue("-moz-transform") ||
-                st.getPropertyValue("-ms-transform") ||
-                st.getPropertyValue("-o-transform") ||
-                st.getPropertyValue("transform") ||
-                false;
-
-            if (tr && tr !== "none") {
-
-                var matrix = tr.split('(')[1].split(')')[0].split(', ');
-
-                var a = parseFloat(matrix[0]);
-                var b = parseFloat(matrix[1]);
-                var scale = Math.sqrt(a * a + b * b);
-
+            var r = window.getComputedStyle(el, null),
+                a = r.getPropertyValue("-webkit-transform") || r.getPropertyValue("-moz-transform") || r.getPropertyValue("-ms-transform") || r.getPropertyValue("-o-transform") || r.getPropertyValue("transform") || !1;
+            if (a && "none" !== a) {
+                var e = a.split("(")[1].split(")")[0].split(", "),
+                    o = parseFloat(e[0]),
+                    n = parseFloat(e[1]),
+                    l = Math.sqrt(o * o + n * n);
                 return {
-                    angle: Math.round(Math.atan2(b, a) * (180 / Math.PI)),
-                    scale: scale,
-                    origin: st.transformOrigin.split(" ")
+                    angle: Math.round(Math.atan2(n, o) * (180 / Math.PI)),
+                    scale: l,
+                    origin: r.transformOrigin.split(" ")
                 }
             }
-
-            return false;
+            return !1
         }
     };
 
@@ -1631,27 +1636,18 @@
 
     /**
      * Mass assign style properties
-     * @param  {Object} t
-     * @param  {(String|Object)} e
+     * @param  {Object} i
+     * @param  {(String|Object)} t
      * @param  {String|Object}
      */
-    function _css(el, obj) {
-        var style = el.style;
-        if (el) {
-            if (obj === undefined) {
-                return window.getComputedStyle(el);
-            } else {
-                if (isObject(obj)) {
-                    for (var prop in obj) {
-                        if (!(prop in style)) {
-                            prop = "-webkit-" + prop;
-                        }
-                        el.style[prop] = obj[prop] + (typeof obj[prop] === "string" ? "" : prop === "opacity" ? "" : "px");
-                    }
-                }
-            }
+    function _css(i, t) {
+        var e = i.style;
+        if (i) {
+            if (void 0 === t) return window.getComputedStyle(i);
+            if (isObject(t))
+                for (var n in t) n in e || (n = "-webkit-" + n), i.style[n] = t[n] + ("string" == typeof t[n] ? "" : "opacity" === n ? "" : "px")
         }
-    };
+    }
 
     /**
      * Get an element's DOMRect relative to the document instead of the viewport.
@@ -1728,58 +1724,21 @@
      * @return {Bool}
      */
     function _rectsIntersecting(a, b) {
-        var rects = [a, b];
-        var mnA, mxA, projected, i, i1, j, mnB, mxB;
-
-        for (i = 0; i < rects.length; i++) {
-            // for each rect, look at each edge of the rect, and determine if it separates the two shapes
-            var rect = rects[i];
-            for (i1 = 0; i1 < rect.length; i1++) {
-
-                // grab 2 vertices to create an edge
-                var i2 = (i1 + 1) % rect.length;
-                var p1 = rect[i1];
-                var p2 = rect[i2];
-
-                // find the line perpendicular to this edge
-                var normal = {
-                    x: p2.y - p1.y,
-                    y: p1.x - p2.x
-                };
-
-                mnA = mxA = undefined;
-                // for each vertex in the first shape, project it onto the line perpendicular to the edge
-                // and keep track of the min and max of these values
-                for (j = 0; j < a.length; j++) {
-                    projected = normal.x * a[j].x + normal.y * a[j].y;
-                    if (mnA === undefined || projected < mnA) {
-                        mnA = projected;
-                    }
-                    if (mxA === undefined || projected > mxA) {
-                        mxA = projected;
-                    }
-                }
-
-                // for each vertex in the second shape, project it onto the line perpendicular to the edge
-                // and keep track of the min and max of these values
-                mnB = mxB = undefined;
-                for (j = 0; j < b.length; j++) {
-                    projected = normal.x * b[j].x + normal.y * b[j].y;
-                    if (mnB === undefined || projected < mnB) {
-                        mnB = projected;
-                    }
-                    if (mxB === undefined || projected > mxB) {
-                        mxB = projected;
-                    }
-                }
-
-                // no overlap
-                if (mxA < mnB || mxB < mnA) {
-                    return false;
-                }
+        var r, o, t, e, n, v, i, d, f = [a, b];
+        for (e = 0; e < f.length; e++) {
+            var g = f[e];
+            for (n = 0; n < g.length; n++) {
+                var h = (n + 1) % g.length,
+                    l = g[n],
+                    x = g[h],
+                    y = x.y - l.y,
+                    c = l.x - x.x;
+                for (r = o = void 0, v = 0; v < a.length; v++) t = y * a[v].x + c * a[v].y, (void 0 === r || t < r) && (r = t), (void 0 === o || o < t) && (o = t);
+                for (i = d = void 0, v = 0; v < b.length; v++) t = y * b[v].x + c * b[v].y, (void 0 === i || t < i) && (i = t), (void 0 === d || d < t) && (d = t);
+                if (o < i || d < r) return !1
             }
         }
-        return true;
+        return !0
     };
 
     return Selectable;
