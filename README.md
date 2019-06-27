@@ -130,4 +130,10 @@ selectable.add(items);
 
 ---
 
+If this project helps you then you can grab me a coffee or beer to say thanks.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=42AR2ZMBHWVTW&source=url)
+
+---
+
 Copyright © 2017 Karl Saunders | BSD & MIT license
