@@ -5,7 +5,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 0.17.2
+ * Version: 0.17.3
  *
  */
 (function(root, factory) {
@@ -74,7 +74,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.17.2";
+        this.version = "0.17.3";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
@@ -1274,15 +1274,16 @@
                     if (isTransformed) {
                         var offset = _getOffset(el);
 
-                        var origin = isTransformed.origin,
+                        var trans = isTransformed.translate,
+                            origin = isTransformed.origin,
                             scale = isTransformed.scale,
                             w = el.offsetWidth,
                             h = el.offsetHeight,
                             x = offset.left,
                             y = offset.top;
 
-                        var orx = parseInt(origin[0], 10),
-                            ory = parseInt(origin[1], 10);
+                        var orx = origin.x,
+                            ory = origin.y;
                         var hx = (w / 2),
                             hy = (h / 2);
                         var cx = x + ((hx - orx) * scale) + orx,
@@ -1311,7 +1312,7 @@
 
                         // rotate coords
                         for (var n = 0; n <= 3; n++) {
-                            p[n] = _rotatePoint(p[n].x, p[n].y, x + orx, y + ory, isTransformed.angle);
+                            p[n] = _rotatePoint(p[n].x + trans.x, p[n].y + trans.y, x + orx + trans.x, y + ory + trans.y, isTransformed.angle);
                         }
 
                         item.transform = {
@@ -1555,19 +1556,22 @@
          */
         _get2DTransformation: function(el) {
             var r = window.getComputedStyle(el, null),
-                a = r.getPropertyValue("-webkit-transform") || r.getPropertyValue("-moz-transform") || r.getPropertyValue("-ms-transform") || r.getPropertyValue("-o-transform") || r.getPropertyValue("transform") || !1;
-            if (a && "none" !== a) {
-                var e = a.split("(")[1].split(")")[0].split(", "),
-                    o = parseFloat(e[0]),
-                    n = parseFloat(e[1]),
-                    l = Math.sqrt(o * o + n * n);
+                    trans = r.getPropertyValue("-webkit-transform") || r.getPropertyValue("-moz-transform") || r.getPropertyValue("-ms-transform") || r.getPropertyValue("-o-transform") || r.getPropertyValue("transform") || !1;
+            if (trans && "none" !== trans) {
+                var e = trans.split("(")[1].split(")")[0].split(", "),
+                        a = parseFloat(e[0]),
+                        n = parseFloat(e[1]),
+                        l = Math.sqrt(a * a + n * n),
+                        o = r.transformOrigin.split(" ").map(o => parseFloat(o));
+
                 return {
-                    angle: Math.round(Math.atan2(n, o) * (180 / Math.PI)),
-                    scale: l,
-                    origin: r.transformOrigin.split(" ")
-                }
+                        angle: Math.round(Math.atan2(n, a) * (180 / Math.PI)),
+                        scale: l,
+                        origin: { x: parseFloat(o[0]), y: parseFloat(o[1]) },
+                        translate: { x: parseFloat(e[4]), y: parseFloat(e[5]) }
+                };
             }
-            return !1
+            return !1	
         }
     };
 
