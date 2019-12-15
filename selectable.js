@@ -393,8 +393,9 @@
          * @param  {Object} item
          * @return {Boolean}
          */
-        select: function(item, all) {
-
+        select: function(item, all, save) {
+            var all = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var save = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
             if (isCollection(item)) {
                 var count = this.getSelectedItems().length;
                 for (var i = 0; i < item.length; i++) {
@@ -402,9 +403,13 @@
                         break;
                     }
 
-                    this.select(item[i]);
+                    this.select(item[i], false, false);
                     count++;
                 }
+
+                if (save && this.config.saveState) {
+                    this.state("save");
+                }                
 
                 return this.getSelectedItems();
             }
@@ -414,7 +419,7 @@
             if (item) {
                 // toggle item if already selected
                 if (this.config.toggle && this.config.toggle === "drag" && !all && item.selected && !this.cmdDown) {
-                    return this.deselect(item);
+                    return this.deselect(item, false);
                 }
 
                 var el = item.node,
@@ -426,6 +431,10 @@
                 item.selecting = false;
                 item.selected = true;
                 item.startselected = true;
+
+                if (save && this.config.saveState) {
+                    this.state("save");
+                }
 
                 this.emit(this.v[1] < 15 ? "selectable.select" : "selecteditem", item);
 
@@ -440,11 +449,15 @@
          * @param  {Object} item
          * @return {Boolean}
          */
-        deselect: function(item) {
+        deselect: function(item, save) {
 
             if (isCollection(item)) {
                 for (var i = 0; i < item.length; i++) {
-                    this.deselect(item[i]);
+                    this.deselect(item[i], false);
+                }
+                
+                if (save && this.config.saveState) {
+                    this.state("save");
                 }
 
                 return this.getSelectedItems();
@@ -464,6 +477,10 @@
                 classList.remove(el, o.deselecting);
                 classList.remove(el, o.selecting);
                 classList.remove(el, o.selected);
+
+                if (save && this.config.saveState) {
+                    this.state("save");
+                }
 
                 this.emit(this.v[1] < 15 ? "selectable.deselect" : "deselecteditem", item);
 
@@ -488,11 +505,15 @@
 
                 for (var i = 0; i < test.length; i++) {
                     if (test[i].selected) {
-                        this.deselect(test[i]);
+                        this.deselect(test[i], false);
                     } else {
-                        this.select(test[i]);
+                        this.select(test[i], false, false);
                     }
                 }
+
+                if ( this.config.saveState ) {
+                    this.state("save");
+                }                
             }
         },
 
@@ -576,9 +597,14 @@
             if (!!this.config.maxSelectable && this.config.maxSelectable < this.items.length) {
                 return this._maxReached();
             }
+
             for (var i = 0; i < this.items.length; i++) {
-                this.select(this.items[i], true);
+                this.select(this.items[i], true, false);
             }
+
+            if (save && this.config.saveState) {
+                this.state("save");
+            }            
         },
 
         /**
@@ -595,21 +621,30 @@
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
                 if (item.selected) {
-                    this.deselect(item);
+                    this.deselect(item, false);
                 } else {
-                    this.select(item);
+                    this.select(item, false, false);
                 }
             }
+
+            if (this.config.saveState) {
+                this.state("save");
+            }            
         },
 
         /**
          * Unselect all items
          * @return {Void}
          */
-        clear: function() {
+        clear: function(save) {
+            var save = arguments.length > 0 && arguments[0] !== undefined ? false : true;
             for (var i = this.items.length - 1; i >= 0; i--) {
-                this.deselect(this.items[i]);
+                this.deselect(this.items[i], false);
             }
+
+            if (save && this.config.saveState) {
+                this.state("save");
+            }            
         },
 
         /**
@@ -737,10 +772,10 @@
             // check if the state changed
             if (changed) {
                 // clear the current selection
-                this.clear();
+                this.clear(false);
 
                 // select the items in the saved state
-                this.select(this.states[this.currentState]);
+                this.select(this.states[this.currentState], false, false);
             }
 
             // check if we need to emit the event
@@ -1146,7 +1181,7 @@
                 // item was marked for deselect
                 if (item.deselecting) {
                     deselected.push(item);
-                    this.deselect(item);
+                    this.deselect(item, false);
                 }
 
                 // item was marked for select
@@ -1159,7 +1194,7 @@
                         maxReached = true;
                     } else {
                         selected.push(item);
-                        this.select(item);
+                        this.select(item, false, false);
                     }
                 }
             }
