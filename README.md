@@ -98,6 +98,8 @@ const selectable = new Selectable({
 });
 ```
 
+## NOTE: `<a>` elements will not work currently. See: https://github.com/Mobius1/Selectable/issues/31
+
 ### No items
 
 If your document doesn't have any selectable items yet, e.g. they're added asynchronously via an ajax call, then simply create a new instance as normal, then use the [`add()`](https://github.com/Mobius1/Selectable/wiki/add()) method when they're available:
