@@ -983,6 +983,11 @@
                 var item = this.get(node);
                 item.selecting = true;
                 classList.add(node, o.classes.selecting);
+            } else {
+                // Fixes #32
+                if (o.lassoSelect == 'sequential') {
+                    node = getClosestNodeToPointer(evt, this.items)
+                }
             }
 
             if (o.autoRefresh) {
@@ -1611,8 +1616,26 @@
     };
 
 
-    /* ---------- HELPER FUNCTIONS ---------- *?/
-	
+    /* ---------- HELPER FUNCTIONS ---------- */
+    
+    /**
+     * Get node closest to mouse pointer / touch position
+     * @param {Object} ev 
+     * @param {Array} items 
+     */
+    function getClosestNodeToPointer(ev, items) {
+        let lens = [];
+
+        items.forEach(item => {
+            let len = Math.hypot(item.rect.x1-parseInt(ev.clientX), item.rect.y1-parseInt(ev.clientY));
+            lens.push(parseInt(len));
+        });
+
+        let index = lens.indexOf(Math.min(...lens));
+
+        return items[index].node;			
+    }    
+
     /**
      * Find the closest matching ancestor to a node
      * @param  {Object}   el HTMLElement
