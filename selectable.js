@@ -103,6 +103,9 @@
 
                 appendTo: document.body,
 
+                touch: true,
+                toggleTouch: true,
+
                 toggle: false,
                 autoRefresh: true,
 
@@ -169,7 +172,11 @@
             }
 
             if (this.touch) {
-                o.toggle = false;
+                o.toggle = o.toggleTouch;
+            }
+
+            if (!o.touch) {
+                this.touch = false;
             }
 
             this.events = {};
@@ -1014,7 +1021,7 @@
 
                     item.startselected = true;
 
-                    var deselect = (this.touch || o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
+                    var deselect = (o.toggle || cmd) ? isCurrentNode : !isCurrentNode && !shift;
 
                     if (deselect) {
                         classList.remove(el, o.classes.selected);
