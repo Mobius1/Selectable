@@ -3034,7 +3034,7 @@ b.highlight {
 
 .desktop {
   height: 100vh;
-  background: url(https://image.noelshack.com/fichiers/2018/22/1/1527510457-windows-10-wallpapers-in-4k.jpg);
+  background: url(../img/win10bg.jpg);
   background-position: center;
   background-size: cover;
 }
