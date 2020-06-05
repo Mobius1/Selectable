@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Karl Saunders (http://mobius.ovh)
  * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
  *
- * Version: 0.17.5
+ * Version: 0.17.6
  *
  */
 (function(root, factory) {
@@ -73,7 +73,7 @@
 
     /* SELECTABLE */
     var Selectable = function(options) {
-        this.version = "0.17.5";
+        this.version = "0.17.6";
         this.v = this.version.split(".").map(s => parseInt(s, 10));
         this.touch =
             "ontouchstart" in window ||
