@@ -4,7 +4,7 @@
 * Copyright (c) 2017 Karl Saunders (http://mobius.ovh)
 * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
 *
-* Version: 0.17.6
+* Version: 0.17.7
 *
 */
 (function(root, factory) {
@@ -88,8 +88,8 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.17.6";
-            this.v = this.version.split(".").map((s) => parseInt(s, 10));
+            this.version = "0.17.7";
+            this.v = this.version.split(".").map(function(s) { return parseInt(s, 10) });
             this.touch =
                 "ontouchstart" in window ||
                 (window.DocumentTouch && document instanceof DocumentTouch);
@@ -199,6 +199,7 @@
 
                 this.events = {};
 
+                                var that = this;
                 // bind events
                 [
                     "_start",
@@ -209,8 +210,8 @@
                     "_keydown",
                     "_blur",
                     "_focus"
-                ].forEach((event) => {
-                    this.events[event] = this[event].bind(this);
+                ].forEach(function(event) {
+                    that.events[event] = that[event].bind(that);
                 });
 
                 this.events._refresh = _throttle(this.refresh, o.throttle, this);
@@ -233,7 +234,7 @@
                 }
 
                 // activate items
-                this.nodes.forEach((node) => {
+                this.nodes.forEach(function(node) {
                     classList.add(node, o.classes.selectable);
                 });
 
@@ -1117,7 +1118,7 @@
                 if (o.disabled || !this.dragging || (_isShiftKey(e) && this.canShift))
                     return;
 
-                let tmp;
+                var tmp;
                 var evt = this._getEvent(e);
                 var cmd = _isCmdKey(e) && (this.canCtrl || this.canMeta);
 
@@ -1557,7 +1558,7 @@
                     end,
                     items;
                 if (lastEl) {
-                    lastEl = lastEl.closest(`.${c.selectable}`);
+                    lastEl = lastEl.closest("."+c.selectable);
                     if (lastEl) {
                         if (this.mouse.y > this.origin.y) {
                             start = this.nodes.indexOf(this.startEl);
@@ -1718,7 +1719,7 @@
                         a = parseFloat(e[0]),
                         n = parseFloat(e[1]),
                         l = Math.sqrt(a * a + n * n),
-                        o = r.transformOrigin.split(" ").map((o) => parseFloat(o));
+                        o = r.transformOrigin.split(" ").map(function(o) { return parseFloat(o) });
 
                     return {
                         angle: Math.round(Math.atan2(n, a) * (180 / Math.PI)),
@@ -1745,17 +1746,17 @@
         * @param {Array} items
         */
         function getClosestNodeToPointer(ev, items) {
-            let lens = [];
+            var lens = [];
 
-            items.forEach((item) => {
-                let len = Math.hypot(
+            items.forEach(function(item) {
+                var len = Math.hypot(
                     item.rect.x1 - parseInt(ev.clientX),
                     item.rect.y1 - parseInt(ev.clientY)
                 );
                 lens.push(parseInt(len));
             });
 
-            let index = lens.indexOf(Math.min(...lens));
+            var index = lens.indexOf(Math.min.apply(Math, lens))
 
             return items[index].node;
         }
