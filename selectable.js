@@ -892,6 +892,7 @@
                 this.clear();
                 this.state("clear");
                 this.remove(this.items);
+                this.events = null;
             },
 
             /**
