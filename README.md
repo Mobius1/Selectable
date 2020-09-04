@@ -1,6 +1,6 @@
 ![Selectable](selectable.png?raw=true "Selectable")
 
-[![Maintenance](https://img.shields.io/maintenance/yes/2019.svg?style=?style=flat-square&logo=appveyor)](https://github.com/Mobius1/Selectable/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Mobius1/Selectable/graphs/commit-activity)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/Mobius1/Selectable.svg?style=?style=flat-square&logo=appveyor)](https://codeclimate.com/github/Mobius1/Selectable/maintainability)
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?style=?style=flat-square&logo=appveyor) 
 ![](http://img.badgesize.io/Mobius1/Selectable/master/selectable.min.js?compression=gzip&label=gzipped&style=?style=flat-square&logo=appveyor)
