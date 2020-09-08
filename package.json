@@ -1,6 +1,6 @@
 {
   "name": "selectable.js",
-  "version": "0.17.7",
+  "version": "0.17.8",
   "description": "UI Selectable plugin without the bloat of jQuery and jQuery UI.",
   "main": "selectable.min.js",
   "scripts": {

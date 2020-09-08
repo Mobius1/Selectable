@@ -4,7 +4,7 @@
 * Copyright (c) 2017 Karl Saunders (http://mobius.ovh)
 * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
 *
-* Version: 0.17.7
+* Version: 0.17.8
 *
 */
 (function(root, factory) {
@@ -88,7 +88,7 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.17.7";
+            this.version = "0.17.8";
             this.v = this.version.split(".").map(function(s) {
                 return parseInt(s, 10)
             });
