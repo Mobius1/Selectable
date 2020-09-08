@@ -89,7 +89,9 @@
         /* SELECTABLE */
         var Selectable = function(options) {
             this.version = "0.17.7";
-            this.v = this.version.split(".").map(function(s) { return parseInt(s, 10) });
+            this.v = this.version.split(".").map(function(s) {
+                return parseInt(s, 10)
+            });
             this.touch =
                 "ontouchstart" in window ||
                 (window.DocumentTouch && document instanceof DocumentTouch);
@@ -199,7 +201,7 @@
 
                 this.events = {};
 
-                                var that = this;
+                var that = this;
                 // bind events
                 [
                     "_start",
@@ -1071,7 +1073,7 @@
                     this.refresh();
                 }
 
-                if (shift && this.startEl) {
+                if (shift && this.startEl && node !== this.container) {
                     var items = this.items,
                         currentIndex = this.getNodes().indexOf(node),
                         lastIndex = this.getNodes().indexOf(this.startEl),
@@ -1559,7 +1561,7 @@
                     end,
                     items;
                 if (lastEl) {
-                    lastEl = lastEl.closest("."+c.selectable);
+                    lastEl = lastEl.closest("." + c.selectable);
                     if (lastEl) {
                         if (this.mouse.y > this.origin.y) {
                             start = this.nodes.indexOf(this.startEl);
@@ -1720,7 +1722,9 @@
                         a = parseFloat(e[0]),
                         n = parseFloat(e[1]),
                         l = Math.sqrt(a * a + n * n),
-                        o = r.transformOrigin.split(" ").map(function(o) { return parseFloat(o) });
+                        o = r.transformOrigin.split(" ").map(function(o) {
+                            return parseFloat(o)
+                        });
 
                     return {
                         angle: Math.round(Math.atan2(n, a) * (180 / Math.PI)),
