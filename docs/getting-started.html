@@ -187,6 +187,21 @@ const selectable2 = new Selectable({
     appendTo: list2
 });
 </code></pre>
+
+<h2 class="scroll-title" id="multiple-instances"><span>Retrieving Instance</h2>
+<p>If you didn't attach the instance to a variable then you can retrieve it from the element defined by the <code><a href="https://mobius1.github.io/Selectable/api/options/appendTo.html">appendTo</a></code> option:</p>
+
+<pre><code class="javascript language-javascript">// Define parent
+const parent = document.getElementById("items");
+
+// Instantiate
+new Selectable({
+    appendTo: parent
+});
+
+// Retrieve instance
+const instance = parent._selectable;
+</code></pre>
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
