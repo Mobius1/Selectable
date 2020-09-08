@@ -978,7 +978,7 @@
                     max = o.maxSelectable;
 
                 // max items reached and toggle is enabled or the cmd / shift key is down
-                if (!!max && count >= max && (cmd || shift || o.toggle)) {
+                if (!!max && count >= max && (cmd || shift)) {
                     return this._maxReached();
                 }
 
