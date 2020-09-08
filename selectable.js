@@ -409,9 +409,11 @@
                 }
 
                 classList.add(this.container, o.classes.container);
+                this.container._selectable = this;
 
                 if (old) {
                     classList.remove(old, o.classes.container);
+                    delete old._selectable
                 }
 
                 this.bodyContainer = this.container === document.body;
@@ -977,7 +979,7 @@
                     count = this.getSelectedItems().length,
                     max = o.maxSelectable;
 
-                // max items reached and toggle is enabled or the cmd / shift key is down
+                // max items reached
                 if (!!max && count >= max && (cmd || shift)) {
                     return this._maxReached();
                 }
