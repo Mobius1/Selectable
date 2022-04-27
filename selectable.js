@@ -88,7 +88,7 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.17.8";
+            this.version = "0.18.0";
             this.v = this.version.split(".").map(function(s) {
                 return parseInt(s, 10)
             });

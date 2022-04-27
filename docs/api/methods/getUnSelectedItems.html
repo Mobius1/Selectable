@@ -14,7 +14,7 @@
         <link href="https://mobius1.github.io/Selectable/assets/css/github.min.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/prism.css" rel="stylesheet">
         <link href="https://mobius1.github.io/Selectable/assets/css/style.css" rel="stylesheet">
-        <link href="../../assets/css/getItems.css" rel="stylesheet">
+        <link href="../../assets/css/getUnSelectedItems.css" rel="stylesheet">
         <title>Selectable - DOCS</title>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="https://mobius1.github.io/Selectable/assets/img/favicon.png" />
@@ -85,17 +85,16 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Public Methods</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">getItems()</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">getUnSelectedItems()</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> getItems()</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> getUnSelectedItems()</h1>
                                 <hr />
-<p>Returns an <code>Array</code> of all items.</p>
+<p>Returns an <code>Array</code> of all unselected items.</p>
 <h5 id="syntax" class="scroll-title">Syntax</h5>                             
-<div class="syntax"><i><pre><code class="js language-js">Selectable.getItems()</code></pre></i></div>
-
+<div class="syntax"><i><pre><code class="js language-js">Selectable.getUnSelectedItems()</code></pre></i></div>
 
 <hr />
 <h5 id="demo" class="scroll-title">Demo</h5>
@@ -108,7 +107,7 @@
     <div class="col-sm-6">
         <div class="form-control output"><div id="output"><pre><code style="color: #fff; font-size: 14px; font-weight: bold;">Run the example below.</code></pre></div></div>
         <div class="buttons">
-            <div><code class="javascript language-javascript">selectable.getItems()</code><button class="btn btn-sm btn-primary" id="getItems" type="button">Run</button></div>              
+            <div><code class="javascript language-javascript">selectable.getUnSelectedItems()</code><button class="btn btn-sm btn-primary" id="getUnSelectedItems" type="button">Run</button></div>              
         </div>
     </div>
 </div>
@@ -118,18 +117,20 @@
         <h5>See also</h5>
         <ul>
             <li><a href="https://mobius1.github.io/Selectable/api/methods/get.html">get()</a></li>
+            <li><a href="https://mobius1.github.io/Selectable/api/methods/getItems.html">getItems()</a></li>
             <li><a href="https://mobius1.github.io/Selectable/api/methods/getNodes.html">getNodes()</a></li>
-            <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedItems.html">getSelectedItems()</a></li>
             <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
         </ul>
     </div>
 </div>
 <hr />
+
+
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="get.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="getNodes.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="getNodes.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="getSelectedNodes.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>
@@ -171,6 +172,6 @@
         <script type="text/javascript" src="https://mobius1.github.io/Selectable/assets/js/prism.min.js"></script>
         <script id="main-js" type="text/javascript" src="https://unpkg.com/selectable.js@0.18.0/selectable.min.js"></script>
         <script src="https://mobius1.github.io/Selectable/assets/js/script.js"></script>
-        <script src="../../assets/js/getItems.js"></script>
+        <script src="../../assets/js/getUnSelectedItems.js"></script>
     </body>
 </html>

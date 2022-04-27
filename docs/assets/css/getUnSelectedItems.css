@@ -1,0 +1,149 @@
+#container-demo {
+	width: 100%;
+}
+
+#demo-items {
+	padding: 0;
+	margin: 0 0 20px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#demo-items li.ui-selectable {
+	width: 250px;
+	height: 30px;
+	list-style: none;
+	background-color: #fff;
+	margin: 0 5px 5px 0;
+	cursor: not-allowed;
+	border: 2px solid #999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+	position: relative;
+}
+
+
+#demo-items li.highlight::before {
+    position: absolute;
+    right: -30px;
+    font-size: 21px;
+    color: #999;
+    font-family: "Material Design Icons";
+    content: "\F730";
+}
+
+#demo-items li::after {
+    position: absolute;
+    content: "unselectable";
+}
+
+#demo-items li.ui-selectable {
+/*	background-color: #0054D1;
+	border-color: #0054D1;*/
+	cursor: pointer;
+	/*color: #fff;*/
+}
+
+#demo-items li.ui-selectable::after {
+    content: "selectable";
+}
+#demo-items li.ui-selecting::after {
+    content: "selecting";
+}
+#demo-items li.ui-selected::after {
+    content: "selected";
+}
+
+#demo-items li.ui-selecting {
+	border-color: rgb(40, 167, 69);
+	background-color:  rgb(40, 167, 69);
+	color: #fff;	
+}
+#demo-items li.ui-selected {
+	border-color: #0054D1;
+	background-color:  #0054D1;
+	color: #fff;	
+}
+
+.output {
+	font-size: 13px;
+	margin: 0 0 10px 0;
+	background-color: #333;
+	padding: 0;
+	height: 350px;
+}
+
+.mb-track-y {
+	/*background-color: #999;*/
+	right: 5px;
+	top: 5px;
+	height: calc(100% - 10px);	
+}
+
+.mb-track-y .mb-bar {
+	border-radius: 3px;
+}
+
+.output .mb-bar {
+	background-color: rgba(204, 204, 204, 0.6);
+	transition-property: background-color, height;
+	transition-duration: 400ms, 250ms;
+	transition-timing-function: ease;
+}
+
+.output.mb-hover-y .mb-bar, .output:hover .mb-bar  {
+	background-color: rgba(204, 204, 204, 1);
+}
+
+
+#output {
+	padding: 10px;
+	/*min-height: 350px;*/
+}
+
+#output code[class*="language-"], #output pre[class*="language-"] {
+	text-shadow: none;
+}
+#output .token.selector,
+#output .token.attr-name,
+#output .token.string,
+#output .token.char,
+#output .token.builtin,
+#output .token.inserted {
+    color: rgb(114, 200, 0);
+}
+#output .token.punctuation {
+	color: #fff;
+}
+
+#output .token.quotes {
+	color: #ccc;
+}
+
+#output .token.boolean {
+    color: rgb(138, 100, 226);
+}
+#output .token.number {
+	color: rgb(232, 62, 140);
+}
+
+
+.btn code {
+
+    color: #fff;
+    font-weight: bold;
+
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;	
+}
+
+.buttons div {
+	display: flex;
+	justify-content: space-between;	
+	margin: 0 0 10px 0;
+}
