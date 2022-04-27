@@ -166,7 +166,9 @@ function init() {
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/getItems.html">getItems()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/getNodes.html">getNodes()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedItems.html">getSelectedItems()</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/getUnSelectedItems.html">getUnSelectedItems()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/getSelectedNodes.html">getSelectedNodes()</a></li>
+                                                <li><a href="https://mobius1.github.io/Selectable/api/methods/getUnSelectedNodes.html">getUnSelectedNodes()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/init.html">init()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/invert.html">invert()</a></li>
                                                 <li><a href="https://mobius1.github.io/Selectable/api/methods/off.html">off()</a></li>
