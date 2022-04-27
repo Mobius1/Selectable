@@ -1,10 +1,10 @@
 /*!
 *
 * Selectable
-* Copyright (c) 2017 Karl Saunders (http://mobius.ovh)
+* Copyright (c) 2017 Karl Saunders (Mobius1)
 * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
 *
-* Version: 0.17.8
+* Version: 0.18.0
 *
 */
 (function(root, factory) {
@@ -771,11 +771,31 @@
             },
 
             /**
+            * Get all unselected items
+            * @return {Array}
+            */
+             getUnSelectedItems: function(invert) {
+                return this.getItems().filter(function(item) {
+                    return !item.selected;
+                });
+            },            
+
+            /**
             * Get all selected nodes
             * @return {Array}
             */
             getSelectedNodes: function() {
                 return this.getSelectedItems().map(function(item) {
+                    return item.node;
+                });
+            },
+
+            /**
+            * Get all unselected nodes
+            * @return {Array}
+            */
+             getUnSelectedNodes: function() {
+                return this.getUnSelectedItems().map(function(item) {
                     return item.node;
                 });
             },
