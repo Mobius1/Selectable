@@ -1262,7 +1262,7 @@
 
                     // the lasso was the event.target so let's get the actual
                     // node below the pointer
-                    node = document.elementFromPoint(evt.pageX, evt.pageY);
+                    node = document.elementFromPoint(evt.clientX, evt.clientY);
 
                     if (!node) {
                         node = this.container;
