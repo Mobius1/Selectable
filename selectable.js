@@ -1,12 +1,12 @@
 /*!
-*
-* Selectable
-* Copyright (c) 2017 Karl Saunders (Mobius1)
-* Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
-*
-* Version: 0.18.0
-*
-*/
+ *
+ * Selectable
+ * Copyright (c) 2017 Karl Saunders (Mobius1)
+ * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * Version: 0.19.0
+ *
+ */
 (function(root, factory) {
     var plugin = "Selectable";
 
@@ -23,15 +23,15 @@
         "use strict";
 
         /**
-        * Check for classList support
-        * @type {Boolean}
-        */
+         * Check for classList support
+         * @type {Boolean}
+         */
         var _supports = "classList" in document.documentElement;
 
         /**
-        * classList shim
-        * @type {Object}
-        */
+         * classList shim
+         * @type {Object}
+         */
         var classList = {
             add: function(a, c) {
                 _supports
@@ -59,19 +59,19 @@
         };
 
         /**
-        * Detect CTRL or META key press
-        * @param  {Object}  e Event interface
-        * @return {Boolean}
-        */
+         * Detect CTRL or META key press
+         * @param  {Object}  e Event interface
+         * @return {Boolean}
+         */
         var _isCmdKey = function(e) {
             return !!e.ctrlKey || !!e.metaKey;
         };
 
         /**
-        * Detect SHIFT key press
-        * @param  {Object}  e Event interface
-        * @return {Boolean}
-        */
+         * Detect SHIFT key press
+         * @param  {Object}  e Event interface
+         * @return {Boolean}
+         */
         var _isShiftKey = function(e) {
             return !!e.shiftKey;
         };
@@ -102,16 +102,16 @@
             /* ---------- PUBLIC METHODS ---------- */
 
             /**
-            * Init instance
-            * @return {void}
-            */
+             * Init instance
+             * @return {void}
+             */
             init: function(options) {
                 var that = this;
 
                 /**
-                * Default configuration properties
-                * @type {Object}
-                */
+                 * Default configuration properties
+                 * @type {Object}
+                 */
                 var selectableConfig = {
                     filter: ".ui-selectable",
                     tolerance: "touch",
@@ -252,9 +252,9 @@
             },
 
             /**
-            * Update instance
-            * @return {Void}
-            */
+             * Update instance
+             * @return {Void}
+             */
             update: function() {
                 this._loadItems();
 
@@ -264,9 +264,9 @@
             },
 
             /**
-            * Update item coords
-            * @return {Void}
-            */
+             * Update item coords
+             * @return {Void}
+             */
             refresh: function() {
                 var ww = window.innerWidth;
                 var wh = window.innerHeight;
@@ -313,9 +313,9 @@
             },
 
             /**
-            * Add instance event listeners
-            * @return {Void}
-            */
+             * Add instance event listeners
+             * @return {Void}
+             */
             bind: function() {
                 var e = this.events;
 
@@ -354,9 +354,9 @@
             },
 
             /**
-            * Remove instance event listeners
-            * @return {Void}
-            */
+             * Remove instance event listeners
+             * @return {Void}
+             */
             unbind: function() {
                 var e = this.events;
 
@@ -388,9 +388,9 @@
             },
 
             /**
-            * Set the container
-            * @param {String|Object} container CSS3 selector string or HTMLElement
-            */
+             * Set the container
+             * @param {String|Object} container CSS3 selector string or HTMLElement
+             */
             setContainer: function(container) {
                 var o = this.config,
                     old;
@@ -432,10 +432,10 @@
             },
 
             /**
-            * Select an item
-            * @param  {Object} item
-            * @return {Boolean}
-            */
+             * Select an item
+             * @param  {Object} item
+             * @return {Boolean}
+             */
             select: function(item, all, save) {
                 var all =
                     arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -496,10 +496,10 @@
             },
 
             /**
-            * Unselect an item
-            * @param  {Object} item
-            * @return {Boolean}
-            */
+             * Unselect an item
+             * @param  {Object} item
+             * @return {Boolean}
+             */
             deselect: function(item, save) {
                 if (isCollection(item)) {
                     for (var i = 0; i < item.length; i++) {
@@ -541,10 +541,10 @@
             },
 
             /**
-            * Toggle an item
-            * @param  {Object} item
-            * @return {Boolean}
-            */
+             * Toggle an item
+             * @param  {Object} item
+             * @return {Boolean}
+             */
             toggle: function(item) {
                 var test = this.get(item);
 
@@ -568,10 +568,10 @@
             },
 
             /**
-            * Add a node to the instance
-            * @param {Object} node HTMLElement
-            * * @return {Void}
-            */
+             * Add a node to the instance
+             * @param {Object} node HTMLElement
+             * * @return {Void}
+             */
             add: function(node) {
                 var els = [];
 
@@ -601,10 +601,10 @@
             },
 
             /**
-            * Remove an item from the instance so it's deselectable
-            * @param  {Mixed} item index, node or object
-            * @return {Boolean}
-            */
+             * Remove an item from the instance so it's deselectable
+             * @param  {Mixed} item index, node or object
+             * @return {Boolean}
+             */
             remove: function(item, stop) {
                 item = this.get(item);
 
@@ -640,9 +640,9 @@
             },
 
             /**
-            * Select all items
-            * @return {Void}
-            */
+             * Select all items
+             * @return {Void}
+             */
             selectAll: function() {
                 if (
                     !!this.config.maxSelectable &&
@@ -661,9 +661,9 @@
             },
 
             /**
-            * Select all items
-            * @return {Void}
-            */
+             * Select all items
+             * @return {Void}
+             */
             invert: function() {
                 var items = this.getItems();
 
@@ -689,9 +689,9 @@
             },
 
             /**
-            * Unselect all items
-            * @return {Void}
-            */
+             * Unselect all items
+             * @return {Void}
+             */
             clear: function(save) {
                 var save =
                     arguments.length > 0 && arguments[0] !== undefined ? false : true;
@@ -705,9 +705,9 @@
             },
 
             /**
-            * Get an item
-            * @return {Object|Boolean}
-            */
+             * Get an item
+             * @return {Object|Boolean}
+             */
             get: function(item) {
                 var found = false;
 
@@ -745,25 +745,33 @@
             },
 
             /**
-            * Get all items
-            * @return {Array}
-            */
+             * Get all items
+             * @return {Array}
+             */
             getItems: function() {
                 return this.items;
             },
 
             /**
-            * Get all nodes
-            * @return {Array}
-            */
+             * Get all nodes
+             * @return {Array}
+             */
             getNodes: function() {
                 return this.nodes;
             },
 
+            getFirstSelectedItem() {
+                return this.getSelectedItems()[0];
+            },
+
+            getFirstSelectedNode() {
+                return this.getSelectedNodes()[0];
+            },
+
             /**
-            * Get all selected items
-            * @return {Array}
-            */
+             * Get all selected items
+             * @return {Array}
+             */
             getSelectedItems: function(invert) {
                 return this.getItems().filter(function(item) {
                     return invert ? !item.selected : item.selected;
@@ -771,19 +779,19 @@
             },
 
             /**
-            * Get all unselected items
-            * @return {Array}
-            */
-             getUnSelectedItems: function(invert) {
+             * Get all unselected items
+             * @return {Array}
+             */
+            getUnSelectedItems: function(invert) {
                 return this.getItems().filter(function(item) {
                     return !item.selected;
                 });
-            },            
+            },
 
             /**
-            * Get all selected nodes
-            * @return {Array}
-            */
+             * Get all selected nodes
+             * @return {Array}
+             */
             getSelectedNodes: function() {
                 return this.getSelectedItems().map(function(item) {
                     return item.node;
@@ -791,20 +799,20 @@
             },
 
             /**
-            * Get all unselected nodes
-            * @return {Array}
-            */
-             getUnSelectedNodes: function() {
+             * Get all unselected nodes
+             * @return {Array}
+             */
+            getUnSelectedNodes: function() {
                 return this.getUnSelectedItems().map(function(item) {
                     return item.node;
                 });
             },
 
             /**
-            * State method
-            * @param  {String} type
-            * @return {Array}
-            */
+             * State method
+             * @param  {String} type
+             * @return {Array}
+             */
             state: function(type) {
                 var changed = false;
                 var emit = false;
@@ -866,9 +874,9 @@
             },
 
             /**
-            * Enable instance
-            * @return {Boolean}
-            */
+             * Enable instance
+             * @return {Boolean}
+             */
             enable: function() {
                 if (!this.enabled) {
                     var keys = this.config.keys;
@@ -888,9 +896,9 @@
             },
 
             /**
-            * Disable instance
-            * @return {Boolean}
-            */
+             * Disable instance
+             * @return {Boolean}
+             */
             disable: function() {
                 if (this.enabled) {
                     var keys = this.config.keys;
@@ -907,9 +915,9 @@
             },
 
             /**
-            * Destroy instance
-            * @return {void}
-            */
+             * Destroy instance
+             * @return {void}
+             */
             destroy: function() {
                 this.disable();
                 this.listeners = false;
@@ -920,11 +928,11 @@
             },
 
             /**
-            * Add custom event listener
-            * @param  {String} event
-            * @param  {Function} callback
-            * @return {Void}
-            */
+             * Add custom event listener
+             * @param  {String} event
+             * @param  {Function} callback
+             * @return {Void}
+             */
             on: function(listener, fn, capture) {
                 if (typeof listener === "string") {
                     this.listeners = this.listeners || {};
@@ -936,11 +944,11 @@
             },
 
             /**
-            * Remove custom listener listener
-            * @param  {String} listener
-            * @param  {Function} callback
-            * @return {Void}
-            */
+             * Remove custom listener listener
+             * @param  {String} listener
+             * @param  {Function} callback
+             * @return {Void}
+             */
             off: function(listener, fn) {
                 if (typeof listener === "string") {
                     this.listeners = this.listeners || {};
@@ -952,10 +960,10 @@
             },
 
             /**
-            * Fire custom listener
-            * @param  {String} listener
-            * @return {Void}
-            */
+             * Fire custom listener
+             * @param  {String} listener
+             * @return {Void}
+             */
             emit: function(listener) {
                 this.listeners = this.listeners || {};
                 if (listener in this.listeners === false) return;
@@ -974,10 +982,10 @@
             },
 
             /**
-            * touchstart event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * touchstart event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _touchstart: function(e) {
                 this.off(this.container, "mousedown", this.events.start);
 
@@ -985,10 +993,10 @@
             },
 
             /**
-            * mousedown / touchstart event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * mousedown / touchstart event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _start: function(e) {
                 var that = this,
                     evt = this._getEvent(e),
@@ -1096,13 +1104,18 @@
                 }
 
                 if (shift && this.startEl && node !== this.container) {
-                    var items = this.items,
-                        currentIndex = this.getNodes().indexOf(node),
-                        lastIndex = this.getNodes().indexOf(this.startEl),
-                        step = currentIndex < lastIndex ? 1 : -1;
+                    var items = this.getItems();
+                    var currentIndex = this.getNodes().indexOf(node);
+                    var lastIndex = this.getNodes().indexOf(this.getFirstSelectedNode());
 
-                    while ((currentIndex += step) && currentIndex !== lastIndex) {
-                        items[currentIndex].selecting = true;
+                    if (currentIndex > lastIndex) {
+                        for (var i = lastIndex + 1; i < currentIndex; i++) {
+                            items[i].selecting = true;
+                        }
+                    } else {
+                        for (var i = lastIndex - 1; i > currentIndex; i--) {
+                            items[i].selecting = true;
+                        }
                     }
                 }
 
@@ -1134,10 +1147,10 @@
             },
 
             /**
-            * mousmove / touchmove event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * mousmove / touchmove event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _drag: function(e) {
                 var o = this.config;
                 if (o.disabled || !this.dragging || (_isShiftKey(e) && this.canShift))
@@ -1226,10 +1239,10 @@
             },
 
             /**
-            * mouseup / touchend event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * mouseup / touchend event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _end: function(e) {
                 if (!this.dragging) return;
 
@@ -1262,7 +1275,7 @@
 
                     // the lasso was the event.target so let's get the actual
                     // node below the pointer
-                    node = document.elementFromPoint(evt.clientX, evt.clientY);
+                    node = document.elementFromPoint(evt.pageX, evt.pageY);
 
                     if (!node) {
                         node = this.container;
@@ -1329,10 +1342,10 @@
             },
 
             /**
-            * keydown event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * keydown event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _keydown: function(e) {
                 this.cmdDown = _isCmdKey(e) && (this.canCtrl || this.canMeta);
 
@@ -1375,19 +1388,19 @@
             },
 
             /**
-            * keyup event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * keyup event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _keyup: function(e) {
                 this.cmdDown = _isCmdKey(e) && (this.canCtrl || this.canMeta);
             },
 
             /**
-            * scroll event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * scroll event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _onScroll: function(e) {
                 this.scroll.x = this.bodyContainer ?
                     window.pageXOffset :
@@ -1402,9 +1415,9 @@
             },
 
             /**
-            * Load items from the given filter
-            * @return {void}
-            */
+             * Load items from the given filter
+             * @return {void}
+             */
             _loadItems: function() {
                 var o = this.config;
 
@@ -1490,9 +1503,9 @@
             },
 
             /**
-            * Get event
-            * @return {Object}
-            */
+             * Get event
+             * @return {Object}
+             */
             _getEvent: function(e) {
                 if (this.touch) {
                     if (e.type === "touchend") {
@@ -1504,9 +1517,9 @@
             },
 
             /**
-            * Scroll container
-            * @return {Void}
-            */
+             * Scroll container
+             * @return {Void}
+             */
             _autoScroll: function() {
                 var as = this.config.autoScroll;
                 var i = as.increment;
@@ -1547,9 +1560,9 @@
             },
 
             /**
-            * Limit lasso to container boundaries
-            * @return {Void}
-            */
+             * Limit lasso to container boundaries
+             * @return {Void}
+             */
             _limitLasso: function() {
                 for (var i = 0; i < _axes.length; i++) {
                     var axis = _axes[i];
@@ -1607,10 +1620,10 @@
             },
 
             /**
-            * Highlight an item for selection based on lasso position
-            * @param  {Object} item
-            * @return {Void}
-            */
+             * Highlight an item for selection based on lasso position
+             * @param  {Object} item
+             * @return {Void}
+             */
             _highlight: function(item, cmd, evt) {
                 var o = this.config,
                     el = item.node,
@@ -1706,30 +1719,30 @@
             },
 
             /**
-            * mouseenter event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * mouseenter event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _focus: function(e) {
                 this.focused = true;
                 classList.add(this.container, "ui-focused");
             },
 
             /**
-            * mouseleave event listener
-            * @param  {Object} e Event interface
-            * @return {Void}
-            */
+             * mouseleave event listener
+             * @param  {Object} e Event interface
+             * @return {Void}
+             */
             _blur: function(e) {
                 this.focused = false;
                 classList.remove(this.container, "ui-focused");
             },
 
             /**
-            * Get an element's 2d transformation properties
-            * @param  {Object} el HTMLElement
-            * @return {Bool|Object}
-            */
+             * Get an element's 2d transformation properties
+             * @param  {Object} el HTMLElement
+             * @return {Bool|Object}
+             */
             _get2DTransformation: function(el) {
                 var r = window.getComputedStyle(el, null),
                     trans =
@@ -1768,10 +1781,10 @@
         /* ---------- HELPER FUNCTIONS ---------- */
 
         /**
-        * Get node closest to mouse pointer / touch position
-        * @param {Object} ev
-        * @param {Array} items
-        */
+         * Get node closest to mouse pointer / touch position
+         * @param {Object} ev
+         * @param {Array} items
+         */
         function getClosestNodeToPointer(ev, items) {
             var lens = [];
 
@@ -1789,11 +1802,11 @@
         }
 
         /**
-        * Find the closest matching ancestor to a node
-        * @param  {Object}   el HTMLElement
-        * @param  {Function} fn Callback
-        * @return {Object|Boolean}
-        */
+         * Find the closest matching ancestor to a node
+         * @param  {Object}   el HTMLElement
+         * @param  {Function} fn Callback
+         * @return {Object|Boolean}
+         */
         function closest(el, fn) {
             return (
                 el &&
@@ -1803,18 +1816,18 @@
         }
 
         /**
-        * Check is item is object
-        * @return {Boolean}
-        */
+         * Check is item is object
+         * @return {Boolean}
+         */
         function isObject(val) {
             return Object.prototype.toString.call(val) === "[object Object]";
         }
 
         /**
-        * Check item is iterable
-        * @param  {Mixed} arr
-        * @return {Boolean}
-        */
+         * Check item is iterable
+         * @param  {Mixed} arr
+         * @return {Boolean}
+         */
         function isCollection(arr) {
             return (
                 Array.isArray(arr) ||
@@ -1824,10 +1837,10 @@
         }
 
         /**
-        * Check var is a number
-        * @param  {Mixed} n
-        * @return {Boolean}
-        */
+         * Check var is a number
+         * @param  {Mixed} n
+         * @return {Boolean}
+         */
         function isNumber(n) {
             if ("isInteger" in Number) {
                 return Number.isInteger(n);
@@ -1836,11 +1849,11 @@
         }
 
         /**
-        * Merge objects (reccursive)
-        * @param  {Object} r
-        * @param  {Object} t
-        * @return {Object}
-        */
+         * Merge objects (reccursive)
+         * @param  {Object} r
+         * @param  {Object} t
+         * @return {Object}
+         */
         function _extend(src, props) {
             for (var prop in props) {
                 if (props.hasOwnProperty(prop)) {
@@ -1857,11 +1870,11 @@
         }
 
         /**
-        * Mass assign style properties
-        * @param  {Object} i
-        * @param  {(String|Object)} t
-        * @param  {String|Object}
-        */
+         * Mass assign style properties
+         * @param  {Object} i
+         * @param  {(String|Object)} t
+         * @param  {String|Object}
+         */
         function _css(i, t) {
             var e = i.style;
             if (i) {
@@ -1875,11 +1888,11 @@
         }
 
         /**
-        * Get an element's DOMRect relative to the document instead of the viewport.
-        * @param  {Object} t   HTMLElement
-        * @param  {Boolean} e  Include margins
-        * @return {Object}     Formatted DOMRect copy
-        */
+         * Get an element's DOMRect relative to the document instead of the viewport.
+         * @param  {Object} t   HTMLElement
+         * @param  {Boolean} e  Include margins
+         * @return {Object}     Formatted DOMRect copy
+         */
         function _rect(e) {
             var w = window,
                 o = e.getBoundingClientRect(),
@@ -1897,12 +1910,12 @@
         }
 
         /**
-        * Returns a function, that, as long as it continues to be invoked, will not be triggered.
-        * @param  {Function} fn
-        * @param  {Number} lim
-        * @param  {Boolean} now
-        * @return {Function}
-        */
+         * Returns a function, that, as long as it continues to be invoked, will not be triggered.
+         * @param  {Function} fn
+         * @param  {Number} lim
+         * @param  {Boolean} now
+         * @return {Function}
+         */
         function _throttle(fn, lim, context) {
             var wait;
             return function() {
@@ -1941,13 +1954,13 @@
         }
 
         /**
-        * Determine whether there is an intersection between the two rects described
-        * by the lists of vertices. Uses the Separating Axis Theorem.
-        *
-        * @param {Array} a Array of coords
-        * @param {Array} b Array of coords
-        * @return {Bool}
-        */
+         * Determine whether there is an intersection between the two rects described
+         * by the lists of vertices. Uses the Separating Axis Theorem.
+         *
+         * @param {Array} a Array of coords
+         * @param {Array} b Array of coords
+         * @return {Bool}
+         */
         function _rectsIntersecting(a, b) {
             var r,
                 o,
