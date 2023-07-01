@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Karl Saunders (Mobius1)
  * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
  *
- * Version: 0.19.0
+ * Version: 0.19.1
  *
  */
 (function(root, factory) {
@@ -1704,7 +1704,7 @@
                             }
                         }
                     }
-                    if (el.selected) {
+                    if (item.selected) {
                         if (!cmd) {
                             if (!item.startselected) {
                                 classList.remove(el, o.classes.selected);
