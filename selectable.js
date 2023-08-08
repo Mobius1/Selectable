@@ -378,7 +378,7 @@
                 }
 
                 // Mobile
-                this.off(this.container, "touchstart", e._start);
+                this.off(this.container, "touchstart", e._touchstart);
                 this.off(document, "touchend", e._end);
                 this.off(document, "touchcancel", e._end);
                 this.off(document, "touchmove", e._drag);
