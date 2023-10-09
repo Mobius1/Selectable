@@ -85,28 +85,29 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">start</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">selecting</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> start</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selecting</h1>
                                 <hr />
-<p>Fires on <code>mousedown</code> / <code>touchstart</code>.</p>
+<p>Fires when an item is marked for selection.</p>
 
-<p>The callback has two parameters which returns the orignal event and a reference to the first item found under the mouse pointer / finger / stylus.</p>
+<p>The callback has two parameters which returns the orignal event and a reference to the item marked for selection.</p>
 
-<pre><code class="javascript language-javascript">selectable.on("start", function(e, item) {
+<pre><code class="javascript language-javascript">selectable.on("selecting", function(e, items) {
 
 });
-</code></pre>        
+</code></pre>
+
 <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="select.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="state.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="add.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="disabled.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>

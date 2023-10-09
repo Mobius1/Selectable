@@ -85,30 +85,30 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">selecteditem</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">deselect</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> selecteditem</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> deselect</h1>
                                 <hr />
-<p>Fires when an item is selected.</p>
+<p>Fires when an item is unselected.</p>
 
-<p>The callback has one parameter which returns a reference to the selected item.</p>
+<p>The callback has one parameter which returns a reference to the unselected item.</p>
 
-<pre><code class="javascript language-javascript">selectable.on("selecteditem", function(item) {
-    // do something when an item is selected
+<pre><code class="javascript language-javascript">selectable.on("deselect", function(item) {
+
 });
 </code></pre>
 
-<p>Note that this event fires for each item that is selected. If you select a large number of items at once you will get an equally large number of callbacks. In this case it can be preferable to listen for the <a href="https://mobius1.github.io/Selectable/api/events/end.html">end</a> event instead where you will get a single callback no matter the number of items.</p>       
+<p>If you require a list of unselected items instead of listening for when each individual item is unselected then listen for the <a href="https://mobius1.github.io/Selectable/api/events/end.html">end</a> event instead as this returns a list of items that were unselected during the current selection.</p>
 <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="removeditem.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="start.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="add.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="disabled.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>

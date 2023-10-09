@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Karl Saunders (Mobius1)
  * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
  *
- * Version: 0.19.1
+ * Version: 0.20.0
  *
  */
 (function(root, factory) {
@@ -88,7 +88,7 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.18.0";
+            this.version = "0.20.0";
             this.v = this.version.split(".").map(function(s) {
                 return parseInt(s, 10)
             });
@@ -247,7 +247,7 @@
                     if (o.saveState) {
                         that.state("save");
                     }
-                    that.emit(that.v[1] < 15 ? "selectable.init" : "init");
+                    that.emit("init");
                 }, 10);
             },
 
@@ -260,7 +260,7 @@
 
                 this.refresh();
 
-                this.emit(this.v[1] < 15 ? "selectable.update" : "update", this.items);
+                this.emit("update", this.items);
             },
 
             /**
@@ -309,7 +309,7 @@
                 for (var i = 0; i < this.nodes.length; i++) {
                     this.items[i].rect = _rect(this.nodes[i]);
                 }
-                this.emit(this.v[1] < 15 ? "selectable.refresh" : "refresh");
+                this.emit("refresh");
             },
 
             /**
@@ -487,7 +487,7 @@
                         this.state("save");
                     }
 
-                    this.emit(this.v[1] < 15 ? "selectable.select" : "selecteditem", item);
+                    this.emit("select", item);
 
                     return item;
                 }
@@ -532,7 +532,7 @@
                         this.state("save");
                     }
 
-                    this.emit(this.v[1] < 15 ? "selectable.deselect" : "deselecteditem", item);
+                    this.emit("deselect", item);
 
                     return item;
                 }
@@ -594,9 +594,9 @@
 
                 this.update();
 
-                // emit "addeditem" for each new item
+                // emit "add" for each new item
                 for (var i = 0; i < els.length; i++) {
-                    this.emit("addeditem", this.get(els[i]));
+                    this.emit("add", this.get(els[i]));
                 }
             },
 
@@ -625,8 +625,8 @@
 
                         this.nodes.splice(this.nodes.indexOf(item.node), 1);
 
-                        // emit "removeditem"
-                        this.emit("removeditem", item);
+                        // emit "remove"
+                        this.emit("remove", item);
                     }
 
                     if (!stop) {
@@ -866,7 +866,7 @@
                 // check if we need to emit the event
                 if (emit) {
                     this.emit(
-                        (this.v[1] < 15 ? "selectable.state." : "state.") + type,
+                        "state." + type,
                         this.states[this.currentState],
                         this.states
                     );
@@ -889,7 +889,7 @@
 
                     classList.add(this.container, this.config.classes.container);
 
-                    this.emit(this.v[1] < 15 ? "selectable.enable" : "enabled");
+                    this.emit("enable");
                 }
 
                 return this.enabled;
@@ -908,7 +908,7 @@
 
                     classList.remove(this.container, this.config.classes.container);
 
-                    this.emit(this.v[1] < 15 ? "selectable.disable" : "disabled");
+                    this.emit("disabled");
                 }
 
                 return this.enabled;
@@ -1092,6 +1092,7 @@
                     var item = this.get(node);
                     item.selecting = true;
                     classList.add(node, o.classes.selecting);
+                    this.emit('selecting', evt, item);
                 } else {
                     // Fixes #32
                     if (o.lassoSelect == "sequential") {
@@ -1111,10 +1112,12 @@
                     if (currentIndex > lastIndex) {
                         for (var i = lastIndex + 1; i < currentIndex; i++) {
                             items[i].selecting = true;
+                            this.emit('selecting', evt, items[i]);
                         }
                     } else {
                         for (var i = lastIndex - 1; i > currentIndex; i--) {
                             items[i].selecting = true;
+                            this.emit('selecting', evt, items[i]);
                         }
                     }
                 }
@@ -1143,7 +1146,7 @@
 
                 this.startEl = node;
 
-                this.emit(this.v[1] < 15 ? "selectable.start" : "start", e, originalEl);
+                this.emit("start", e, originalEl);
             },
 
             /**
@@ -1235,7 +1238,7 @@
                 }
 
                 // emit the "drag" event
-                this.emit(this.v[1] < 15 ? "selectable.drag" : "drag", e, this.coords);
+                this.emit("drag", e, this.coords);
             },
 
             /**
@@ -1330,7 +1333,7 @@
                 }
 
                 this.emit(
-                    this.v[1] < 15 ? "selectable.end" : "end",
+                    "end",
                     e,
                     selected,
                     deselected
@@ -1689,6 +1692,7 @@
                     if (!item.selecting) {
                         classList.add(el, o.classes.selecting);
                         item.selecting = true;
+                        this.emit('selecting', evt, item);
                     }
                 } else {
                     if (item.selecting) {

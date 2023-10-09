@@ -185,10 +185,11 @@ function init() {
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/start.html">start</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/drag.html">drag</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/end.html">end</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selecteditem.html">selecteditem</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/deselecteditem.html">deselecteditem</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/addeditem.html">addeditem</a></li>
-                                            <li><a href="https://mobius1.github.io/Selectable/api/events/removeditem.html">removeditem</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/select.html">select</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/deselect.html">deselect</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/selecting.html">selecteing</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/add.html">add</a></li>
+                                            <li><a href="https://mobius1.github.io/Selectable/api/events/remove.html">remove</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/update.html">update</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/refresh.html">refresh</a></li>
                                             <li><a href="https://mobius1.github.io/Selectable/api/events/state.html">state</a></li>

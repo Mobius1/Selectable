@@ -85,28 +85,30 @@
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item"><a href="#">API</a></li>
                                     <li class="breadcrumb-item"><a href="#">Events</a></li>
-                                    <li class="breadcrumb-item active"><a href="#">addeditem</a></li>
+                                    <li class="breadcrumb-item active"><a href="#">select</a></li>
                                 </ol>
                             </nav>
                             <!-- /.End of breadcrumb -->
                             <div class="doc-content">
-                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> addeditem</h1>
+                                <h1 class="logo-title"><i class="mdi mdi-select-drag"></i> select</h1>
                                 <hr />
-<p>Fires when an element is added to the instance.</p>
+<p>Fires when an item is selected.</p>
 
-<p>The callback has a single argument which returns a reference to the new item.</p>
+<p>The callback has one parameter which returns a reference to the selected item.</p>
 
-<pre><code class="javascript language-javascript">selectable.on("addeditem", function(item) {
-    // item.node
+<pre><code class="javascript language-javascript">selectable.on("select", function(item) {
+    // do something when an item is selected
 });
-</code></pre>        
+</code></pre>
+
+<p>Note that this event fires for each item that is selected. If you select a large number of items at once you will get an equally large number of callbacks. In this case it can be preferable to listen for the <a href="https://mobius1.github.io/Selectable/api/events/end.html">end</a> event instead where you will get a single callback no matter the number of items.</p>       
 <hr />
 
                             </div>
                             <!--  /.End of documentation text content -->
                             <div class="footer-btn d-flex justify-content-between">
-                                <a href="../../events.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
-                                <a href="deselecteditem.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="remove.html" class="btn"><i class="fas fa-arrow-circle-left"></i>Previous</a>
+                                <a href="start.html" class="btn">Next<i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- /.End of footer button -->
                         </div>

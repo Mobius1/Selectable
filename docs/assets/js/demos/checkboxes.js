@@ -22,11 +22,11 @@ for ( const input of inputs ) {
 }
 
 // check the checkbox when item is selected
-SELECTABLE.on("selecteditem", (item) => {
+SELECTABLE.on("select", (item) => {
 	item.node.querySelector("input").checked = true;
 });
 
 // uncheck the checkbox when item is deselected
-SELECTABLE.on("deselecteditem", (item) => {
+SELECTABLE.on("deselect", (item) => {
 	item.node.querySelector("input").checked = false;
 });
