@@ -25,21 +25,21 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 **Pull requests are welcome!**
 
-## [Demo](http://codepen.io/Mobius1/pen/qRxaqQ/) | [Documentation](https://mobius1.github.io/Selectable) | [Changelog](https://github.com/Mobius1/Selectable/releases) | [Table Plugin](https://github.com/Mobius1/Selectable-Table-Plugin)
+## [Demo](http://codepen.io/Mobius1/pen/qRxaqQ/) | [Documentation](https://mobius-studios.gitbook.io/selectable/) | [Changelog](https://github.com/Mobius1/Selectable/releases) | [Table Plugin](https://github.com/Mobius1/Selectable-Table-Plugin)
 
 ---
 
 ## Demos
 
 * [2d Transformed Elements](https://codepen.io/Mobius1/full/wZxZyR)
-* [Checkboxes](https://mobius1.github.io/Selectable/demos/checkboxes.html)
+* [Checkboxes](https://codepen.io/Mobius1/pen/NWeoxey)
 * [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
 * [Advanced Usage](https://s.codepen.io/Mobius1/pen/OOXPwo)
 
 ## Integration with other libs
 
-* with [Dropzone](https://mobius1.github.io/Selectable/demos/dropzone.html) ([enyo/dropzone](https://github.com/enyo/dropzone))
-* with [Sortable](https://mobius1.github.io/Selectable/demos/sortable.html) ([SortableJS/Sortable](https://github.com/SortableJS/Sortable))
+* with [Dropzone](https://codepen.io/Mobius1/pen/NWeoxey) ([enyo/dropzone](https://github.com/enyo/dropzone))
+* with [Sortable](https://codepen.io/Mobius1/pen/NWeoxLX) ([SortableJS/Sortable](https://github.com/SortableJS/Sortable))
 
 ---
 
