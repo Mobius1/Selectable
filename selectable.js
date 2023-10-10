@@ -116,7 +116,7 @@
                     filter: ".ui-selectable",
                     tolerance: "touch",
 
-                    container: document.body,
+                    appendTo: document.body,
 
                     touch: true,
                     toggleTouch: true,
@@ -400,7 +400,13 @@
                     this.unbind();
                 }
 
-                container = container || o.container;
+                if ( container === undefined ) {
+                    if ( o.appendTo ) {
+                        container = o.appendTo;
+                    } else if ( o.container ) {
+                        container = o.container;
+                    }
+                }
 
                 if (typeof container === "string") {
                     this.container = document.querySelector(container);
