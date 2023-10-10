@@ -116,7 +116,7 @@
                     filter: ".ui-selectable",
                     tolerance: "touch",
 
-                    appendTo: document.body,
+                    container: document.body,
 
                     touch: true,
                     toggleTouch: true,
@@ -400,7 +400,7 @@
                     this.unbind();
                 }
 
-                container = container || o.appendTo;
+                container = container || o.container;
 
                 if (typeof container === "string") {
                     this.container = document.querySelector(container);
@@ -935,9 +935,11 @@
              */
             on: function(listener, fn, capture) {
                 if (typeof listener === "string") {
-                    this.listeners = this.listeners || {};
-                    this.listeners[listener] = this.listeners[listener] || [];
-                    this.listeners[listener].push(fn);
+                    if ( listener in this.listeners === false ) {
+                        this.listeners = this.listeners || {};
+                        this.listeners[listener] = this.listeners[listener] || [];
+                        this.listeners[listener].push(fn);
+                    }
                 } else {
                     arguments[0].addEventListener(arguments[1], arguments[2], false);
                 }
@@ -966,7 +968,10 @@
              */
             emit: function(listener) {
                 this.listeners = this.listeners || {};
+
+                // Don't fire the event if it's not being used
                 if (listener in this.listeners === false) return;
+
                 for (var i = 0; i < this.listeners[listener].length; i++) {
                     this.listeners[listener][i].apply(
                         this,
