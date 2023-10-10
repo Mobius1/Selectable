@@ -1137,6 +1137,7 @@
 
                             classList.add(el, o.classes.deselecting);
                             item.deselecting = true;
+                            this.emit('deselecting', evt, item);
                         }
                     }
                     if (isCurrentNode) {
@@ -1304,6 +1305,7 @@
                         if (item.selecting && item.startselected) {
                             item.deselecting = true;
                             item.selecting = false;
+                            this.emit('deselecting', evt, item);
                         }
                     }
 
@@ -1705,6 +1707,7 @@
                             if (item.startselected && !o.toggle) {
                                 classList.add(el, o.classes.deselecting);
                                 item.deselecting = true;
+                                this.emit('deselecting', evt, item);
                             }
                         }
                     }
@@ -1716,6 +1719,7 @@
 
                                 classList.add(el, o.classes.deselecting);
                                 item.deselecting = true;
+                                this.emit('deselecting', evt, item);
                             }
                         }
                     }
