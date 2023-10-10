@@ -29,17 +29,12 @@ Selectable mimics the Windows file / directory behaviour, i.e. click and / or dr
 
 ---
 
-## Demos
+## Other Demos
 
 * [2d Transformed Elements](https://codepen.io/Mobius1/full/wZxZyR)
 * [Checkboxes](https://codepen.io/Mobius1/pen/NWeoxey)
 * [Table Plugin](https://codepen.io/Mobius1/pen/jamBzV/) (see [Mobius1/Selectable-Table-Plugin](https://github.com/Mobius1/Selectable-Table-Plugin))
 * [Advanced Usage](https://s.codepen.io/Mobius1/pen/OOXPwo)
-
-## Integration with other libs
-
-* with [Dropzone](https://codepen.io/Mobius1/pen/NWeoxey) ([enyo/dropzone](https://github.com/enyo/dropzone))
-* with [Sortable](https://codepen.io/Mobius1/pen/NWeoxLX) ([SortableJS/Sortable](https://github.com/SortableJS/Sortable))
 
 ---
 
