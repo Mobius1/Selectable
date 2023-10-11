@@ -349,6 +349,7 @@
                 this.off(document, "keyup", e._keyup);
 
                 this.off(this.container, "mouseenter", e._focus);
+                this.off(this.container, "mouseover", e._focus);
                 this.off(this.container, "mouseleave", e._blur);
 
                 if (this.autoscroll) {
