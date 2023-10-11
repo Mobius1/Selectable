@@ -168,7 +168,7 @@
 
                 var that = this;
                 // bind events
-                [
+                var events = [
                     "_start",
                     "_touchstart",
                     "_drag",
@@ -177,9 +177,12 @@
                     "_keydown",
                     "_blur",
                     "_focus"
-                ].forEach(function(event) {
+                ];
+                
+                for ( var i = 0, count = events.length; i < count; i++ ) {
+                    var event = events[i];
                     that.events[event] = that[event].bind(that);
-                });
+                }
 
                 this.events._refresh = _throttle(this.refresh, o.throttle, this);
 
@@ -200,22 +203,24 @@
                     this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
                 }
 
-                const hasHandle = o.handle !== false && typeof o.handle === 'string';
+                this.hasHandle = o.handle !== false && typeof o.handle === 'string';
 
                 // activate items
-                this.nodes.forEach(function(node) {
+                for ( var i = 0, count = this.nodes.length; i < count; i++ ) {
+                    var node = this.nodes[i];
                     node.classList.add(o.classes.selectable);
 
-                    if ( hasHandle ) {
-                        const handles = node.querySelectorAll(o.handle);
-            
+                    if ( this.hasHandle ) {
+                        var handles = el.querySelectorAll(o.handle);
+
                         if ( handles.length ) {
-                            for ( const handle of handles ) {
+                            for ( var j = 0, len = handles.length; j < len; j++ ) {
+                                var handle = handles[j];
                                 handle.classList.add(o.classes.handle);
                             }
                         }
                     }
-                });
+                }
 
                 this.update();
                 this.enable();
@@ -567,16 +572,19 @@
                     node = [node];
                 }
 
-                for (var i = 0; i < node.length; i++) {
-                    if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
-                        els.push(node[i]);
-                        node[i].classList.add(this.config.classes.selectable);
+                for (var i = 0, len = node.length; i < len; i++) {
+                    var el = node[i];
 
-                        if ( this.config.handle !== false && typeof this.config.handle === 'string' ) {
-                            var handles = node[i].querySelectorAll(this.config.handle);
-        
-                            if ( handles.length ) {
-                                for ( const handle of handles ) {
+                    if (this.nodes.indexOf(el) < 0 && el instanceof Element) {
+                        els.push(el);
+                        el.classList.add(this.config.classes.selectable);
+
+                        if ( this.hasHandle ) {
+                            var handles = el.querySelectorAll(this.config.handle);
+    
+                            if ( handles.length > 0 ) {
+                                for ( var j = 0, count = handles.length; j < count; j++ ) {
+                                    var handle = handles[j];
                                     handle.classList.add(this.config.classes.handle);
                                 }
                             }
@@ -609,13 +617,23 @@
                         }
                     } else {
                         var el = item.node,
-                            o = this.config.classes,
-                            rm = classList.remove;
+                            o = this.config.classes;
 
-                        rm(el, o.selectable);
-                        rm(el, o.deselecting);
-                        rm(el, o.selecting);
-                        rm(el, o.selected);
+                        el.classList.remove(o.selectable);
+                        el.classList.remove(o.deselecting);
+                        el.classList.remove(o.selecting);
+                        el.classList.remove(o.selected);
+
+                        if ( this.hasHandle ) {
+                            const handles = el.querySelectorAll(this.config.handle);
+
+                            if ( handles.length ) {
+                                for ( var i = 0, count = handles.length; i < count; i++ ) {
+                                    var handle = handles[i];
+                                    handle.classList.remove(o.handle);
+                                }
+                            }
+                        }
 
                         this.nodes.splice(this.nodes.indexOf(item.node), 1);
 
@@ -1004,8 +1022,7 @@
                     cmd = _isCmdKey(e) && (this.canCtrl || this.canMeta),
                     shift = this.canShift && _isShiftKey(e),
                     count = this.getSelectedItems().length,
-                    max = o.maxSelectable,
-                    hasHandle = o.handle !== false && typeof o.handle === 'string';
+                    max = o.maxSelectable;
 
                 // max items reached
                 if (!!max && count >= max && (cmd || shift)) {
@@ -1055,7 +1072,7 @@
                 }
 
                 // if handle is set, prevent selection if we start outside the handle element
-                if ( hasHandle && !e.target.classList.contains(o.classes.handle) ) {
+                if ( this.hasHandle && !e.target.classList.contains(o.classes.handle) ) {
                     return false;
                 }
 
@@ -1801,13 +1818,14 @@
         function getClosestNodeToPointer(ev, items) {
             var lens = [];
 
-            items.forEach(function(item) {
+            for ( var i = 0, count = items.length; i < count; i++ ) {
+                var item = items[i];
                 var len = Math.hypot(
                     item.rect.x1 - parseInt(ev.clientX),
                     item.rect.y1 - parseInt(ev.clientY)
                 );
                 lens.push(parseInt(len));
-            });
+            }
 
             var index = lens.indexOf(Math.min.apply(Math, lens))
 
