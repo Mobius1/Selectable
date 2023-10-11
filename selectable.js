@@ -674,7 +674,7 @@
             },
 
             /**
-             * Select all items
+             * Invert item states
              * @return {Void}
              */
             invert: function() {
@@ -702,7 +702,7 @@
             },
 
             /**
-             * Unselect all items
+             * Deselect all items
              * @return {Void}
              */
             clear: function(save) {
@@ -773,10 +773,18 @@
                 return this.nodes;
             },
 
+            /**
+             * Get the first selected item
+             * @return {Object}
+             */
             getFirstSelectedItem() {
                 return this.getSelectedItems()[0];
             },
 
+            /**
+             * Get the first selected element node
+             * @return {HTMLElement}
+             */
             getFirstSelectedNode() {
                 return this.getSelectedNodes()[0];
             },
@@ -802,7 +810,7 @@
             },
 
             /**
-             * Get all selected nodes
+             * Get all selected element nodes
              * @return {Array}
              */
             getSelectedNodes: function() {
@@ -812,7 +820,7 @@
             },
 
             /**
-             * Get all unselected nodes
+             * Get all unselected element nodes
              * @return {Array}
              */
             getUnSelectedNodes: function() {
@@ -824,7 +832,7 @@
             /**
              * State method
              * @param  {String} type
-             * @return {Array}
+             * @return {Void}
              */
             state: function(type) {
                 var changed = false;
