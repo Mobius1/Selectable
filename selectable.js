@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Karl Saunders (Mobius1)
  * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
  *
- * Version: 0.20.0
+ * Version: 0.20.1
  *
  */
 (function(root, factory) {
@@ -88,7 +88,7 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.20.0";
+            this.version = "0.20.1";
             this.v = this.version.split(".").map(function(s) {
                 return parseInt(s, 10)
             });
@@ -116,7 +116,7 @@
                     filter: ".ui-selectable",
                     tolerance: "touch",
 
-                    appendTo: document.body,
+                    container: document.body,
 
                     touch: true,
                     toggleTouch: true,
@@ -400,13 +400,7 @@
                     this.unbind();
                 }
 
-                if ( container === undefined ) {
-                    if ( o.appendTo ) {
-                        container = o.appendTo;
-                    } else if ( o.container ) {
-                        container = o.container;
-                    }
-                }
+                container = container || o.container;
 
                 if (typeof container === "string") {
                     this.container = document.querySelector(container);
