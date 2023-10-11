@@ -148,6 +148,7 @@
 
                     classes: {
                         lasso: "ui-lasso",
+                        handle: "ui-handle",
                         selected: "ui-selected",
                         container: "ui-container",
                         selecting: "ui-selecting",
@@ -400,7 +401,14 @@
                     this.unbind();
                 }
 
-                container = container || o.container;
+                if ( container === undefined ) {
+                    if ( o.appendTo ) {
+                        container = o.appendTo;
+                        o.container = o.appendTo;
+                    } else if ( o.container ) {
+                        container = o.container;
+                    }
+                }
 
                 if (typeof container === "string") {
                     this.container = document.querySelector(container);
@@ -587,6 +595,16 @@
                     if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
                         els.push(node[i]);
                         classList.add(node[i], this.config.classes.selectable);
+
+                        if ( this.config.handle !== false && typeof this.config.handle === 'string' ) {
+                            var handles = node[i].querySelectorAll(this.config.handle);
+        
+                            if ( handles.length ) {
+                                for ( const handle of handles ) {
+                                    classList.add(handle, this.config.classes.handle);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -1010,7 +1028,8 @@
                     cmd = _isCmdKey(e) && (this.canCtrl || this.canMeta),
                     shift = this.canShift && _isShiftKey(e),
                     count = this.getSelectedItems().length,
-                    max = o.maxSelectable;
+                    max = o.maxSelectable,
+                    hasHandle = o.handle !== false && typeof o.handle === 'string';
 
                 // max items reached
                 if (!!max && count >= max && (cmd || shift)) {
@@ -1057,6 +1076,11 @@
                     if (stop) {
                         return false;
                     }
+                }
+
+                // if handle is set, prevent selection if we start outside the handle element
+                if ( hasHandle && !classList.contains(e.target, o.classes.handle) ) {
+                    return false;
                 }
 
                 // selectable nodes may have child elements
