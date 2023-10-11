@@ -23,42 +23,6 @@
         "use strict";
 
         /**
-         * Check for classList support
-         * @type {Boolean}
-         */
-        var _supports = "classList" in document.documentElement;
-
-        /**
-         * classList shim
-         * @type {Object}
-         */
-        var classList = {
-            add: function(a, c) {
-                _supports
-                    ?
-                    a.classList.add(c) :
-                    classList.contains(a, c) || (a.className = a.className.trim() + " " + c);
-            },
-            remove: function(a, c) {
-                _supports
-                    ?
-                    a.classList.remove(c) :
-                    classList.contains(a, c) &&
-                    (a.className = a.className.replace(
-                        new RegExp("(^|\\s)" + c.split(" ").join("|") + "(\\s|$)", "gi"),
-                        " "
-                    ));
-            },
-            contains: function(a, c) {
-                if (a)
-                    return _supports ?
-                        a.classList.contains(c) :
-                        !!a.className &&
-                        !!a.className.match(new RegExp("(\\s|^)" + c + "(\\s|$)"));
-            }
-        };
-
-        /**
          * Detect CTRL or META key press
          * @param  {Object}  e Event interface
          * @return {Boolean}
@@ -240,14 +204,14 @@
 
                 // activate items
                 this.nodes.forEach(function(node) {
-                    classList.add(node, o.classes.selectable);
+                    node.classList.add(o.classes.selectable);
 
                     if ( hasHandle ) {
                         const handles = node.querySelectorAll(o.handle);
             
                         if ( handles.length ) {
                             for ( const handle of handles ) {
-                                classList.add(handle, o.classes.handle);
+                                handle.classList.add(o.classes.handle);
                             }
                         }
                     }
@@ -428,11 +392,11 @@
                     this.container = container;
                 }
 
-                classList.add(this.container, o.classes.container);
+                this.container.classList.add(o.classes.container);
                 this.container._selectable = this;
 
                 if (old) {
-                    classList.remove(old, o.classes.container);
+                    old.classList.remove(o.classes.container);
                     delete old._selectable
                 }
 
@@ -496,8 +460,8 @@
                     var el = item.node,
                         o = this.config.classes;
 
-                    classList.remove(el, o.selecting);
-                    classList.add(el, o.selected);
+                    el.classList.remove(o.selecting);
+                    el.classList.add(o.selected);
 
                     item.selecting = false;
                     item.selected = true;
@@ -544,9 +508,9 @@
                     item.deselecting = false;
                     item.startselected = false;
 
-                    classList.remove(el, o.deselecting);
-                    classList.remove(el, o.selecting);
-                    classList.remove(el, o.selected);
+                    el.classList.remove(o.deselecting);
+                    el.classList.remove(o.selecting);
+                    el.classList.remove(o.selected);
 
                     if (save && this.config.saveState) {
                         this.state("save");
@@ -606,14 +570,14 @@
                 for (var i = 0; i < node.length; i++) {
                     if (this.nodes.indexOf(node[i]) < 0 && node[i] instanceof Element) {
                         els.push(node[i]);
-                        classList.add(node[i], this.config.classes.selectable);
+                        node[i].classList.add(this.config.classes.selectable);
 
                         if ( this.config.handle !== false && typeof this.config.handle === 'string' ) {
                             var handles = node[i].querySelectorAll(this.config.handle);
         
                             if ( handles.length ) {
                                 for ( const handle of handles ) {
-                                    classList.add(handle, this.config.classes.handle);
+                                    handle.classList.add(this.config.classes.handle);
                                 }
                             }
                         }
@@ -917,7 +881,7 @@
 
                     this.bind();
 
-                    classList.add(this.container, this.config.classes.container);
+                    this.container.classList.add(this.config.classes.container);
 
                     this.emit("enable");
                 }
@@ -936,7 +900,7 @@
 
                     this.unbind();
 
-                    classList.remove(this.container, this.config.classes.container);
+                    this.container.classList.remove(this.config.classes.container);
 
                     this.emit("disabled");
                 }
@@ -1091,7 +1055,7 @@
                 }
 
                 // if handle is set, prevent selection if we start outside the handle element
-                if ( hasHandle && !classList.contains(e.target, o.classes.handle) ) {
+                if ( hasHandle && !e.target.classList.contains(o.classes.handle) ) {
                     return false;
                 }
 
@@ -1099,7 +1063,7 @@
                 // so let's get the closest selectable node
                 var node = closest(e.target, function(el) {
                     return (
-                        el === that.container || classList.contains(el, o.classes.selectable)
+                        el === that.container || el.classList.contains(o.classes.selectable)
                     );
                 });
 
@@ -1132,7 +1096,7 @@
                 if (node !== this.container) {
                     var item = this.get(node);
                     item.selecting = true;
-                    classList.add(node, o.classes.selecting);
+                    node.classList.add(o.classes.selecting);
                     this.emit('selecting', evt, item);
                 } else {
                     // Fixes #32
@@ -1173,10 +1137,10 @@
                         var deselect = o.toggle || cmd ? isCurrentNode : !isCurrentNode && !shift;
 
                         if (deselect) {
-                            classList.remove(el, o.classes.selected);
+                            el.classList.remove(o.classes.selected);
                             item.selected = false;
 
-                            classList.add(el, o.classes.deselecting);
+                            el.classList.add(o.classes.deselecting);
                             item.deselecting = true;
                             this.emit('deselecting', evt, item);
                         }
@@ -1329,7 +1293,7 @@
 
                 // now let's get the closest valid selectable node
                 endEl = closest(node, function(el) {
-                    return classList.contains(el, o.classes.selectable);
+                    return el.classList.contains(o.classes.selectable);
                 });
 
                 var maxReached = false;
@@ -1361,7 +1325,7 @@
                         // max items reached
                         if (!!max && count + selected.length >= max) {
                             item.selecting = false;
-                            classList.remove(item.node, o.classes.selecting);
+                            item.node.classList.remove(o.classes.selecting);
 
                             maxReached = true;
                         } else {
@@ -1475,15 +1439,15 @@
                 if (this.nodes.length) {
                     for (var i = 0; i < this.nodes.length; i++) {
                         var el = this.nodes[i];
-                        classList.add(el, o.classes.selectable);
+                        el.classList.add(o.classes.selectable);
 
                         var item = {
                             node: el,
                             rect: _rect(el),
                             startselected: false,
-                            selected: classList.contains(el, o.classes.selected),
-                            selecting: classList.contains(el, o.classes.selecting),
-                            deselecting: classList.contains(el, o.classes.deselecting)
+                            selected: el.classList.contains(o.classes.selected),
+                            selecting: el.classList.contains(o.classes.selecting),
+                            deselecting: el.classList.contains(o.classes.deselecting)
                         };
 
                         var isTransformed = this._get2DTransformation(el);
@@ -1725,28 +1689,28 @@
 
                 if (over) {
                     if (item.selected && !o.toggle) {
-                        classList.remove(el, o.classes.selected);
+                        el.classList.remove(o.classes.selected);
                         item.selected = false;
                     }
                     if (item.deselecting && (!o.toggle || (o.toggle && o.toggle !== "drag"))) {
-                        classList.remove(el, o.classes.deselecting);
+                        el.classList.remove(o.classes.deselecting);
                         item.deselecting = false;
                     }
                     if (!item.selecting) {
-                        classList.add(el, o.classes.selecting);
+                        el.classList.add(o.classes.selecting);
                         item.selecting = true;
                         this.emit('selecting', evt, item);
                     }
                 } else {
                     if (item.selecting) {
-                        classList.remove(el, o.classes.selecting);
+                        el.classList.remove(o.classes.selecting);
                         item.selecting = false;
                         if (cmd && item.startselected) {
-                            classList.add(el, o.classes.selected);
+                            el.classList.add(o.classes.selected);
                             item.selected = true;
                         } else {
                             if (item.startselected && !o.toggle) {
-                                classList.add(el, o.classes.deselecting);
+                                el.classList.add(o.classes.deselecting);
                                 item.deselecting = true;
                                 this.emit('deselecting', evt, item);
                             }
@@ -1755,10 +1719,10 @@
                     if (item.selected) {
                         if (!cmd) {
                             if (!item.startselected) {
-                                classList.remove(el, o.classes.selected);
+                                el.classList.remove(o.classes.selected);
                                 item.selected = false;
 
-                                classList.add(el, o.classes.deselecting);
+                                el.classList.add(o.classes.deselecting);
                                 item.deselecting = true;
                                 this.emit('deselecting', evt, item);
                             }
@@ -1774,7 +1738,7 @@
              */
             _focus: function(e) {
                 this.focused = true;
-                classList.add(this.container, "ui-focused");
+                this.container.classList.add("ui-focused");
             },
 
             /**
@@ -1784,7 +1748,7 @@
              */
             _blur: function(e) {
                 this.focused = false;
-                classList.remove(this.container, "ui-focused");
+                this.container.classList.remove("ui-focused");
             },
 
             /**
