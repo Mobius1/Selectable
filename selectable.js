@@ -236,9 +236,21 @@
                     this.nodes = [].slice.call(this.container.querySelectorAll(o.filter));
                 }
 
+                const hasHandle = o.handle !== false && typeof o.handle === 'string';
+
                 // activate items
                 this.nodes.forEach(function(node) {
                     classList.add(node, o.classes.selectable);
+
+                    if ( hasHandle ) {
+                        const handles = node.querySelectorAll(o.handle);
+            
+                        if ( handles.length ) {
+                            for ( const handle of handles ) {
+                                classList.add(handle, o.classes.handle);
+                            }
+                        }
+                    }
                 });
 
                 this.update();
