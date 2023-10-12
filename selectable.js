@@ -549,7 +549,7 @@
              * @param  {Object} item
              * @return {Boolean}
              */
-            toggle: function(item) {
+            toggle: function(item, bool) {
                 var test = this.get(item);
 
                 if (test) {
@@ -558,10 +558,18 @@
                     }
 
                     for (var i = 0; i < test.length; i++) {
-                        if (test[i].selected) {
-                            this.deselect(test[i], false);
+                        if ( bool !== undefined ) {
+                            if (bool) {
+                                this.select(test[i], false, false);
+                            } else {
+                                this.deselect(test[i], false);
+                            }
                         } else {
-                            this.select(test[i], false, false);
+                            if (test[i].selected) {
+                                this.deselect(test[i], false);
+                            } else {
+                                this.select(test[i], false, false);
+                            }
                         }
                     }
 
