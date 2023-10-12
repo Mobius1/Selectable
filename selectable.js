@@ -4,7 +4,7 @@
  * Copyright (c) 2017 Karl Saunders (Mobius1)
  * Licensed under MIT (http://www.opensource.org/licenses/mit-license.php)
  *
- * Version: 0.21.1
+ * Version: 0.22.0
  *
  */
 (function(root, factory) {
@@ -52,7 +52,7 @@
 
         /* SELECTABLE */
         var Selectable = function(options) {
-            this.version = "0.21.1";
+            this.version = "0.22.0";
             this.v = this.version.split(".").map(function(s) {
                 return parseInt(s, 10)
             });
@@ -922,6 +922,22 @@
                         this.states
                     );
                 }
+            },
+
+            /**
+             * Undo selection
+             * @return {Void}
+             */
+            undo: function() {
+                this.state('undo');
+            },
+
+            /**
+             * Redo selection
+             * @return {Void}
+             */            
+            redo: function() {
+                this.state('redo');
             },
 
             /**
