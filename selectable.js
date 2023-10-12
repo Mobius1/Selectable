@@ -549,30 +549,36 @@
              * @param  {Object} item
              * @return {Boolean}
              */
-            toggle: function(item, bool) {
-                var test = this.get(item);
-
-                if (test) {
-                    if (!isCollection(test)) {
-                        test = [test];
+            toggle: function(choice, bool) {
+                if ( choice === undefined ) {
+                    return this.invert();
+                }
+        
+                var data = this.get(choice);
+        
+                if (data) {
+                    if (!this._isCollection(data)) {
+                        data = [data];
                     }
-
-                    for (var i = 0; i < test.length; i++) {
+        
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        var item = data[i];
+        
                         if ( bool !== undefined ) {
                             if (bool) {
-                                this.select(test[i], false, false);
+                                this.select(item, false, false);
                             } else {
-                                this.deselect(test[i], false);
+                                this.deselect(item, false);
                             }
                         } else {
-                            if (test[i].selected) {
-                                this.deselect(test[i], false);
+                            if (item.selected) {
+                                this.deselect(item, false);
                             } else {
-                                this.select(test[i], false, false);
+                                this.select(item, false, false);
                             }
                         }
                     }
-
+        
                     if (this.config.saveState) {
                         this.state("save");
                     }
