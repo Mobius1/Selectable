@@ -547,6 +547,7 @@
             /**
              * Toggle an item
              * @param  {Object} item
+             * @param  {Boolean} bool
              * @return {Boolean}
              */
             toggle: function(choice, bool) {
