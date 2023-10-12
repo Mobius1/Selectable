@@ -70,7 +70,7 @@
              * @return {void}
              */
             init: function(options) {
-                var that = this;
+                if ( this.initialised ) return;
 
                 /**
                  * Default configuration properties
@@ -164,9 +164,8 @@
                     this.touch = false;
                 }
 
-                this.events = {};
+                this.callbacks = {};
 
-                var that = this;
                 // bind events
                 var events = [
                     "_start",
@@ -181,13 +180,13 @@
                 
                 for ( var i = 0, count = events.length; i < count; i++ ) {
                     var event = events[i];
-                    that.events[event] = that[event].bind(that);
+                    this.callbacks[event] = this[event].bind(this);
                 }
 
-                this.events._refresh = _throttle(this.refresh, o.throttle, this);
+                this.callbacks._refresh = _throttle(this.refresh, o.throttle, this);
 
                 if (this.autoscroll) {
-                    this.events._scroll = this._onScroll.bind(this);
+                    this.callbacks._scroll = this._onScroll.bind(this);
                 }
 
                 this.setContainer();
@@ -211,7 +210,7 @@
                     node.classList.add(o.classes.selectable);
 
                     if ( this.hasHandle ) {
-                        var handles = el.querySelectorAll(o.handle);
+                        var handles = node.querySelectorAll(o.handle);
 
                         if ( handles.length ) {
                             for ( var j = 0, len = handles.length; j < len; j++ ) {
@@ -225,11 +224,14 @@
                 this.update();
                 this.enable();
 
+                var that = this;
+
                 setTimeout(function() {
                     if (o.saveState) {
                         that.state("save");
                     }
                     that.emit("init");
+                    that.initialised = true;
                 }, 10);
             },
 
@@ -299,7 +301,7 @@
              * @return {Void}
              */
             bind: function() {
-                var e = this.events;
+                var e = this.callbacks;
 
                 this.unbind();
 
@@ -340,7 +342,7 @@
              * @return {Void}
              */
             unbind: function() {
-                var e = this.events;
+                var e = this.callbacks;
 
                 this.off(this.container, "mousedown", e._start);
                 this.off(document, "mousemove", e._drag);
@@ -940,12 +942,16 @@
              * @return {void}
              */
             destroy: function() {
+                if ( !this.initialised ) return;
+
                 this.disable();
+                this.emit('destroyed');
                 this.listeners = false;
                 this.clear();
                 this.state("clear");
                 this.remove(this.items);
-                this.events = null;
+                this.callbacks = null;
+                this.initialised = false;
             },
 
             /**
@@ -1013,7 +1019,7 @@
              * @return {Void}
              */
             _touchstart: function(e) {
-                this.off(this.container, "mousedown", this.events.start);
+                this.off(this.container, "mousedown", this.callbacks.start);
 
                 this._start(e);
             },
