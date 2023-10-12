@@ -121,7 +121,7 @@
                     }
                 };
 
-                this.config = _extend(selectableConfig, options);
+                this.config = _merge(selectableConfig, options);
 
                 this.origin = {
                     x: 0,
@@ -146,7 +146,7 @@
 
                     _css(
                         this.lasso,
-                        _extend({
+                        _merge({
                                 position: "absolute",
                                 boxSizing: "border-box",
                                 opacity: 0 // border will show even at zero width / height
@@ -265,7 +265,7 @@
                 this.scrollHeight = this.container.scrollHeight;
 
                 // get the parent container DOMRect
-                this.boundingRect = _rect(this.container);
+                this.boundingRect = _getElementBoundingRect(this.container);
 
                 if (this.bodyContainer) {
                     this.boundingRect.x2 = ww;
@@ -291,7 +291,7 @@
                 };
 
                 for (var i = 0; i < this.nodes.length; i++) {
-                    this.items[i].rect = _rect(this.nodes[i]);
+                    this.items[i].rect = _getElementBoundingRect(this.nodes[i]);
                 }
                 this.emit("refresh");
             },
@@ -355,11 +355,7 @@
                 this.off(this.container, "mouseleave", e._blur);
 
                 if (this.autoscroll) {
-                    this.off(
-                        this.bodyContainer ? window : this.container,
-                        "scroll",
-                        e._scroll
-                    );
+                    this.off(this.bodyContainer ? window : this.container, "scroll", e._scroll);
                 }
 
                 // Mobile
@@ -1093,7 +1089,7 @@
 
                 // selectable nodes may have child elements
                 // so let's get the closest selectable node
-                var node = closest(e.target, function(el) {
+                var node = getClosestAncestor(e.target, function(el) {
                     return (
                         el === that.container || el.classList.contains(o.classes.selectable)
                     );
@@ -1324,7 +1320,7 @@
                 }
 
                 // now let's get the closest valid selectable node
-                endEl = closest(node, function(el) {
+                endEl = getClosestAncestor(node, function(el) {
                     return el.classList.contains(o.classes.selectable);
                 });
 
@@ -1452,7 +1448,7 @@
                     this.container.scrollTop;
 
                 for (var i = 0; i < this.items.length; i++) {
-                    this.items[i].rect = _rect(this.items[i].node);
+                    this.items[i].rect = _getElementBoundingRect(this.items[i].node);
                 }
             },
 
@@ -1475,7 +1471,7 @@
 
                         var item = {
                             node: el,
-                            rect: _rect(el),
+                            rect: _getElementBoundingRect(el),
                             startselected: false,
                             selected: el.classList.contains(o.classes.selected),
                             selecting: el.classList.contains(o.classes.selecting),
@@ -1485,7 +1481,7 @@
                         var isTransformed = this._get2DTransformation(el);
 
                         if (isTransformed) {
-                            var offset = _getOffset(el);
+                            var offset = _getElementOffset(el);
 
                             var trans = isTransformed.translate,
                                 origin = isTransformed.origin,
@@ -1696,7 +1692,7 @@
                                 }
                             ];
 
-                            over = _rectsIntersecting(a, item.transform.rect);
+                            over = _areRectsIntersecting(a, item.transform.rect);
                         } else {
                             // element has no 2d transform applied so just detect collision with the bounding box
                             over = !(
@@ -1853,11 +1849,11 @@
          * @param  {Function} fn Callback
          * @return {Object|Boolean}
          */
-        function closest(el, fn) {
+        function getClosestAncestor(el, fn) {
             return (
                 el &&
                 el !== document.documentElement &&
-                (fn(el) ? el : closest(el.parentNode, fn))
+                (fn(el) ? el : getClosestAncestor(el.parentNode, fn))
             );
         }
 
@@ -1900,13 +1896,13 @@
          * @param  {Object} t
          * @return {Object}
          */
-        function _extend(src, props) {
+        function _merge(src, props) {
             for (var prop in props) {
                 if (props.hasOwnProperty(prop)) {
                     var val = props[prop];
                     if (val && isObject(val)) {
                         src[prop] = src[prop] || {};
-                        _extend(src[prop], val);
+                        _merge(src[prop], val);
                     } else {
                         src[prop] = val;
                     }
@@ -1939,7 +1935,7 @@
          * @param  {Boolean} e  Include margins
          * @return {Object}     Formatted DOMRect copy
          */
-        function _rect(e) {
+        function _getElementBoundingRect(e) {
             var w = window,
                 o = e.getBoundingClientRect(),
                 b = document.documentElement || document.body.parentNode || document.body,
@@ -1976,7 +1972,7 @@
             };
         }
 
-        function _getOffset(el) {
+        function _getElementOffset(el) {
             var top = 0,
                 left = 0;
             do {
@@ -2007,7 +2003,7 @@
          * @param {Array} b Array of coords
          * @return {Bool}
          */
-        function _rectsIntersecting(a, b) {
+        function _areRectsIntersecting(a, b) {
             var r,
                 o,
                 t,
