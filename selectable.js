@@ -300,10 +300,10 @@
              * Add instance event listeners
              * @return {Void}
              */
-            bind: function() {
+            attachEvents: function() {
                 var e = this.callbacks;
 
-                this.unbind();
+                this.detachEvents();
 
                 if (this.touch) {
                     this.on(this.container, "touchstart", e._touchstart);
@@ -341,7 +341,7 @@
              * Remove instance event listeners
              * @return {Void}
              */
-            unbind: function() {
+            detachEvents: function() {
                 var e = this.callbacks;
 
                 this.off(this.container, "mousedown", e._start);
@@ -369,6 +369,22 @@
             },
 
             /**
+             * Legacy alias of attachEvents
+             * @return {Void}
+             */
+            bind: function() {
+                this.attachEvents();
+            },
+
+            /**
+             * Legacy alias of detachEvents
+             * @return {Void}
+             */
+            unbind: function() {
+                this.detachEvents();
+            },            
+
+            /**
              * Set the container
              * @param {String|Object} container CSS3 selector string or HTMLElement
              */
@@ -378,7 +394,7 @@
 
                 if (this.container) {
                     old = this.container;
-                    this.unbind();
+                    this.detachEvents();
                 }
 
                 if ( container === undefined ) {
@@ -416,7 +432,7 @@
                     }
                 }
 
-                this.bind();
+                this.attachEvents();
             },
 
             /**
@@ -655,14 +671,15 @@
              * @return {Void}
              */
             selectAll: function() {
+                var max = this.items.length;
                 if (
                     !!this.config.maxSelectable &&
-                    this.config.maxSelectable < this.items.length
+                    this.config.maxSelectable < max
                 ) {
-                    return this._maxReached();
+                    max = this.config.maxSelectable;
                 }
 
-                for (var i = 0; i < this.items.length; i++) {
+                for (var i = 0; i < max; i++) {
                     this.select(this.items[i], true, false);
                 }
 
@@ -904,7 +921,7 @@
                     this.canCtrl = keys.indexOf("ctrlKey") >= 0;
                     this.canMeta = keys.indexOf("metaKey") >= 0;
 
-                    this.bind();
+                    this.attachEvents();
 
                     this.container.classList.add(this.config.classes.container);
 
@@ -923,7 +940,7 @@
                     var keys = this.config.keys;
                     this.enabled = false;
 
-                    this.unbind();
+                    this.detachEvents();
 
                     this.container.classList.remove(this.config.classes.container);
 
@@ -951,41 +968,66 @@
             },
 
             /**
-             * Add custom event listener
+             * Add event handler
              * @param  {String} event
              * @param  {Function} callback
              * @return {Void}
              */
-            on: function(listener, fn, capture) {
+            on: function(listener, cb, capture) {
                 if (typeof listener === "string") {
-                    if ( listener in this.listeners === false ) {
-                        this.listeners = this.listeners || {};
-                        this.listeners[listener] = this.listeners[listener] || [];
-                        this.listeners[listener].push(fn);
-                    }
+                    this.listeners = this.listeners || {};
+                    this.listeners[listener] = this.listeners[listener] || [];
+                    this.listeners[listener].push({
+                        callback: cb,
+                        once: false
+                    });
                 } else {
                     arguments[0].addEventListener(arguments[1], arguments[2], false);
                 }
             },
 
             /**
-             * Remove custom listener listener
+             * Add event handler that will be removed when fired
+             * @param  {String} event
+             * @param  {Function} callback
+             * @return {Void}
+             */
+            once: function(listener, cb, capture) {
+                if (typeof listener === "string") {
+                    this.listeners = this.listeners || {};
+                    this.listeners[listener] = this.listeners[listener] || [];
+                    this.listeners[listener].push({
+                        callback: cb,
+                        once: true
+                    });
+                } else {
+                    arguments[0].addEventListener(arguments[1], arguments[2], false);
+                }
+            },            
+
+            /**
+             * Remove event handler
              * @param  {String} listener
              * @param  {Function} callback
              * @return {Void}
              */
-            off: function(listener, fn) {
+            off: function(listener, cb) {
                 if (typeof listener === "string") {
                     this.listeners = this.listeners || {};
                     if (listener in this.listeners === false) return;
-                    this.listeners[listener].splice(this.listeners[listener].indexOf(fn), 1);
+
+                    for (var i = 0, len = this.listeners[listener].length; i < len; i++) {
+                        if ( this.listeners[listener][i].callback === cb ) {
+                            this.listeners[listener].splice(i, 1);
+                        }
+                    }
                 } else {
                     arguments[0].removeEventListener(arguments[1], arguments[2]);
                 }
             },
 
             /**
-             * Fire custom listener
+             * Fire event
              * @param  {String} listener
              * @return {Void}
              */
@@ -995,11 +1037,15 @@
                 // Don't fire the event if it's not being used
                 if (listener in this.listeners === false) return;
 
-                for (var i = 0; i < this.listeners[listener].length; i++) {
-                    this.listeners[listener][i].apply(
+                for (var i = 0, len = this.listeners[listener].length; i < len; i++) {
+                    this.listeners[listener][i].callback.apply(
                         this,
                         Array.prototype.slice.call(arguments, 1)
                     );
+        
+                    if ( this.listeners[listener][i].once ) {
+                        this.off(listener, this.listeners[listener][i].callback)
+                    }
                 }
             },
 
